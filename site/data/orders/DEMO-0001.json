@@ -1,0 +1,27 @@
+{
+  "order_id": "DEMO-0001",
+  "tool": {
+    "id": "stablecoin-invoice-generator",
+    "name": "Stablecoin Invoice Generator"
+  },
+  "chain": "usdt_evm",
+  "chain_name": "Base",
+  "address": "0xPLACEHOLDERReplaceWithYourReceivingAddress",
+  "currency": "USDT",
+  "amount": 19.01,
+  "raw_amount": 19010000,
+  "payment_uri": "ethereum:0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2@8453/transfer?address=0xPLACEHOLDERReplaceWithYourReceivingAddress&uint256=19010000",
+  "memo": "DEMO-0001",
+  "price_usd": 19.0,
+  "status": "paid",
+  "created_at": "2026-11-14T21:53:09Z",
+  "paid_at": "2026-11-14T21:53:09Z",
+  "checkout_url": "/tools/stablecoin-invoice-generator/checkout.html?order=DEMO-0001",
+  "status_url": "/status.html?order=DEMO-0001",
+  "qr": "/data/qr/DEMO-0001.svg",
+  "download": {
+    "url": "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download/stablecoin-invoice-generator-v1.0.0.zip",
+    "token": "a3b55bc312446ff029c2265b0a62904e"
+  },
+  "watch_note": null
+}

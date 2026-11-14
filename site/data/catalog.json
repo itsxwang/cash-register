@@ -1,0 +1,74 @@
+{
+  "store": {
+    "name": "Xion's Micro Tools",
+    "tagline": "Tiny paid tools for indie devs and crypto freelancers",
+    "url": "http://localhost:8000",
+    "contact_email": "you@example.com",
+    "contact_telegram": "@yourhandle"
+  },
+  "chains": {
+    "usdt_evm": {
+      "label": "USDT on Base",
+      "address": "0xPLACEHOLDERReplaceWithYourReceivingAddress",
+      "chain_id": 8453,
+      "chain_name": "Base",
+      "usdt_contract": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+      "decimals": 6
+    },
+    "sol": {
+      "label": "SOL (Solana)",
+      "address": "So1P1aceho1derReplaceWithYourSolanaAddress11111111111",
+      "decimals": 9
+    },
+    "btc": {
+      "label": "BTC (Bitcoin)",
+      "address": "bc1qplaceholdervjpwldvw83u4rrnreplace_with_your_btc_address",
+      "decimals": 8
+    }
+  },
+  "fx": null,
+  "tools": {
+    "stablecoin-invoice-generator": {
+      "name": "Stablecoin Invoice Generator",
+      "blurb": "Professional printable invoices with a crypto address + QR for the payer. 100% client-side.",
+      "price_usd": 19,
+      "chains": [
+        "usdt_evm",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/stablecoin-invoice-generator/",
+      "checkout": "/tools/stablecoin-invoice-generator/checkout.html"
+    },
+    "cron-ping-monitor": {
+      "name": "Cron Ping Monitor",
+      "blurb": "A tiny cron-friendly uptime pinger with a static status page you can host anywhere for $0.",
+      "price_usd": 9,
+      "chains": [
+        "usdt_evm",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/cron-ping-monitor/",
+      "checkout": "/tools/cron-ping-monitor/checkout.html"
+    },
+    "telegram-broadcaster": {
+      "name": "Telegram Broadcast & Scheduler Bot",
+      "blurb": "Broadcast to your Telegram list and schedule posts with the raw Bot API \u2014 no framework, one file.",
+      "price_usd": 15,
+      "chains": [
+        "usdt_evm",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/telegram-broadcaster/",
+      "checkout": "/tools/telegram-broadcaster/checkout.html"
+    }
+  },
+  "bundle": {
+    "price_usd": 49,
+    "note": "All three tools, lifetime updates, one payment."
+  },
+  "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
+  "generated_at": "2026-11-14T21:53:10Z"
+}

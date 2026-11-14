@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xion's Micro Tools — tiny paid tools, crypto checkout</title>
+  <meta name="description" content="Tiny paid tools for indie devs and crypto freelancers. Pay in USDT, SOL or BTC — get your files in minutes.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <span class="brand">⚙️ Xion's Micro Tools</span>
+      <span class="spacer"></span>
+      <a href="#tools">Tools</a>
+      <a href="#how">How it works</a>
+      <a href="status.html">Order status</a>
+    </nav>
+
+    <div class="hero">
+      <h1>Tiny tools that pay for themselves.</h1>
+      <p>Built for solo operators: invoices for stablecoin clients, uptime monitors, Telegram broadcast.
+         Pay in <strong>USDT, SOL or BTC</strong> — no card processors, no accounts, files delivered in minutes.</p>
+      <a class="btn" href="#tools">Browse the tools</a>
+      <div class="banner" data-demo-banner></div>
+    </div>
+
+    <section class="section" id="tools">
+      <h2>The tools</h2>
+      <div class="grid" data-tools-grid></div>
+
+      <div class="card">
+        <h3>💎 Lifetime bundle</h3>
+        <p>All three tools, every future update, one payment.
+           <span data-bundle-note class="muted"></span></p>
+        <div class="price"><span data-bundle></span> <small>one-off, crypto</small></div>
+        <div class="row"><a class="btn small" href="tools/stablecoin-invoice-generator/checkout.html">Get the bundle (memo: BUNDLE)</a></div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <h2>How buying works</h2>
+      <ol class="steps">
+        <li><strong>Pick a tool and a network</strong> — USDT on Base (cheapest), SOL, or BTC.</li>
+        <li><strong>Send the exact amount</strong> shown at checkout. Your order id doubles as the memo.</li>
+        <li><strong>Report your payment</strong> (one click — email or Telegram).</li>
+        <li><strong>Get your download link</strong> on the order-status page once the payment is confirmed.</li>
+      </ol>
+      <p class="hint">Payments are confirmed by the founder directly on-chain — assisted by automated
+         watchers, no payment processor in the middle, no data leaves your device.</p>
+    </section>
+
+    <section class="section faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Why crypto-only?</summary>
+        <p>The tools here are built for people who already live on-chain — stablecoin freelancers,
+           crypto-native indie hackers. Keeping settlement on-chain means no Stripe/PayPal cutoffs,
+           no account freezes, and prices that don't need to absorb processor fees.</p>
+      </details>
+      <details>
+        <summary>What exactly do I get after paying?</summary>
+        <p>A download link (GitHub Releases) with the tool's files: source, docs, and free updates for
+           the tool you bought. The invoice generator also runs free in your browser — paying gets you
+           the portable version + updates + support.</p>
+      </details>
+      <details>
+        <summary>How is a payment matched to my order?</summary>
+        <p>Every order gets a unique id used as the memo (where the chain supports one) and, on some
+           networks, a unique exact amount. The founder's watchers watch the receiving addresses for
+           those values; a matching transaction unlocks your download.</p>
+      </details>
+      <details>
+        <summary>Refunds?</summary>
+        <p>If a tool doesn't work for you within 7 days, message with your order id — refunds go back
+           to the sending address, on-chain.</p>
+      </details>
+    </section>
+
+    <footer>
+      <span id="foot-contact"></span> · Built with the
+      <a href="https://github.com/">Cash Register</a> stack — static site, crypto-only checkout, zero paid services.
+    </footer>
+  </div>
+  <script src="js/qr.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>
