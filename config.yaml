@@ -1,0 +1,99 @@
+# ============================================================================
+# Cash Register — configuration
+# ----------------------------------------------------------------------------
+# ALL VALUES BELOW ARE PLACEHOLDERS. Replace with your real receiving
+# addresses before taking payments. See LAUNCH_CHECKLIST.md step 3.
+#
+# The file is parsed by payments/config.py, a tiny YAML-subset parser.
+# Keep the format exactly as shown: `key: value`, 2-space indents for
+# nesting, `#` comments, optional quotes on strings, [a, b] inline lists.
+# ============================================================================
+
+store:
+  name: "Xion's Micro Tools"
+  tagline: "Tiny paid tools for indie devs and crypto freelancers"
+  url: "http://localhost:8000"          # replace with your Pages URL at launch
+  contact_email: "you@example.com"
+  contact_telegram: "@yourhandle"
+
+# ---------------------------------------------------------------------------
+# Receiving addresses (crypto-only revenue: BTC / SOL / USDT on an EVM L2)
+# ---------------------------------------------------------------------------
+addresses:
+  btc: "bc1qplaceholdervjpwldvw83u4rrnreplace_with_your_btc_address"
+  sol: "So1P1aceho1derReplaceWithYourSolanaAddress11111111111"
+  usdt_evm: "0xPLACEHOLDERReplaceWithYourReceivingAddress"
+  usdt_chain_id: 8453                  # 8453 = Base, 42161 = Arbitrum
+  usdt_chain_name: "Base"
+  # USDT contract per chain (needed by the EVM watcher + EIP-681 URIs)
+  usdt_contract: "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2"   # Base USDT
+  usdt_contract_arbitrum: "0xFd086bC7CD5C481DCC9C85cebE478A3862bCeD3"
+  usdt_decimals: 6
+
+# ---------------------------------------------------------------------------
+# FX fallback rates. Used offline / when the free price APIs are unreachable.
+# Meaning: 1 USD buys this much of the asset.
+# ---------------------------------------------------------------------------
+fx:
+  usd_btc: 0.0000152
+  usd_sol: 0.0065
+  btc_price_endpoint: "https://mempool.space/api/v1/prices"
+  sol_price_endpoint: "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+
+# ---------------------------------------------------------------------------
+# On-chain payment watchers (v1). All keyless except Etherscan (free tier,
+# key via the ETHERSCAN_API_KEY env var — the chain is simply skipped if the
+# env var is absent). A watcher that cannot reach its API is skipped; the
+# manual CSV confirmations (v0) always work.
+# ---------------------------------------------------------------------------
+watchers:
+  enabled: true
+  auto_confirm: true          # auto-mark paid when an exact on-chain match is found
+  lookback_hours: 72          # how far back to scan for the payment
+  btc_api: "https://mempool.space"
+  sol_rpc: "https://api.mainnet-beta.solana.com"
+  sol_usdt_mint: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+  evm_api: "https://api.etherscan.io/v2/api"   # multichain Etherscan v2
+
+# ---------------------------------------------------------------------------
+# Delivery. One-time download links point at YOUR GitHub Releases (free).
+# Replace YOUR_GITHUB_USERNAME. See README.md "Delivery" section.
+# ---------------------------------------------------------------------------
+delivery:
+  releases_base: "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download"
+
+# ---------------------------------------------------------------------------
+# The sellable tools. Prices are one-off USD amounts payable in crypto.
+# ---------------------------------------------------------------------------
+tools:
+  stablecoin-invoice-generator:
+    name: "Stablecoin Invoice Generator"
+    blurb: "Professional printable invoices with a crypto address + QR for the payer. 100% client-side."
+    price_usd: 19
+    chains: [usdt_evm, sol, btc]
+    default_chain: usdt_evm
+    release_file: "stablecoin-invoice-generator-v1.0.0.zip"
+    landing: "/tools/stablecoin-invoice-generator/"
+    checkout: "/tools/stablecoin-invoice-generator/checkout.html"
+  cron-ping-monitor:
+    name: "Cron Ping Monitor"
+    blurb: "A tiny cron-friendly uptime pinger with a static status page you can host anywhere for $0."
+    price_usd: 9
+    chains: [usdt_evm, sol, btc]
+    default_chain: usdt_evm
+    release_file: "cron-ping-monitor-v1.0.0.zip"
+    landing: "/tools/cron-ping-monitor/"
+    checkout: "/tools/cron-ping-monitor/checkout.html"
+  telegram-broadcaster:
+    name: "Telegram Broadcast & Scheduler Bot"
+    blurb: "Broadcast to your Telegram list and schedule posts with the raw Bot API — no framework, one file."
+    price_usd: 15
+    chains: [usdt_evm, sol, btc]
+    default_chain: usdt_evm
+    release_file: "telegram-broadcaster-v1.0.0.zip"
+    landing: "/tools/telegram-broadcaster/"
+    checkout: "/tools/telegram-broadcaster/checkout.html"
+
+bundle:
+  price_usd: 49
+  note: "All three tools, lifetime updates, one payment."

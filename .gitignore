@@ -1,0 +1,11 @@
+# Local state — never commit real orders, wallets state, or secrets
+payments/data/
+payments/confirmations.csv
+tools_src/cron_ping/data/
+tools_src/tg_broadcast/data/
+site/data/orders/*
+!site/data/orders/DEMO-0001.json
+!site/data/orders/DEMO-0002.json
+__pycache__/
+*.pyc
+.DS_Store

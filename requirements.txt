@@ -1,0 +1,2 @@
+# Cash Register — runtime deps (only this one package is installed; segno is vendored)
+requests==2.32.5
