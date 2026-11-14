@@ -313,7 +313,7 @@
     return "<div class='panel' id='ivepaid'><h3>Already paid? Tell the founder.</h3>" +
       "<div class='row'>" +
       "<label class='field' style='flex:1;min-width:220px'>Amount you sent" +
-      "<input type='text' id='paidamt' placeholder='e.g. 19.00 USDT'></label>" +
+      "<input type='text' id='paidamt' placeholder='e.g. 0.01078 ETH'></label>" +
       "<label class='field' style='flex:1;min-width:220px'>Txid / link (optional)" +
       "<input type='text' id='paidtx' placeholder='0x… / signature…'></label>" +
       "</div>" +

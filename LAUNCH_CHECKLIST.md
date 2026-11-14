@@ -38,10 +38,9 @@ Pick **one**:
 - [ ] Edit `config.yaml`:
       - `addresses.btc` — your BTC receive address (bech32/bc1 recommended)
       - `addresses.sol` — your Solana address
-      - `addresses.usdt_evm` — your receiving address **on Base** (use a
-        wallet you control; verify the network before sharing)
-      - `addresses.usdt_chain_id` / `usdt_chain_name` — keep `8453 / Base`
-        or switch to Arbitrum (`42161` + `usdt_contract_arbitrum` value swapped in)
+      - `addresses.eth` — your receiving address for **native ETH on Base**
+        (use a wallet you control; verify the network is Base before sharing)
+      - `addresses.eth_chain_id` / `eth_chain_name` — keep `8453 / Base`
       - `store.contact_email` / `store.contact_telegram` — where buyers send reports
 - [ ] Regenerate the public data (this is what the site actually serves):
       ```bash
@@ -55,7 +54,7 @@ Pick **one**:
 ## 4. Watcher cron + free Etherscan key (~15 min)
 
 - [ ] Get a **free Etherscan API key**: etherscan.io → sign up → API Keys
-      (free tier: 5 req/s — plenty).
+      (free tier: 5 req/s — plenty). It powers the native-ETH-on-Base watcher.
 - [ ] Add the cron (every 10 min: check payments, re-sync site data, push):
       ```bash
       crontab -e
@@ -70,22 +69,24 @@ Pick **one**:
       Actions `schedule:` workflow (free for public repos) — that's a v2 task,
       the manual CSV flow needs nothing always-on.
 
-## 5. Create the downloadable products (~20 min)
+## 5. Create the downloadable products (~10 min)
 
-- [ ] Zip each tool:
+- [ ] Build all three zips reproducibly:
       ```bash
-      zip -r stablecoin-invoice-generator-v1.0.0.zip \
-          site/tools/stablecoin-invoice-generator/{app.html,app.css,app.js} README.md
-      cd tools_src/cron_ping && zip -r ../../cron-ping-monitor-v1.0.0.zip cron_ping.py monitors.example.json README.md
-      cd ../tg_broadcast && zip -r ../../telegram-broadcaster-v1.0.0.zip broadcast_bot.py README.md
+      bash scripts/build_releases.sh
       ```
+      → `releases/crypto-invoice-generator-v1.1.0.zip`,
+         `releases/cron-ping-monitor-v1.0.0.zip`,
+         `releases/telegram-broadcaster-v1.0.0.zip`
+      (names are verified against `config.yaml` by the script).
 - [ ] GitHub → `cash-register-releases` → Draft new release per tool:
-      tag `stablecoin-invoice-generator-v1.0.0` etc., attach the zip.
+      tag matching the file name, attach the zip.
 - [ ] Put the repo owner/name into `config.yaml → delivery.releases_base`,
       run `python3 -m payments sync`, commit, push.
-- [ ] Test the whole loop **yourself**: pay $1 USDT to yourself through your own
-      checkout page → add the CSV row → `payments check --all` → `sync` →
-      download.html?order=… shows your file.
+- [ ] Test the whole loop **yourself**: pay **$1 worth of ETH on Base (or SOL
+      or BTC)** to yourself through your own checkout page → add the CSV row →
+      `payments check --all` → `sync` → download page shows your file.
+      With a funded watcher address this also exercises the auto-match path.
 
 ## 6. First-day distribution — 5 free channels (~45 min)
 
@@ -100,7 +101,7 @@ Pick **one**:
       real revenue numbers as they come (transparency posts travel).
 - [ ] **Crypto-native watering holes**: Farcaster `/dev` + `/crypto` channels and
       Telegram freelance groups (CryptoJobsList chat, Web3 job/collab groups) —
-      the invoice generator is the wedge: reply to "how do I invoice my USDT
+      the invoice generator is the wedge: reply to "how do I invoice my crypto
       clients?" threads with a genuine demo link, not an ad.
 - [ ] Optional: **Show HN** ("Show HN: Static-site crypto checkout with on-chain
       watchers, no Stripe") — post when the store has processed ≥1 real payment.
