@@ -121,7 +121,7 @@ def load_config(path: str | os.PathLike | None = None) -> dict:
 
 
 def get_path(cfg: dict, dotted: str, default=None):
-    """cfg lookup like 'addresses.usdt_evm'."""
+    """cfg lookup like 'addresses.eth'."""
     node = cfg
     for part in dotted.split("."):
         if not isinstance(node, dict) or part not in node:

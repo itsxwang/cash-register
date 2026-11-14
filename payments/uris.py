@@ -1,9 +1,13 @@
 """Standard payment URIs for the three supported chains.
 
-- BTC:   BIP-21 `bitcoin:` URI (amount in BTC, label/message carry the memo)
-- SOL:   Solana Pay `solana:` URI (amount in SOL, memo parameter)
-- EVM:   EIP-681 `ethereum:<token>@<chainId>/transfer?...` for USDT on an L2
-         (works with MetaMask & most wallet QR scanners)
+- BTC:  BIP-21 `bitcoin:` URI (amount in BTC, label/message carry the memo)
+- SOL:  Solana Pay `solana:` URI (amount in SOL, memo parameter)
+- ETH:  EIP-681 native transfer `ethereum:<address>@<chainId>?value=<wei>`
+        (no ERC-20 transfer params — the store only accepts the native asset)
+
+Asset policy: no token-transfer URIs here. A freelancer who chooses to bill
+in some other token does so in their own copy of the invoice tool — our
+checkout and watchers only ever speak native BTC / ETH / SOL.
 """
 from __future__ import annotations
 
@@ -29,12 +33,12 @@ def build_payment_uri(order: dict, cfg: dict | None = None) -> str | None:
     if chain == "sol":
         return f"solana:{address}?amount={amount}&memo={_q(memo)}"
 
-    if chain == "usdt_evm":
+    if chain == "eth":
         if cfg is None:
             return None
-        chain_id = get_path(cfg, "addresses.usdt_chain_id", 8453)
-        token = get_path(cfg, "addresses.usdt_contract", "")
-        units = order.get("raw_amount") or int(round(float(amount or 0) * 1e6))
-        return (f"ethereum:{token}@{chain_id}/transfer"
-                f"?address={address}&uint256={units}")
+        chain_id = get_path(cfg, "addresses.eth_chain_id", 8453)
+        wei = order.get("raw_amount")
+        if wei is None and amount is not None:   # legacy/derived orders
+            wei = int(round(float(amount) * 10 ** 18))
+        return f"ethereum:{address}@{chain_id}?value={wei}"
     return None

@@ -139,7 +139,7 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("create", help="create a new order")
     sp.add_argument("--tool", required=True)
     sp.add_argument("--price", type=float, default=None, help="override price in USD")
-    sp.add_argument("--chain", default=None, choices=["usdt_evm", "sol", "btc"])
+    sp.add_argument("--chain", default=None, choices=["eth", "sol", "btc"])
     sp.add_argument("--note", default=None)
     sp.set_defaults(func=cmd_create)
 
@@ -147,7 +147,7 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--order", required=True)
     sp.add_argument("--tool", required=True)
     sp.add_argument("--price", type=float, default=None)
-    sp.add_argument("--chain", default=None, choices=["usdt_evm", "sol", "btc"])
+    sp.add_argument("--chain", default=None, choices=["eth", "sol", "btc"])
     sp.set_defaults(func=cmd_ingest)
 
     sp = sub.add_parser("list", help="list orders")

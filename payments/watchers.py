@@ -1,14 +1,17 @@
 """v1 on-chain payment watchers — keyless free APIs, graceful degradation.
 
-- BTC:  mempool.space REST (no key)
-- SOL:  public Solana RPC `getSignaturesForAddress` + `getTransaction`
-- EVM:  Etherscan v2 multichain free tier (key via ETHERSCAN_API_KEY env var;
-        if the env var is absent the EVM chain is skipped, never crashes)
+Asset policy: the store accepts only decentralized, non-freezable assets.
+- BTC:  mempool.space REST (no key) — exact sats match (+ optional OP_RETURN memo)
+- SOL:  public Solana RPC — native SOL balance-delta match (+ memo program)
+- ETH:  Etherscan v2 multichain free tier — NATIVE ETH incoming transfers on
+        Base (chainid from config), exact wei match. Key via
+        ETHERSCAN_API_KEY env var; if absent the chain is skipped, never crashed.
 
 Matching strategy per order:
-1. amount: the exact raw amount (sats / lamports / USDT units) carries a
-   deterministic per-order noise suffix (see amounts.py), so an exact match
-   within the lookback window is treated as the payment.
+1. amount: the exact raw amount (sats / lamports / wei) carries a
+   deterministic per-order noise suffix (see amounts.py; for ETH the noise
+   is applied in clean steps of 0.00001 ETH), so an exact match within the
+   lookback window is treated as the payment.
 2. memo:   where the chain supports one (BTC OP_RETURN, Solana Memo program)
    a memo equal to the order id also confirms the match.
 
@@ -20,6 +23,7 @@ from __future__ import annotations
 import datetime as _dt
 import json
 import os
+import urllib.parse
 
 from .config import get_path
 from .http import http_get_json, http_post_json
@@ -88,13 +92,12 @@ def watch_btc(order: dict, cfg: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# SOL — public RPC
+# SOL — public RPC (native SOL only)
 # ---------------------------------------------------------------------------
 def watch_sol(order: dict, cfg: dict) -> dict:
     rpc = get_path(cfg, "watchers.sol_rpc", "https://api.mainnet-beta.solana.com").rstrip("/")
     addr = order.get("address") or ""
     raw_amount = int(order.get("raw_amount") or 0)
-    usdt_mint = get_path(cfg, "watchers.sol_usdt_mint", "")
     memo = order.get("memo") or ""
     created_ts = _order_created_ts(order)
 
@@ -108,7 +111,7 @@ def watch_sol(order: dict, cfg: dict) -> dict:
     sigs = (resp.get("result") or []) if isinstance(resp, dict) else []
 
     checked = 0
-    for sig_info in sigs[:12]:  # stay polite on the public RPC
+    for sig_info in sigs[:12]:  # stay polite on the public RPC: 12-lookup bound
         block_time = sig_info.get("blockTime") or 0
         if created_ts and block_time and block_time < created_ts - 3600:
             continue
@@ -122,26 +125,7 @@ def watch_sol(order: dict, cfg: dict) -> dict:
         tx = resp["result"]
         meta = tx.get("meta") or {}
 
-        # (a) SPL token balance delta credited to our receiving wallet
-        for bal in meta.get("postTokenBalances") or []:
-            if not isinstance(bal, dict):
-                continue
-            if addr and bal.get("owner") != addr:
-                continue
-            if usdt_mint and bal.get("mint") != usdt_mint:
-                continue
-            post_raw = int((bal.get("uiTokenAmount") or {}).get("amount") or 0)
-            pre_raw = 0
-            for pre in meta.get("preTokenBalances") or []:
-                if pre.get("accountIndex") == bal.get("accountIndex"):
-                    pre_raw = int((pre.get("uiTokenAmount") or {}).get("amount") or 0)
-            if post_raw - pre_raw == raw_amount:
-                confirmed = sig_info.get("confirmationStatus") in ("finalized", "confirmed")
-                return _result(found=True, confirmed=bool(confirmed),
-                               txid=sig_info.get("signature"),
-                               note="USDT balance delta matches", checked=checked)
-
-        # (b) native SOL transfer delta
+        # native SOL transfer: post - pre balance delta credited to our wallet
         keys = [k.get("pubkey") for k in (tx.get("transaction", {}).get("message", {})
                                           .get("accountKeys") or [])]
         pre = meta.get("preBalances") or []
@@ -152,54 +136,59 @@ def watch_sol(order: dict, cfg: dict) -> dict:
                     confirmed = sig_info.get("confirmationStatus") in ("finalized", "confirmed")
                     return _result(found=True, confirmed=bool(confirmed),
                                    txid=sig_info.get("signature"),
-                                   note="SOL balance delta matches", checked=checked)
+                                   note="native SOL balance delta matches", checked=checked)
 
-        # (c) memo-only fallback (memo present + transfer to us happened above;
-        #     here we merely record that the memo was seen)
+        # memo-only fallback: memo seen but amount not auto-matched
         if memo and _memo_in_raw(tx, memo):
-            note = f"memo {memo} seen in tx (amount not auto-matched)"
-            return _result(found=False, note=note, checked=checked)
+            return _result(found=False,
+                           note=f"memo {memo} seen in tx (amount not auto-matched)",
+                           checked=checked)
 
     return _result(note=f"no matching tx in last {checked} sol sigs", checked=checked)
 
 
 # ---------------------------------------------------------------------------
-# EVM — Etherscan v2 multichain (free tier, key from env)
+# ETH (native, on Base) — Etherscan v2 multichain (free tier, key from env)
 # ---------------------------------------------------------------------------
-def watch_evm(order: dict, cfg: dict) -> dict:
+def watch_eth(order: dict, cfg: dict) -> dict:
+    """Match INCOMING NATIVE ETH transfers (normal txs, value in wei).
+
+    No ERC-20 logic: the store only accepts the native asset. Exact-wei match
+    against the order's noisy amount, bounded to the 12 most recent txs (the
+    same lookup bound used by the Solana watcher).
+    """
     api_key = os.environ.get("ETHERSCAN_API_KEY", "").strip()
     if not api_key:
-        return _result(note="ETHERSCAN_API_KEY not set — EVM watcher skipped "
+        return _result(note="ETHERSCAN_API_KEY not set — ETH watcher skipped "
                             "(manual CSV confirmations still work)")
-    api = get_path(cfg, "watchers.evm_api", "https://api.etherscan.io/v2/api")
-    chain_id = get_path(cfg, "addresses.usdt_chain_id", 8453)
-    contract = str(get_path(cfg, "addresses.usdt_contract", ""))
+    api = get_path(cfg, "watchers.eth_api", "https://api.etherscan.io/v2/api")
+    chain_id = get_path(cfg, "addresses.eth_chain_id", 8453)
     addr = (order.get("address") or "").lower()
-    raw_amount = int(order.get("raw_amount") or 0)
+    raw_amount = int(order.get("raw_amount") or 0)   # exact wei
     created_ts = _order_created_ts(order)
 
     params = {
-        "chainid": chain_id, "module": "account", "action": "tokentx",
-        "contractaddress": contract, "address": order.get("address"),
-        "page": 1, "offset": 50, "sort": "desc", "apikey": api_key,
+        "chainid": chain_id, "module": "account", "action": "txlist",
+        "address": order.get("address"),
+        "startblock": 0, "endblock": 99999999, "page": 1, "offset": 25,
+        "sort": "desc", "apikey": api_key,
     }
-    import urllib.parse
     url = api + "?" + urllib.parse.urlencode(params)
     ok, data = http_get_json(url, timeout=12)
     if not ok:
         return _result(note=f"etherscan unreachable: {data.get('error', '?')}")
     if isinstance(data, dict) and str(data.get("status")) != "1":
-        return _result(note=f"etherscan api: {data.get('message', '?')} "
-                            f"{data.get('result', '') if isinstance(data.get('result'), str) else ''}")
+        msg = data.get("result", "") if isinstance(data.get("result"), str) else ""
+        return _result(note=f"etherscan api: {data.get('message', '?')} {msg}".strip())
 
     txs = data.get("result") or []
     checked = 0
-    for t in txs:
+    for t in txs[:12]:  # 12-lookup bound, mirroring the Solana watcher
         if not isinstance(t, dict):
             continue
         if (t.get("to") or "").lower() != addr:
             continue
-        if (t.get("contractAddress") or "").lower() != contract.lower():
+        if (t.get("input") or "0x") not in ("0x", "0x0"):   # plain native transfer only
             continue
         ts = int(t.get("timeStamp") or 0)
         if created_ts and ts < created_ts - 3600:
@@ -207,8 +196,9 @@ def watch_evm(order: dict, cfg: dict) -> dict:
         checked += 1
         if int(t.get("value") or 0) == raw_amount:
             return _result(found=True, confirmed=True,
-                           txid=t.get("hash"), note="exact USDT amount", checked=checked)
-    return _result(note=f"no matching tx in last {checked} USDT transfers", checked=checked)
+                           txid=t.get("hash"),
+                           note="exact native ETH amount (wei)", checked=checked)
+    return _result(note=f"no matching tx in last {checked} native ETH txs", checked=checked)
 
 
 def _memo_in_raw(obj, memo: str) -> bool:
@@ -218,7 +208,7 @@ def _memo_in_raw(obj, memo: str) -> bool:
         return False
 
 
-WATCHERS = {"btc": watch_btc, "sol": watch_sol, "usdt_evm": watch_evm}
+WATCHERS = {"btc": watch_btc, "sol": watch_sol, "eth": watch_eth}
 
 
 def run_watcher(order: dict, cfg: dict) -> dict | None:
@@ -245,5 +235,5 @@ def probe(cfg: dict) -> dict:
                               {"jsonrpc": "2.0", "id": 1, "method": "getHealth"}, timeout=6)
     out["sol_public_rpc"] = bool(ok and isinstance(resp, dict) and resp.get("result") == "ok")
 
-    out["evm_etherscan"] = bool(os.environ.get("ETHERSCAN_API_KEY", "").strip())
+    out["eth_etherscan"] = bool(os.environ.get("ETHERSCAN_API_KEY", "").strip())
     return out

@@ -1,12 +1,13 @@
 """Cash Register — a generic crypto-checkout + delivery module.
 
-Revenue is crypto-only (BTC / SOL / USDT on an EVM L2). No Stripe, no
-PayPal, no KYC. The module is deliberately generic so it can power any
-future digital product:
+Revenue arrives in decentralized, non-freezable assets only: native BTC /
+ETH / SOL. No Stripe, no PayPal, no KYC, and no centralized stablecoins
+(issuer-controlled tokens can be frozen — banned from our payment flow).
+The module is deliberately generic so it can power any future digital product:
 
     from payments import create_order, check_paid, mark_paid, sync_static
 
-    order = create_order("stablecoin-invoice-generator", 19.00)
+    order = create_order("crypto-invoice-generator", 19.00)
     # ... customer pays order['amount'] to order['address'] with memo order['memo']
     order = check_paid(order["order_id"])          # CSV (v0) + on-chain (v1)
     mark_paid(order["order_id"], txid="...")       # or confirm manually
@@ -29,7 +30,10 @@ from .config import DEFAULT_CONFIG_PATH, REPO_ROOT, get_path, load_config
 from .qr import save_svg
 from .uris import build_payment_uri
 
-VALID_CHAINS = ("usdt_evm", "sol", "btc")
+# Asset policy: decentralized, non-freezable assets only (native BTC/ETH/SOL).
+# No centralized stablecoins (USDT/USDC/...) — issuer-controlled tokens can be
+# frozen by a handful of keys and are deliberately unsupported here.
+VALID_CHAINS = ("eth", "sol", "btc")
 DEFAULT_SITE_DIR = REPO_ROOT / "site"
 
 
@@ -56,7 +60,7 @@ def create_order(tool_id: str, price_usd: float | None = None, *,
     if price_usd is None:
         price_usd = float(tool.get("price_usd") or 0)
     if chain is None:
-        chain = tool.get("default_chain") or "usdt_evm"
+        chain = tool.get("default_chain") or "eth"
     if chain not in VALID_CHAINS:
         raise ValueError(f"unknown chain '{chain}'. Valid: {', '.join(VALID_CHAINS)}")
 
@@ -111,7 +115,7 @@ def ingest_order(order_id: str, tool_id: str, *, price_usd: float | None = None,
         conn = own_conn = db.connect()
         seq = db.next_sequence(conn)
         price_usd = float(price_usd if price_usd is not None else tool.get("price_usd") or 0)
-        chain = chain or tool.get("default_chain") or "usdt_evm"
+        chain = chain or tool.get("default_chain") or "eth"
         amt = amounts.compute_amount(cfg, chain, price_usd, seq)
         order = {
             "order_id": order_id,
@@ -335,7 +339,7 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
             "checkout": tool.get("checkout"),
         }
 
-    chain_id = get_path(cfg, "addresses.usdt_chain_id", 8453)
+    chain_id = get_path(cfg, "addresses.eth_chain_id", 8453)
     catalog = {
         "store": {
             "name": get_path(cfg, "store.name", "Micro Tools"),
@@ -345,16 +349,16 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
             "contact_telegram": get_path(cfg, "store.contact_telegram", ""),
         },
         "chains": {
-            "usdt_evm": {
-                "label": f"USDT on {get_path(cfg, 'addresses.usdt_chain_name', 'Base')}",
-                "address": get_path(cfg, "addresses.usdt_evm"),
+            "eth": {
+                "label": f"ETH ({get_path(cfg, 'addresses.eth_chain_name', 'Base')})",
+                "address": get_path(cfg, "addresses.eth"),
                 "chain_id": chain_id,
-                "chain_name": get_path(cfg, "addresses.usdt_chain_name", "Base"),
-                "usdt_contract": get_path(cfg, "addresses.usdt_contract"),
-                "decimals": 6,
+                "chain_name": get_path(cfg, "addresses.eth_chain_name", "Base"),
+                "decimals": 18,
+                "asset_policy": "native ETH only — no tokens",
             },
-            "sol": {"label": "SOL (Solana)", "address": get_path(cfg, "addresses.sol"), "decimals": 9},
-            "btc": {"label": "BTC (Bitcoin)", "address": get_path(cfg, "addresses.btc"), "decimals": 8},
+            "sol": {"label": "SOL", "address": get_path(cfg, "addresses.sol"), "decimals": 9},
+            "btc": {"label": "BTC", "address": get_path(cfg, "addresses.btc"), "decimals": 8},
         },
         "fx": fx_rates or None,
         "tools": tools_pub,
@@ -393,7 +397,7 @@ def create_demo_fixtures(*, cfg: dict | None = None,
     site = Path(site_dir) if site_dir else DEFAULT_SITE_DIR
     made = []
     specs = [
-        ("DEMO-0001", "stablecoin-invoice-generator", "usdt_evm", "paid"),
+        ("DEMO-0001", "crypto-invoice-generator", "eth", "paid"),
         ("DEMO-0002", "cron-ping-monitor", "sol", "awaiting_payment"),
     ]
     conn = db.connect()
