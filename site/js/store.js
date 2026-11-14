@@ -340,6 +340,7 @@
       founderEmail = cat.store.contact_email;
       founderTg = cat.store.contact_telegram;
       if (founderTg && tg) tg.href = "https://t.me/" + founderTg.replace(/^@/, "");
+      refreshLinks();
     });
 
     function body() {

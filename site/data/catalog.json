@@ -26,7 +26,12 @@
       "decimals": 8
     }
   },
-  "fx": null,
+  "fx": {
+    "usd_btc": 1.5525780558617583e-05,
+    "usd_sol": 0.014310246136233544,
+    "source": "live",
+    "updated_at": "2026-11-14T22:00:56Z"
+  },
   "tools": {
     "stablecoin-invoice-generator": {
       "name": "Stablecoin Invoice Generator",
@@ -70,5 +75,5 @@
     "note": "All three tools, lifetime updates, one payment."
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-14T21:53:10Z"
+  "generated_at": "2026-11-14T22:00:56Z"
 }
