@@ -9,7 +9,7 @@
   "chains": {
     "usdt_evm": {
       "label": "USDT on Base",
-      "address": "0xPLACEHOLDERReplaceWithYourReceivingAddress",
+      "address": "0x45DF2a94A66B948CFd167EE60d3cA682ba61d575",
       "chain_id": 8453,
       "chain_name": "Base",
       "usdt_contract": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
@@ -17,20 +17,20 @@
     },
     "sol": {
       "label": "SOL (Solana)",
-      "address": "So1P1aceho1derReplaceWithYourSolanaAddress11111111111",
+      "address": "9kAAxiK2jc2DgZojDhkkQ7dQhTVbyyWQThMXLecaLtGt",
       "decimals": 9
     },
     "btc": {
       "label": "BTC (Bitcoin)",
-      "address": "bc1qplaceholdervjpwldvw83u4rrnreplace_with_your_btc_address",
+      "address": "bc1qrqsg3jfedsljtnuhp5vw4cpgmxj6myvfd7ryhp",
       "decimals": 8
     }
   },
   "fx": {
-    "usd_btc": 1.5525780558617583e-05,
-    "usd_sol": 0.014310246136233544,
+    "usd_btc": 1.5636727545659244e-05,
+    "usd_sol": 0.014398848092152626,
     "source": "live",
-    "updated_at": "2026-11-14T22:00:56Z"
+    "updated_at": "2026-11-14T22:21:21Z"
   },
   "tools": {
     "stablecoin-invoice-generator": {
@@ -75,5 +75,5 @@
     "note": "All three tools, lifetime updates, one payment."
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-14T22:00:56Z"
+  "generated_at": "2026-11-14T22:21:21Z"
 }
