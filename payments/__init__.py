@@ -21,6 +21,7 @@ v1 (assist mode):       keyless free-API watchers confirm exact-amount
 from __future__ import annotations
 
 import json
+import os
 import secrets
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,7 +35,16 @@ from .uris import build_payment_uri
 # No centralized stablecoins (USDT/USDC/...) — issuer-controlled tokens can be
 # frozen by a handful of keys and are deliberately unsupported here.
 VALID_CHAINS = ("eth", "sol", "btc")
-DEFAULT_SITE_DIR = REPO_ROOT / "site"
+
+
+def _default_site_dir() -> Path:
+    env = os.environ.get("CASHREGISTER_SITE_DIR")
+    if env:
+        return Path(env).expanduser().resolve()
+    return REPO_ROOT / "site"
+
+
+DEFAULT_SITE_DIR = _default_site_dir()
 
 
 def _now() -> str:

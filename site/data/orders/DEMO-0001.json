@@ -6,22 +6,22 @@
   },
   "chain": "eth",
   "chain_name": "Base",
-  "address": "0xPLACEHOLDERReplaceWithYourReceivingAddress",
+  "address": "0x45DF2a94A66B948CFd167EE60d3cA682ba61d575",
   "currency": "ETH",
-  "amount": 0.01078,
-  "raw_amount": 10780000000000000,
-  "payment_uri": "ethereum:0xPLACEHOLDERReplaceWithYourReceivingAddress@8453?value=10780000000000000",
+  "amount": 0.00634,
+  "raw_amount": 6340000000000000,
+  "payment_uri": "ethereum:0x45DF2a94A66B948CFd167EE60d3cA682ba61d575@8453?value=6340000000000000",
   "memo": "DEMO-0001",
   "price_usd": 19.0,
   "status": "paid",
-  "created_at": "2026-11-14T22:33:15Z",
-  "paid_at": "2026-11-14T22:33:15Z",
+  "created_at": "2026-11-14T22:36:40Z",
+  "paid_at": "2026-11-14T22:36:40Z",
   "checkout_url": "/tools/crypto-invoice-generator/checkout.html?order=DEMO-0001",
   "status_url": "/status.html?order=DEMO-0001",
   "qr": "/data/qr/DEMO-0001.svg",
   "download": {
     "url": "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download/crypto-invoice-generator-v1.1.0.zip",
-    "token": "544bdb3e5373c4c4c99c8061e54240b6"
+    "token": "634f373c6cc7993d0583e8c13d634cf3"
   },
   "watch_note": null
 }

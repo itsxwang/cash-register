@@ -1,8 +1,8 @@
 # ============================================================================
 # Cash Register — configuration
 # ----------------------------------------------------------------------------
-# ALL VALUES BELOW ARE PLACEHOLDERS. Replace with your real receiving
-# addresses before taking payments. See LAUNCH_CHECKLIST.md step 3.
+# Receiving addresses are configured (BTC / SOL / native-ETH-on-Base).
+# Remaining human steps: see LAUNCH_CHECKLIST.md.
 #
 # ASSET POLICY: this store accepts ONLY decentralized, non-freezable assets —
 # native BTC, native ETH (on an L2), native SOL. Centralized stablecoins
@@ -25,9 +25,9 @@ store:
 # Receiving addresses (decentralized assets only: BTC / ETH / SOL, native)
 # ---------------------------------------------------------------------------
 addresses:
-  btc: "bc1qplaceholdervjpwldvw83u4rrnreplace_with_your_btc_address"
-  sol: "So1P1aceho1derReplaceWithYourSolanaAddress11111111111"
-  eth: "0xPLACEHOLDERReplaceWithYourReceivingAddress"   # native ETH, Base L2
+  btc: "bc1qrqsg3jfedsljtnuhp5vw4cpgmxj6myvfd7ryhp"
+  sol: "9kAAxiK2jc2DgZojDhkkQ7dQhTVbyyWQThMXLecaLtGt"
+  eth: "0x45DF2a94A66B948CFd167EE60d3cA682ba61d575"   # native ETH, Base L2
   eth_chain_id: 8453                   # 8453 = Base (native ETH transfers)
   eth_chain_name: "Base"
   eth_decimals: 18

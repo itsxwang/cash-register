@@ -22,6 +22,7 @@ sys.path.insert(0, str(REPO))
 TMP = Path(tempfile.mkdtemp(prefix="cashregister-test-"))
 os.environ["CASHREGISTER_DB"] = str(TMP / "test.db")
 os.environ["CASHREGISTER_CONFIRMATIONS"] = str(TMP / "confirmations.csv")
+os.environ["CASHREGISTER_SITE_DIR"] = str(TMP / "site")  # keep test artifacts out of the repo
 
 import payments as cr  # noqa: E402
 from payments import db, manual  # noqa: E402
