@@ -17,7 +17,7 @@
 store:
   name: "Xion's Micro Tools"
   tagline: "Tiny paid tools for indie devs and crypto freelancers"
-  url: "http://localhost:8000"          # replace with your Pages URL at launch
+  url: "https://itsxwang.github.io/cash-register/"   # live after Pages is enabled
   contact_email: "you@example.com"
   contact_telegram: "@yourhandle"
 
@@ -63,7 +63,7 @@ watchers:
 # Replace YOUR_GITHUB_USERNAME. See README.md "Delivery" section.
 # ---------------------------------------------------------------------------
 delivery:
-  releases_base: "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download"
+  releases_base: "https://github.com/itsxwang/cash-register-releases/releases/download"
 
 # ---------------------------------------------------------------------------
 # The sellable tools. Prices are one-off USD amounts payable in BTC/ETH/SOL.

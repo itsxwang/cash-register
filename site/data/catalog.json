@@ -2,7 +2,7 @@
   "store": {
     "name": "Xion's Micro Tools",
     "tagline": "Tiny paid tools for indie devs and crypto freelancers",
-    "url": "http://localhost:8000",
+    "url": "https://itsxwang.github.io/cash-register/",
     "contact_email": "you@example.com",
     "contact_telegram": "@yourhandle"
   },
@@ -70,5 +70,5 @@
     "note": "All three tools, lifetime updates, one payment."
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-14T22:36:40Z"
+  "generated_at": "2026-11-14T22:38:03Z"
 }

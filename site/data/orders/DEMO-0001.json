@@ -20,7 +20,7 @@
   "status_url": "/status.html?order=DEMO-0001",
   "qr": "/data/qr/DEMO-0001.svg",
   "download": {
-    "url": "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download/crypto-invoice-generator-v1.1.0.zip",
+    "url": "https://github.com/itsxwang/cash-register-releases/releases/download/crypto-invoice-generator-v1.1.0.zip",
     "token": "634f373c6cc7993d0583e8c13d634cf3"
   },
   "watch_note": null
