@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Status — all monitors</title><style>
+:root{--bg:#0b1220;--surface:#111a2e;--ink:#e2e8f0;--muted:#7d8db1;--line:#1e2a44;
+      --good:#10b981;--bad:#ef4444;--warn:#f59e0b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:32px 20px 60px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.updated{color:var(--muted);font-size:.9rem;margin:0 0 28px}
+.grid{display:grid;gap:14px}
+.m{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.m .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.m h2{font-size:1.05rem;margin:0}
+.m .url{color:var(--muted);font-size:.85rem;font-family:ui-monospace,Menlo,Consolas,monospace;
+        word-break:break-all}
+.pill{padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:700}
+.pill.up{background:#06281f;color:var(--good)}
+.pill.down{background:#2b1113;color:var(--bad)}
+.stats{display:flex;gap:18px;color:var(--muted);font-size:.85rem;margin:10px 0 8px}
+.stats b{color:var(--ink);font-variant-numeric:tabular-nums}
+.bars{display:flex;gap:2px;align-items:flex-end;height:34px;margin-top:6px}
+.bars i{width:8px;border-radius:2px;background:var(--good);opacity:.85;display:block}
+.bars i.bad{background:var(--bad)}
+.m .err{color:var(--bad);font-size:.85rem;margin-top:6px}
+footer{margin-top:36px;color:var(--muted);font-size:.8rem}
+a{color:#8ab4ff}
+</style></head><body><div class='wrap'><h1>📊 Service status</h1><p class='updated'>generated 2026-11-14T21:59:44Z by cron-ping-monitor</p><div class='grid'>
+<div class="m">
+  <div class="top">
+    <h2>store</h2>
+    <span class="pill up">UP</span>
+  </div>
+  <div class="url">https://example.com</div>
+  <div class="stats">
+    <span>7d uptime <b>100.00%</b></span>
+    <span>avg latency <b>61 ms</b></span>
+    <span>last check <b>2026-11-14T21:59:42Z</b></span>
+    <span>checks <b>14</b></span>
+  </div>
+  <div class="bars"><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i></div>
+  
+</div>
+<div class="m">
+  <div class="top">
+    <h2>docs-site</h2>
+    <span class="pill up">UP</span>
+  </div>
+  <div class="url">https://example.org</div>
+  <div class="stats">
+    <span>7d uptime <b>100.00%</b></span>
+    <span>avg latency <b>133 ms</b></span>
+    <span>last check <b>2026-11-14T21:59:42Z</b></span>
+    <span>checks <b>14</b></span>
+  </div>
+  <div class="bars"><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:26.175px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i><i class='' style="height:8px"></i></div>
+  
+</div>
+<div class="m">
+  <div class="top">
+    <h2>api-health</h2>
+    <span class="pill up">UP</span>
+  </div>
+  <div class="url">https://mempool.space/api/blocks/tip/height</div>
+  <div class="stats">
+    <span>7d uptime <b>100.00%</b></span>
+    <span>avg latency <b>638 ms</b></span>
+    <span>last check <b>2026-11-14T21:59:43Z</b></span>
+    <span>checks <b>14</b></span>
+  </div>
+  <div class="bars"><i class='' style="height:10.825px"></i><i class='' style="height:12.55px"></i><i class='' style="height:13.6px"></i><i class='' style="height:13.325px"></i><i class='' style="height:14.225px"></i><i class='' style="height:12.3px"></i><i class='' style="height:12.025px"></i><i class='' style="height:14.225px"></i><i class='' style="height:16.25px"></i><i class='' style="height:12.8px"></i><i class='' style="height:11.875px"></i><i class='' style="height:13.825px"></i><i class='' style="height:34px"></i><i class='' style="height:15.3px"></i></div>
+  
+</div>
+<div class="m">
+  <div class="top">
+    <h2>expected-failure</h2>
+    <span class="pill down">DOWN</span>
+  </div>
+  <div class="url">https://example.com/does-not-exist</div>
+  <div class="stats">
+    <span>7d uptime <b>0.00%</b></span>
+    <span>avg latency <b>116 ms</b></span>
+    <span>last check <b>2026-11-14T21:59:44Z</b></span>
+    <span>checks <b>14</b></span>
+  </div>
+  <div class="bars"><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:8px"></i><i class='bad' style="height:26.75px"></i></div>
+  <div class="err">last error: expected HTTP 200, got 404</div>
+</div></div><footer>cron-ping-monitor — one file, stdlib only. History: last 400 checks per monitor.</footer></div></body></html>

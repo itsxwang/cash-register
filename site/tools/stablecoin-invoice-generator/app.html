@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stablecoin Invoice Generator</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav no-print">
+      <span class="brand">🧾 Stablecoin Invoice Generator</span>
+      <span class="spacer"></span>
+      <a href="index.html">← Tool page</a>
+      <a href="../../index.html">Store</a>
+    </nav>
+
+    <div class="appbar no-print">
+      <div class="row">
+        <button class="btn" id="btn-print">Print / Save PDF</button>
+        <button class="btn ghost" id="btn-export">Export standalone HTML</button>
+        <button class="btn ghost" id="btn-example">Load example</button>
+        <button class="btn ghost" id="btn-new">Save &amp; new invoice</button>
+        <button class="btn ghost" id="btn-clear">Clear all</button>
+      </div>
+      <p class="hint">Everything runs in your browser — data lives in localStorage, nothing is uploaded.
+         Printing produces a clean, PDF-ready A4 invoice.</p>
+    </div>
+
+    <div class="app-layout">
+      <!-- ============ FORM ============ -->
+      <div class="app-form no-print">
+        <div class="panel">
+          <h3 class="mt0">From (you)</h3>
+          <label class="field">Business / your name<input type="text" data-bind="seller.name" placeholder="Xion Dev Studio"></label>
+          <label class="field">Email<input type="text" data-bind="seller.email" placeholder="you@example.com"></label>
+          <label class="field">Website (optional)<input type="text" data-bind="seller.website" placeholder="https://…"></label>
+          <label class="field">Address lines (one per line)<textarea data-bind="seller.address" rows="2" placeholder="Street, City, Country"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Invoice</h3>
+          <div class="row">
+            <label class="field" style="flex:1">Number<input type="text" data-bind="meta.number" placeholder="INV-2026-0001"></label>
+            <label class="field" style="flex:1">Date<input type="date" data-bind="meta.date"></label>
+            <label class="field" style="flex:1">Due date<input type="date" data-bind="meta.due"></label>
+          </div>
+          <label class="field">Currency (invoice is denominated in this stablecoin)
+            <select data-bind="meta.currency">
+              <option value="USDT">USDT</option>
+              <option value="USDC">USDC</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Bill to (client)</h3>
+          <label class="field">Client name<input type="text" data-bind="client.name" placeholder="Acme DAO LLC"></label>
+          <label class="field">Client email<input type="text" data-bind="client.email" placeholder="ap@acme.xyz"></label>
+          <label class="field">Client address lines<textarea data-bind="client.address" rows="2"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Line items</h3>
+          <div id="items"></div>
+          <button class="btn ghost small" id="btn-additem">+ Add line item</button>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Tax &amp; notes</h3>
+          <label class="field">Tax % (0 to disable)<input type="number" data-bind="meta.tax" min="0" step="0.1" value="0"></label>
+          <label class="field">Notes / terms<textarea data-bind="meta.notes" rows="2" placeholder="Payment due within 7 days. Thanks for your business!"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Payment (crypto)</h3>
+          <label class="field">Accept on
+            <select data-bind="pay.chain">
+              <option value="usdt_base">USDT — Base</option>
+              <option value="usdt_arbitrum">USDT — Arbitrum</option>
+              <option value="usdt_eth">USDT — Ethereum</option>
+              <option value="usdc_base">USDC — Base</option>
+              <option value="sol">SOL — Solana</option>
+              <option value="btc">BTC — Bitcoin</option>
+            </select>
+          </label>
+          <label class="field">Receiving address
+            <input type="text" data-bind="pay.address" placeholder="0x… / bc1q… / Solana address">
+          </label>
+          <p class="hint">Memo shown on the invoice: your invoice number (auto). Addresses are saved per network in your browser.</p>
+        </div>
+      </div>
+
+      <!-- ============ PREVIEW ============ -->
+      <div class="preview-pane">
+        <div class="sheet" id="sheet"><!-- invoice rendered by app.js --></div>
+        <p class="hint center no-print">This is exactly what prints / exports.</p>
+      </div>
+    </div>
+
+    <footer class="no-print"><span class="muted">Part of the Cash Register stack · runs 100% client-side.</span></footer>
+  </div>
+
+  <script src="../../js/qr.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
