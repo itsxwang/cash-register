@@ -123,11 +123,13 @@
     return out;
   }
 
-  /* ---- payment URI builders (mirror payments/uris.py) ---------------- */
+  /* ---- payment URI builders (mirror payments/uris.py) ----------------
+   * Asset policy: native ETH (EIP-681 value), native SOL, native BTC only.
+   * ------------------------------------------------------------------ */
   function paymentUri(chain, ch, amount, rawUnits, memo) {
-    if (chain === "usdt_evm") {
-      return "ethereum:" + ch.usdt_contract + "@" + ch.chain_id +
-        "/transfer?address=" + ch.address + "&uint256=" + rawUnits;
+    if (chain === "eth") {
+      // rawUnits = exact wei; always a clean 0.00001 ETH step => float64-exact
+      return "ethereum:" + ch.address + "@" + ch.chain_id + "?value=" + rawUnits;
     }
     if (chain === "btc") {
       return "bitcoin:" + ch.address + "?amount=" + amount.toFixed(8) +
@@ -262,10 +264,12 @@
       var ch = cat.chains[c];
       var memo = orderId;
       var amtText, rawUnits, amountCrypto;
-      if (c === "usdt_evm") {
-        amountCrypto = Number(tool.price_usd).toFixed(2);
-        rawUnits = Math.round(Number(tool.price_usd) * 1e6);
-        amtText = amountCrypto + " USDT";
+      if (c === "eth" && fx.usd_eth) {
+        // integer math in clean 0.00001 ETH steps (10^13 wei) — float64-exact
+        var steps = Math.round(Number(tool.price_usd) * fx.usd_eth * 1e5); // units of 0.00001 ETH
+        amountCrypto = steps / 1e5;
+        rawUnits = steps * 1e13; // exact wei (clean steps keep it float64-exact)
+        amtText = amountCrypto.toFixed(5) + " ETH";
       } else if (c === "btc" && fx.usd_btc) {
         amountCrypto = tool.price_usd * fx.usd_btc;
         rawUnits = Math.round(amountCrypto * 1e8);
@@ -281,8 +285,11 @@
       $("#amt").textContent = amtText;
       $("#addr").textContent = ch.address;
       $("#memo").textContent = memo;
-      $("#fxhint").textContent = (c !== "usdt_evm" && fx && fx.source)
-        ? "Rate snapshot: 1 USD ≈ " + (c === "btc" ? fx.usd_btc.toFixed(8) + " BTC" : fx.usd_sol.toFixed(9) + " SOL") +
+      $("#fxhint").textContent = (fx && fx.source)
+        ? "Rate snapshot: 1 USD ≈ " +
+          (c === "btc" ? fx.usd_btc.toFixed(8) + " BTC"
+            : c === "eth" ? fx.usd_eth.toFixed(6) + " ETH"
+            : fx.usd_sol.toFixed(9) + " SOL") +
           " (" + fx.source + ", " + (fx.updated_at || "") + "). Founder verifies the received value."
         : "";
       makeQR(paymentUri(c, ch, amountCrypto || 0, rawUnits || 0, memo), $("#qrhost"));

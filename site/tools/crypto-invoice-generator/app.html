@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stablecoin Invoice Generator</title>
+  <title>Crypto Invoice Generator v1.1.0</title>
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <div class="wrap">
     <nav class="nav no-print">
-      <span class="brand">🧾 Stablecoin Invoice Generator</span>
+      <span class="brand">🧾 Crypto Invoice Generator <span class="badge">v1.1.0</span></span>
       <span class="spacer"></span>
       <a href="index.html">← Tool page</a>
       <a href="../../index.html">Store</a>
@@ -25,6 +25,7 @@
         <button class="btn ghost" id="btn-clear">Clear all</button>
       </div>
       <p class="hint">Everything runs in your browser — data lives in localStorage, nothing is uploaded.
+         Invoice in coins nobody can freeze — or in whatever your client insists on.
          Printing produces a clean, PDF-ready A4 invoice.</p>
     </div>
 
@@ -46,10 +47,12 @@
             <label class="field" style="flex:1">Date<input type="date" data-bind="meta.date"></label>
             <label class="field" style="flex:1">Due date<input type="date" data-bind="meta.due"></label>
           </div>
-          <label class="field">Currency (invoice is denominated in this stablecoin)
+          <label class="field">Invoice currency (what the amounts mean)
             <select data-bind="meta.currency">
-              <option value="USDT">USDT</option>
-              <option value="USDC">USDC</option>
+              <option value="ETH">ETH (decentralized — default)</option>
+              <option value="SOL">SOL (decentralized)</option>
+              <option value="BTC">BTC (decentralized)</option>
+              <option value="USD">USD (display only — set the exact coin amount below)</option>
             </select>
           </label>
         </div>
@@ -75,20 +78,33 @@
 
         <div class="panel">
           <h3 class="mt0">Payment (crypto)</h3>
-          <label class="field">Accept on
-            <select data-bind="pay.chain">
-              <option value="usdt_base">USDT — Base</option>
-              <option value="usdt_arbitrum">USDT — Arbitrum</option>
-              <option value="usdt_eth">USDT — Ethereum</option>
-              <option value="usdc_base">USDC — Base</option>
-              <option value="sol">SOL — Solana</option>
-              <option value="btc">BTC — Bitcoin</option>
+          <label class="field">Get paid on
+            <select data-bind="pay.network">
+              <option value="eth">ETH — native, Base (EIP-681 QR)</option>
+              <option value="sol">SOL — Solana (Solana Pay QR)</option>
+              <option value="btc">BTC — Bitcoin (BIP-21 QR)</option>
+              <option value="custom">Custom EVM token — client's choice</option>
             </select>
           </label>
           <label class="field">Receiving address
             <input type="text" data-bind="pay.address" placeholder="0x… / bc1q… / Solana address">
           </label>
-          <p class="hint">Memo shown on the invoice: your invoice number (auto). Addresses are saved per network in your browser.</p>
+          <div id="custom-token-fields" class="hidden">
+            <label class="field">Token contract address
+              <input type="text" data-bind="pay.tokenContract" placeholder="0x… (ERC-20/compatible contract)">
+            </label>
+            <div class="row">
+              <label class="field" style="flex:1">Token decimals<input type="number" data-bind="pay.tokenDecimals" min="0" max="36" value="6"></label>
+              <label class="field" style="flex:1">Chain ID<input type="number" data-bind="pay.tokenChainId" min="1" value="8453"></label>
+            </div>
+            <p class="hint">The invoice QR becomes a token-transfer URI. This billing choice is yours,
+               made in your copy of the tool — this app never routes payments anywhere.</p>
+          </div>
+          <label class="field">Exact coin/token amount (optional)
+            <input type="text" data-bind="pay.exactAmount" placeholder="e.g. 0.0123 — fills an exact URI">
+          </label>
+          <p class="hint">Memo shown on the invoice: your invoice number (auto). Leave the exact amount
+             empty and the invoice shows the total + a send-to QR; fill it and the QR carries exact units.</p>
         </div>
       </div>
 
@@ -99,7 +115,7 @@
       </div>
     </div>
 
-    <footer class="no-print"><span class="muted">Part of the Cash Register stack · runs 100% client-side.</span></footer>
+    <footer class="no-print"><span class="muted">Part of the Cash Register stack · runs 100% client-side · v1.1.0</span></footer>
   </div>
 
   <script src="../../js/qr.js"></script>

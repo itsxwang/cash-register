@@ -3,6 +3,7 @@ payments/data/
 payments/confirmations.csv
 tools_src/cron_ping/data/
 tools_src/tg_broadcast/data/
+releases/
 site/data/orders/*
 !site/data/orders/DEMO-0001.json
 !site/data/orders/DEMO-0002.json

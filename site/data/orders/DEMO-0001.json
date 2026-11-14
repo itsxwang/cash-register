@@ -1,0 +1,27 @@
+{
+  "order_id": "DEMO-0001",
+  "tool": {
+    "id": "crypto-invoice-generator",
+    "name": "Crypto Invoice Generator"
+  },
+  "chain": "eth",
+  "chain_name": "Base",
+  "address": "0xPLACEHOLDERReplaceWithYourReceivingAddress",
+  "currency": "ETH",
+  "amount": 0.01078,
+  "raw_amount": 10780000000000000,
+  "payment_uri": "ethereum:0xPLACEHOLDERReplaceWithYourReceivingAddress@8453?value=10780000000000000",
+  "memo": "DEMO-0001",
+  "price_usd": 19.0,
+  "status": "paid",
+  "created_at": "2026-11-14T22:33:15Z",
+  "paid_at": "2026-11-14T22:33:15Z",
+  "checkout_url": "/tools/crypto-invoice-generator/checkout.html?order=DEMO-0001",
+  "status_url": "/status.html?order=DEMO-0001",
+  "qr": "/data/qr/DEMO-0001.svg",
+  "download": {
+    "url": "https://github.com/YOUR_GITHUB_USERNAME/cash-register-releases/releases/download/crypto-invoice-generator-v1.1.0.zip",
+    "token": "544bdb3e5373c4c4c99c8061e54240b6"
+  },
+  "watch_note": null
+}

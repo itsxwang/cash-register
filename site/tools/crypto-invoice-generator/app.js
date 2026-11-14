@@ -1,7 +1,12 @@
-/* Stablecoin Invoice Generator — 100% client-side.
- * State lives in localStorage. The invoice sheet is rendered from a single
+/* Crypto Invoice Generator v1.1.0 — 100% client-side.
+ * State lives in localStorage. The invoice sheet renders from a single
  * render() pass; Print/Save-PDF uses the browser; "Export standalone HTML"
  * writes a self-contained file (inline CSS + inline QR SVG).
+ *
+ * Asset policy of the store this tool ships from: native BTC / ETH / SOL are
+ * first-class ("coins nobody can freeze"). An optional custom-token field
+ * lets the invoicer bill in whatever their client insists on — that choice
+ * is made locally, in the invoicer's copy, and never touches our store.
  */
 (function () {
   "use strict";
@@ -14,9 +19,9 @@
   var state = {
     seller: { name: "", email: "", website: "", address: "" },
     client: { name: "", email: "", address: "" },
-    meta: { number: nextNumber(1), date: today(), due: today(14), currency: "USDT", tax: 0, notes: "Payment due within 7 days. Thank you!" },
+    meta: { number: nextNumber(1), date: today(), due: today(14), currency: "ETH", tax: 0, notes: "Payment due within 7 days. Thank you!" },
     items: [{ desc: "", qty: 1, price: 0 }],
-    pay: { chain: "usdt_base", address: "" },
+    pay: { network: "eth", address: "", tokenContract: "", tokenDecimals: 6, tokenChainId: 8453, exactAmount: "" },
     counter: 1
   };
 
@@ -54,9 +59,31 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
-  function money(n) {
+
+  /* ---------------- money & units ----------------
+   * Integer-exact unit conversion: decimals are handled by STRING math
+   * (decStrToUnits), so 18-decimal wei never passes through a float.
+   */
+  var CURRENCY_DECIMALS = { ETH: 6, SOL: 6, BTC: 8, USD: 2 };
+  var NETWORK_DECIMALS = { eth: 18, sol: 9, btc: 8 };
+
+  function fmtAmount(n, cur) {
+    var dp = CURRENCY_DECIMALS[cur] != null ? CURRENCY_DECIMALS[cur] : 2;
     n = Number(n) || 0;
-    return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n.toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
+  }
+
+  /* "0.05" + 18 -> "50000000000000000" (exact, no float) */
+  function decStrToUnits(s, dec) {
+    var str = String(s == null ? "" : s).trim();
+    var m = /^(\d+)?(?:\.(\d*))?$/.exec(str);
+    if (!m || (!m[1] && !m[2])) return null;
+    var intPart = m[1] || "0";
+    var frac = m[2] || "";
+    if (frac.length < dec) frac += new Array(dec - frac.length + 1).join("0");
+    else frac = frac.slice(0, dec);
+    var units = (intPart + frac).replace(/^0+(?=\d)/, "");
+    return units === "" ? "0" : units;
   }
 
   /* ---------------- invoice styles (shared with export) ---------------- */
@@ -93,14 +120,12 @@
     "@page{size:A4;margin:14mm}"
   ].join("\n");
 
-  /* ---------------- payment helpers ---------------- */
-  var CHAINS = {
-    usdt_base:     { label: "USDT on Base",     token: "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2", chainId: 8453,  decimals: 6, kind: "eip681" },
-    usdt_arbitrum: { label: "USDT on Arbitrum", token: "0xFd086bC7CD5C481DCC9C85cebE478A3862bCeD3", chainId: 42161, decimals: 6, kind: "eip681" },
-    usdt_eth:      { label: "USDT on Ethereum", token: "0xdAC17F958D2ee523a2206206994597C13D831ec7", chainId: 1,    decimals: 6, kind: "eip681" },
-    usdc_base:     { label: "USDC on Base",     token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", chainId: 8453,  decimals: 6, kind: "eip681" },
-    sol:           { label: "SOL (Solana)",     kind: "solana", decimals: 9 },
-    btc:           { label: "BTC (Bitcoin)",    kind: "bitcoin", decimals: 8 }
+  /* ---------------- payment resolution ---------------- */
+  var NETWORK_LABEL = {
+    eth: "ETH (native) — Base",
+    sol: "SOL (native) — Solana",
+    btc: "BTC (native) — Bitcoin",
+    custom: "Custom EVM token"
   };
 
   function totals() {
@@ -110,19 +135,60 @@
     return { sub: sub, tax: tax, total: sub + tax };
   }
 
-  function paymentUri(ch, total) {
+  /* Resolve the exact on-chain units the payer should send (string, exact). */
+  function paymentUnits(total) {
+    var cur = state.meta.currency;
+    var net = state.pay.network;
+    var disp = fmtAmount(total, cur).replace(/,/g, "");  // display-quantized total
+    var exactManual = state.pay.exactAmount ? decStrToUnits(state.pay.exactAmount, NETWORK_DECIMALS[net] != null ? NETWORK_DECIMALS[net] : Number(state.pay.tokenDecimals) || 6) : null;
+
+    if (net === "custom") {
+      return { units: exactManual, via: "token", dec: Number(state.pay.tokenDecimals) || 6, exactSource: state.pay.exactAmount ? "manual" : null };
+    }
+    if (cur === "ETH" && net === "eth") return { units: decStrToUnits(disp, 18), via: "eth", dec: 18, exactSource: "invoice" };
+    if (cur === "SOL" && net === "sol") return { units: decStrToUnits(disp, 9), via: "sol", dec: 9, exactSource: "invoice" };
+    if (cur === "BTC" && net === "btc") return { units: decStrToUnits(disp, 8), via: "btc", dec: 8, exactSource: "invoice" };
+    return { units: exactManual, via: net, dec: NETWORK_DECIMALS[net], exactSource: state.pay.exactAmount ? "manual" : null };
+  }
+
+  function unitsToUriAmount(unitsStr, dec) {
+    /* units string -> decimal coin string with full precision */
+    if (unitsStr == null) return null;
+    var s = unitsStr.replace(/^0+(?=\d)/, "");
+    while (s.length <= dec) s = "0" + s;
+    var out = s.slice(0, s.length - dec) + "." + s.slice(s.length - dec);
+    return out.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+  }
+
+  function paymentUri(net, total) {
     var addr = state.pay.address;
     var memo = state.meta.number;
+    var plan = paymentUnits(total);
     if (!addr) return null;
-    if (ch.kind === "eip681") {
-      var units = Math.round(total * Math.pow(10, ch.decimals));
-      return "ethereum:" + ch.token + "@" + ch.chainId + "/transfer?address=" + addr + "&uint256=" + units;
+
+    if (plan.via === "eth") {
+      return plan.units ? "ethereum:" + addr + "@8453?value=" + plan.units
+                        : "ethereum:" + addr + "@8453";
     }
-    if (ch.kind === "bitcoin") {
-      return "bitcoin:" + addr + "?label=" + encodeURIComponent(memo) + "&message=" + encodeURIComponent(memo);
+    if (plan.via === "custom") {
+      var cid = Number(state.pay.tokenChainId) || 8453;
+      var contract = state.pay.tokenContract;
+      if (!contract) return addr;
+      return plan.units
+        ? "ethereum:" + contract + "@" + cid + "/transfer?address=" + addr + "&uint256=" + plan.units
+        : addr;
     }
-    if (ch.kind === "solana") {
-      return "solana:" + addr + "?memo=" + encodeURIComponent(memo);
+    if (plan.via === "btc") {
+      var btcAmt = plan.units ? unitsToUriAmount(plan.units, 8) : null;
+      return "bitcoin:" + addr +
+        (btcAmt ? "?amount=" + btcAmt + "&" : "?") +
+        "label=" + encodeURIComponent(memo) + "&message=" + encodeURIComponent(memo);
+    }
+    if (plan.via === "sol") {
+      var solAmt = plan.units ? unitsToUriAmount(plan.units, 9) : null;
+      return "solana:" + addr +
+        (solAmt ? "?amount=" + solAmt + "&" : "?") +
+        "memo=" + encodeURIComponent(memo);
     }
     return addr;
   }
@@ -139,18 +205,23 @@
 
   /* ---------------- render ---------------- */
   function render() {
-    var ch = CHAINS[state.pay.chain] || CHAINS.usdt_base;
+    var cur = state.meta.currency || "USD";
+    var net = state.pay.network;
     var t = totals();
-    var cur = esc(state.meta.currency || "USDT");
-    var uri = paymentUri(ch, t.total);
+    var plan = paymentUnits(t.total);
+    var uri = paymentUri(net, t.total);
     var qr = qrSvg(uri);
 
-    var rows = state.items.map(function (it, i) {
+    var amountLine = plan.units
+      ? "<b>" + esc(unitsToUriAmount(plan.units, plan.dec)) + "</b> (" + esc(plan.exactSource === "manual" ? "set manually" : "exact, from invoice total") + ")"
+      : "<b>" + esc(fmtAmount(t.total, cur)) + " " + esc(cur) + "</b> — settle at the network rate";
+
+    var rows = state.items.map(function (it) {
       var amt = (Number(it.qty) || 0) * (Number(it.price) || 0);
       return "<tr><td>" + esc(it.desc || "—") + "</td>" +
         "<td class='num'>" + esc(it.qty) + "</td>" +
-        "<td class='num'>" + money(it.price) + "</td>" +
-        "<td class='num'>" + money(amt) + "</td></tr>";
+        "<td class='num'>" + esc(fmtAmount(it.price, cur)) + "</td>" +
+        "<td class='num'>" + esc(fmtAmount(amt, cur)) + "</td></tr>";
     }).join("");
 
     function lines(txt) {
@@ -166,13 +237,13 @@
         "</div>" +
         "<div style='text-align:right'><div class='inv-title'>INVOICE</div>" +
           "<div style='font-size:13px;color:#475569'><b>" + esc(state.meta.number) + "</b></div>" +
-          "<div style='font-size:12px;color:#64748b'>denominated in " + cur + "</div>" +
+          "<div style='font-size:12px;color:#64748b'>amounts in " + esc(cur) + "</div>" +
         "</div>" +
       "</div>" +
       "<div class='inv-meta'>" +
         "<div><span>Invoice date</span><b>" + esc(state.meta.date) + "</b></div>" +
         "<div><span>Due date</span><b>" + esc(state.meta.due) + "</b></div>" +
-        "<div><span>Amount due</span><b>" + money(t.total) + " " + cur + "</b></div>" +
+        "<div><span>Amount due</span><b>" + esc(fmtAmount(t.total, cur)) + " " + esc(cur) + "</b></div>" +
       "</div>" +
       "<div class='inv-parties'>" +
         "<div><div class='lbl'>From</div><b>" + esc(state.seller.name) + "</b></div>" +
@@ -182,20 +253,20 @@
         "</div>" +
       "</div>" +
       "<table class='inv'><thead><tr><th>Description</th><th class='num'>Qty</th>" +
-        "<th class='num'>Unit (" + cur + ")</th><th class='num'>Amount (" + cur + ")</th></tr></thead>" +
+        "<th class='num'>Unit (" + esc(cur) + ")</th><th class='num'>Amount (" + esc(cur) + ")</th></tr></thead>" +
         "<tbody>" + rows + "</tbody>" +
         "<tfoot><tr><td colspan='4'>" +
           "<div class='totals'>" +
-            "<div class='tr'><span>Subtotal</span><span>" + money(t.sub) + "</span></div>" +
-            "<div class='tr'><span>Tax (" + (Number(state.meta.tax) || 0) + "%)</span><span>" + money(t.tax) + "</span></div>" +
-            "<div class='tr grand'><span>Total due</span><span>" + money(t.total) + " " + cur + "</span></div>" +
+            "<div class='tr'><span>Subtotal</span><span>" + esc(fmtAmount(t.sub, cur)) + "</span></div>" +
+            "<div class='tr'><span>Tax (" + (Number(state.meta.tax) || 0) + "%)</span><span>" + esc(fmtAmount(t.tax, cur)) + "</span></div>" +
+            "<div class='tr grand'><span>Total due</span><span>" + esc(fmtAmount(t.total, cur)) + " " + esc(cur) + "</span></div>" +
           "</div>" +
         "</td></tr></tfoot></table>" +
       "<div class='pay'>" +
         (qr ? "<div class='qrbox'>" + qr + "</div>" : "") +
         "<div><h4>Payment details</h4><div class='kv'>" +
-          "Network: <b>" + esc(ch.label) + "</b><br>" +
-          "Amount: <b>" + money(t.total) + " " + cur + "</b><br>" +
+          "Network: <b>" + esc(NETWORK_LABEL[net] || net) + "</b><br>" +
+          "Amount: " + amountLine + "<br>" +
           "Memo: <b>" + esc(state.meta.number) + "</b><br>" +
           "<code>" + esc(state.pay.address || "add your address in the form") + "</code>" +
         "</div></div>" +
@@ -203,6 +274,10 @@
       "<div class='inv-notes'>" + esc(state.meta.notes || "") + "</div>" +
       "<div class='inv-foot'><span>" + esc(state.seller.name || "") + "</span>" +
         "<span>Invoice " + esc(state.meta.number) + "</span></div>";
+
+    // custom-token fields visibility
+    var ct = $("#custom-token-fields");
+    if (ct) ct.classList.toggle("hidden", net !== "custom");
   }
 
   /* ---------------- form binding ---------------- */
@@ -216,7 +291,6 @@
       var ev = (el.tagName === "SELECT" || el.type === "date" || el.type === "number") ? "change" : "input";
       el.addEventListener(ev, function () {
         val[field] = el.value;
-        if (field === "chain" || field === "address") save();
         save();
         render();
       });
@@ -261,13 +335,14 @@
   $("#btn-example").addEventListener("click", function () {
     state.seller = { name: "Xion Dev Studio", email: "founder@xiondev.xyz", website: "https://xiondev.xyz", address: "Remote — worldwide" };
     state.client = { name: "Acme DAO LLC", email: "ap@acme.xyz", address: "789 Market St\nWilmington, DE" };
+    state.meta.currency = "ETH";
     state.items = [
-      { desc: "Smart contract audit sprint", qty: 1, price: 2400 },
-      { desc: "Payment-bot integration (hours)", qty: 12, price: 95 },
-      { desc: "Hosting + infra (Nov)", qty: 1, price: 120 }
+      { desc: "Smart contract audit sprint", qty: 1, price: 0.5 },
+      { desc: "Payment-bot integration (hours)", qty: 12, price: 0.0025 },
+      { desc: "Hosting + infra (Nov)", qty: 1, price: 0.04 }
     ];
     state.meta.tax = 0;
-    state.meta.notes = "Payment due within 7 days. USDT on Base preferred. Thank you!";
+    state.meta.notes = "Payment due within 7 days. Native ETH on Base preferred. Thank you!";
     save(); bindRefresh(); render();
   });
   $("#btn-new").addEventListener("click", function () {
@@ -310,7 +385,6 @@
   var style = document.createElement("style");
   style.textContent = INVOICE_CSS;
   document.head.appendChild(style);
-  // auto-fill invoice number & dates on very first run
   if (!localStorage.getItem(KEY)) {
     state.meta.number = nextNumber(1);
   }
