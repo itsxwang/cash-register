@@ -93,15 +93,17 @@ Pick **one**:
 
 - [ ] **GitHub visibility**: repo About link + topics (`crypto`, `invoice`,
       `telegram-bot`, `side-project`); pin it on your profile.
-- [ ] **X / Twitter**: build-in-public thread — screenshot the invoice generator
-      output and the status page; link the store; pin the tweet.
+- [ ] **Reddit + Indie Hackers**: build-in-public post — screenshot the invoice
+      generator output and the status page; link the store.
+      (X/Twitter unavailable: founder's account banned — do not use.)
 - [ ] **Reddit**: r/SideProject post ("I built a crypto-only storefront with no
       backend — here's the whole stack"); follow each sub's self-promo rules,
       answer every comment.
 - [ ] **Indie Hackers**: milestone post on the product page you create — include
       real revenue numbers as they come (transparency posts travel).
 - [ ] **Crypto-native watering holes**: Farcaster `/dev` + `/crypto` channels,
-      Discord servers of the crypto job communities, X/Twitter threads —
+      Discord servers of the crypto job communities, dev-community threads
+      (Reddit, Indie Hackers, Farcaster) —
       the invoice generator is the wedge: reply to "how do I invoice my crypto
       clients?" threads with a genuine demo link, not an ad.
       (Do not use Telegram for promotion: the founder's Telegram account is
