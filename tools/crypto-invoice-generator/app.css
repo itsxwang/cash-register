@@ -1,0 +1,27 @@
+/* Invoice Generator — app chrome + print rules. Invoice styles themselves
+   live in app.js (INVOICE_CSS) so the exported standalone HTML is identical. */
+.appbar { margin: 22px 0 8px; }
+.app-layout { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .app-layout { grid-template-columns: 1fr; } }
+
+.app-form .panel { margin-bottom: 16px; }
+.app-form h3 { font-size: 1rem; }
+
+#items .item-row { display: grid; grid-template-columns: 1fr 70px 100px 32px; gap: 8px; margin-bottom: 8px; align-items: center; }
+#items .item-row input { padding: 7px 9px; }
+#items .item-row .remove {
+  border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c;
+  border-radius: 8px; cursor: pointer; height: 34px; font-size: 1rem;
+}
+
+/* print: only the sheet, A4 */
+@media print {
+  body { background: #fff; }
+  .nav, .appbar, .app-form, footer, .no-print, .wrap > nav { display: none !important; }
+  .wrap { max-width: none; padding: 0; }
+  .app-layout { display: block; }
+  .preview-pane { width: 100%; }
+  .sheet { box-shadow: none !important; border: none !important; margin: 0 !important; }
+  .hint { display: none; }
+}
+@page { size: A4; margin: 12mm; }

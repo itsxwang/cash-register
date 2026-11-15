@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cron Ping Monitor — Xion's Micro Tools</title>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <span class="brand">⚙️ <a href="../../index.html" style="color:inherit">Xion's Micro Tools</a></span>
+      <span class="spacer"></span>
+      <a href="../../index.html#tools">Tools</a>
+      <a href="../../status.html">Order status</a>
+    </nav>
+
+    <div class="hero">
+      <h1>Cron Ping Monitor</h1>
+      <p>A tiny uptime pinger that fits any crontab. Checks your URLs, keeps history, and renders
+         a clean static status page you can host for $0. One Python file, zero dependencies.</p>
+      <div class="row">
+        <a class="btn" href="checkout.html">Get it — <span data-price-for="cron-ping-monitor">$9</span></a>
+        <a class="btn ghost" href="status-demo.html">See a sample status page →</a>
+      </div>
+      <div class="banner" data-demo-banner></div>
+    </div>
+
+    <section class="section">
+      <h2>What it does</h2>
+      <div class="grid">
+        <div class="card"><h3>⏱️ Cron-native</h3><p>One run = one sweep: ping every monitor, append to
+          <code>history.jsonl</code>, regenerate the status page. Set it and forget it.</p></div>
+        <div class="card"><h3>📉 Static status page</h3><p>Generates <code>status.html</code> — current state,
+          latency, 7-day uptime bars. Drop it on any static host (Pages, Cloudflare, S3).</p></div>
+        <div class="card"><h3>🔔 Telegram alerts</h3><p>Optional: on up→down transitions it pings your Telegram
+          via the raw Bot API. No service, no key, just your own bot token.</p></div>
+      </div>
+      <pre style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px;overflow:auto"><code>* * * * * cd ~/monitors &amp;&amp; python3 cron_ping.py --notify-telegram</code></pre>
+    </section>
+
+    <section class="section">
+      <h2>What's in the download</h2>
+      <ul>
+        <li><code>cron_ping.py</code> — the monitor (stdlib only)</li>
+        <li><code>monitors.example.json</code> + setup README with cron snippets</li>
+        <li>Free minor updates for life</li>
+      </ul>
+      <p><strong>Price: <span data-price-for="cron-ping-monitor">$9</span></strong> one-off · ETH (Base), SOL or BTC.</p>
+      <a class="btn" href="checkout.html">Buy with crypto →</a>
+    </section>
+
+    <footer><span class="muted">Built with the Cash Register stack.</span></footer>
+  </div>
+  <script src="../../js/qr.js"></script>
+  <script src="../../js/store.js"></script>
+</body>
+</html>

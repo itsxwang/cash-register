@@ -1,0 +1,74 @@
+{
+  "store": {
+    "name": "Xion's Micro Tools",
+    "tagline": "Tiny paid tools for indie devs and crypto freelancers",
+    "url": "https://itsxwang.github.io/cash-register/",
+    "contact_email": "you@example.com",
+    "contact_telegram": "@yourhandle"
+  },
+  "chains": {
+    "eth": {
+      "label": "ETH (Base)",
+      "address": "0x45DF2a94A66B948CFd167EE60d3cA682ba61d575",
+      "chain_id": 8453,
+      "chain_name": "Base",
+      "decimals": 18,
+      "asset_policy": "native ETH only \u2014 no tokens"
+    },
+    "sol": {
+      "label": "SOL",
+      "address": "9kAAxiK2jc2DgZojDhkkQ7dQhTVbyyWQThMXLecaLtGt",
+      "decimals": 9
+    },
+    "btc": {
+      "label": "BTC",
+      "address": "bc1qrqsg3jfedsljtnuhp5vw4cpgmxj6myvfd7ryhp",
+      "decimals": 8
+    }
+  },
+  "fx": null,
+  "tools": {
+    "crypto-invoice-generator": {
+      "name": "Crypto Invoice Generator",
+      "blurb": "Professional printable invoices with a BTC/ETH/SOL address + QR for the payer. 100% client-side.",
+      "price_usd": 19,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/crypto-invoice-generator/",
+      "checkout": "/tools/crypto-invoice-generator/checkout.html"
+    },
+    "cron-ping-monitor": {
+      "name": "Cron Ping Monitor",
+      "blurb": "A tiny cron-friendly uptime pinger with a static status page you can host anywhere for $0.",
+      "price_usd": 9,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/cron-ping-monitor/",
+      "checkout": "/tools/cron-ping-monitor/checkout.html"
+    },
+    "telegram-broadcaster": {
+      "name": "Telegram Broadcast & Scheduler Bot",
+      "blurb": "Broadcast to your Telegram list and schedule posts with the raw Bot API \u2014 no framework, one file.",
+      "price_usd": 15,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/telegram-broadcaster/",
+      "checkout": "/tools/telegram-broadcaster/checkout.html"
+    }
+  },
+  "bundle": {
+    "price_usd": 49,
+    "note": "All three tools, lifetime updates, one payment."
+  },
+  "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
+  "generated_at": "2026-11-14T22:38:03Z"
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crypto Invoice Generator v1.1.0</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav no-print">
+      <span class="brand">🧾 Crypto Invoice Generator <span class="badge">v1.1.0</span></span>
+      <span class="spacer"></span>
+      <a href="index.html">← Tool page</a>
+      <a href="../../index.html">Store</a>
+    </nav>
+
+    <div class="appbar no-print">
+      <div class="row">
+        <button class="btn" id="btn-print">Print / Save PDF</button>
+        <button class="btn ghost" id="btn-export">Export standalone HTML</button>
+        <button class="btn ghost" id="btn-example">Load example</button>
+        <button class="btn ghost" id="btn-new">Save &amp; new invoice</button>
+        <button class="btn ghost" id="btn-clear">Clear all</button>
+      </div>
+      <p class="hint">Everything runs in your browser — data lives in localStorage, nothing is uploaded.
+         Invoice in coins nobody can freeze — or in whatever your client insists on.
+         Printing produces a clean, PDF-ready A4 invoice.</p>
+    </div>
+
+    <div class="app-layout">
+      <!-- ============ FORM ============ -->
+      <div class="app-form no-print">
+        <div class="panel">
+          <h3 class="mt0">From (you)</h3>
+          <label class="field">Business / your name<input type="text" data-bind="seller.name" placeholder="Xion Dev Studio"></label>
+          <label class="field">Email<input type="text" data-bind="seller.email" placeholder="you@example.com"></label>
+          <label class="field">Website (optional)<input type="text" data-bind="seller.website" placeholder="https://…"></label>
+          <label class="field">Address lines (one per line)<textarea data-bind="seller.address" rows="2" placeholder="Street, City, Country"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Invoice</h3>
+          <div class="row">
+            <label class="field" style="flex:1">Number<input type="text" data-bind="meta.number" placeholder="INV-2026-0001"></label>
+            <label class="field" style="flex:1">Date<input type="date" data-bind="meta.date"></label>
+            <label class="field" style="flex:1">Due date<input type="date" data-bind="meta.due"></label>
+          </div>
+          <label class="field">Invoice currency (what the amounts mean)
+            <select data-bind="meta.currency">
+              <option value="ETH">ETH (decentralized — default)</option>
+              <option value="SOL">SOL (decentralized)</option>
+              <option value="BTC">BTC (decentralized)</option>
+              <option value="USD">USD (display only — set the exact coin amount below)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Bill to (client)</h3>
+          <label class="field">Client name<input type="text" data-bind="client.name" placeholder="Acme DAO LLC"></label>
+          <label class="field">Client email<input type="text" data-bind="client.email" placeholder="ap@acme.xyz"></label>
+          <label class="field">Client address lines<textarea data-bind="client.address" rows="2"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Line items</h3>
+          <div id="items"></div>
+          <button class="btn ghost small" id="btn-additem">+ Add line item</button>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Tax &amp; notes</h3>
+          <label class="field">Tax % (0 to disable)<input type="number" data-bind="meta.tax" min="0" step="0.1" value="0"></label>
+          <label class="field">Notes / terms<textarea data-bind="meta.notes" rows="2" placeholder="Payment due within 7 days. Thanks for your business!"></textarea></label>
+        </div>
+
+        <div class="panel">
+          <h3 class="mt0">Payment (crypto)</h3>
+          <label class="field">Get paid on
+            <select data-bind="pay.network">
+              <option value="eth">ETH — native, Base (EIP-681 QR)</option>
+              <option value="sol">SOL — Solana (Solana Pay QR)</option>
+              <option value="btc">BTC — Bitcoin (BIP-21 QR)</option>
+              <option value="custom">Custom EVM token — client's choice</option>
+            </select>
+          </label>
+          <label class="field">Receiving address
+            <input type="text" data-bind="pay.address" placeholder="0x… / bc1q… / Solana address">
+          </label>
+          <div id="custom-token-fields" class="hidden">
+            <label class="field">Token contract address
+              <input type="text" data-bind="pay.tokenContract" placeholder="0x… (ERC-20/compatible contract)">
+            </label>
+            <div class="row">
+              <label class="field" style="flex:1">Token decimals<input type="number" data-bind="pay.tokenDecimals" min="0" max="36" value="6"></label>
+              <label class="field" style="flex:1">Chain ID<input type="number" data-bind="pay.tokenChainId" min="1" value="8453"></label>
+            </div>
+            <p class="hint">The invoice QR becomes a token-transfer URI. This billing choice is yours,
+               made in your copy of the tool — this app never routes payments anywhere.</p>
+          </div>
+          <label class="field">Exact coin/token amount (optional)
+            <input type="text" data-bind="pay.exactAmount" placeholder="e.g. 0.0123 — fills an exact URI">
+          </label>
+          <p class="hint">Memo shown on the invoice: your invoice number (auto). Leave the exact amount
+             empty and the invoice shows the total + a send-to QR; fill it and the QR carries exact units.</p>
+        </div>
+      </div>
+
+      <!-- ============ PREVIEW ============ -->
+      <div class="preview-pane">
+        <div class="sheet" id="sheet"><!-- invoice rendered by app.js --></div>
+        <p class="hint center no-print">This is exactly what prints / exports.</p>
+      </div>
+    </div>
+
+    <footer class="no-print"><span class="muted">Part of the Cash Register stack · runs 100% client-side · v1.1.0</span></footer>
+  </div>
+
+  <script src="../../js/qr.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

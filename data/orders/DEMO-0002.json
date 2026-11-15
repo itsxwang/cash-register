@@ -1,0 +1,24 @@
+{
+  "order_id": "DEMO-0002",
+  "tool": {
+    "id": "cron-ping-monitor",
+    "name": "Cron Ping Monitor"
+  },
+  "chain": "sol",
+  "chain_name": "Solana",
+  "address": "9kAAxiK2jc2DgZojDhkkQ7dQhTVbyyWQThMXLecaLtGt",
+  "currency": "SOL",
+  "amount": 0.058500003,
+  "raw_amount": 58500003,
+  "payment_uri": "solana:9kAAxiK2jc2DgZojDhkkQ7dQhTVbyyWQThMXLecaLtGt?amount=0.058500003&memo=DEMO-0002",
+  "memo": "DEMO-0002",
+  "price_usd": 9.0,
+  "status": "awaiting_payment",
+  "created_at": "2026-11-14T22:36:40Z",
+  "paid_at": null,
+  "checkout_url": "/tools/cron-ping-monitor/checkout.html?order=DEMO-0002",
+  "status_url": "/status.html?order=DEMO-0002",
+  "qr": "/data/qr/DEMO-0002.svg",
+  "download": null,
+  "watch_note": null
+}
