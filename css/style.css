@@ -9,10 +9,64 @@
   --accent-ink: #ffffff;
   --accent-soft: #eef2ff;
   --good: #059669;
+  --good-soft: #ecfdf5;
+  --banner-ink: #92400e;
   --warn-bg: #fffbeb;
   --warn-line: #f59e0b;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
+
+/* ---- dark mode: pure CSS variables, no frameworks ------------------------
+ * Default = OS preference (set pre-paint by the head snippet); the nav toggle
+ * persists an explicit choice in localStorage["cr.theme"].
+ * Both palettes meet WCAG AA (body ink >= 7:1, muted >= 4.5:1 on their bg).
+ */
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --ink: #e2e8f0;
+  --muted: #9fb0d0;
+  --line: #243350;
+  --accent: #8ab4ff;
+  --accent-ink: #0b1220;
+  --accent-soft: #16233f;
+  --good: #34d399;
+  --good-soft: #0f2e23;
+  --banner-ink: #fbbf24;
+  --warn-bg: #2a2410;
+  --warn-line: #d97706;
+}
+
+/* QR boxes and the printable invoice sheet must stay light in both modes:
+ * wallet scanners expect dark modules on a white background. */
+[data-theme="dark"] .qrbox .qr,
+[data-theme="dark"] .qrbox img,
+[data-theme="dark"] .qrbox svg,
+[data-theme="dark"] .sheet {
+  background: #fff;
+  border-color: #e2e8f0;
+}
+[data-theme="dark"] .sheet { color: #0f172a; }
+
+/* theme toggle button */
+.theme-toggle {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transition: border-color 0.15s, background 0.15s;
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -52,7 +106,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40
   margin-top: 18px; padding: 10px 14px; border: 1px solid var(--warn-line);
   background: var(--warn-bg); border-radius: 10px; font-size: 0.9rem;
 }
-.banner strong { color: #92400e; }
+.banner strong { color: var(--banner-ink, #92400e); }
 
 /* tool cards */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; margin: 26px 0; }
@@ -115,8 +169,8 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40
   display: inline-block; padding: 3px 10px; border-radius: 999px;
   font-size: 0.8rem; font-weight: 600; background: var(--accent-soft); color: var(--accent);
 }
-.badge.paid, .badge.delivered { background: #ecfdf5; color: var(--good); }
-.badge.awaiting_payment { background: var(--warn-bg); color: #92400e; }
+.badge.paid, .badge.delivered { background: var(--good-soft, #ecfdf5); color: var(--good); }
+.badge.awaiting_payment { background: var(--warn-bg); color: var(--banner-ink, #92400e); }
 
 /* forms */
 input[type="text"], input[type="email"], input[type="number"], textarea, select {
