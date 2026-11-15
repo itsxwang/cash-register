@@ -122,5 +122,25 @@
 
   <script src="../../js/qr.js"></script>
   <script src="app.js"></script>
+  <script>
+    /* theme toggle for the app page (app.js is self-contained; store.js not loaded here) */
+    (function () {
+      var btn = document.getElementById("theme-toggle");
+      if (!btn) return;
+      function paint() {
+        var dark = document.documentElement.getAttribute("data-theme") === "dark";
+        btn.textContent = dark ? "☀️" : "🌙";
+        btn.setAttribute("aria-pressed", dark ? "true" : "false");
+        btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      }
+      paint();
+      btn.addEventListener("click", function () {
+        var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("cr.theme", next); } catch (e) {}
+        paint();
+      });
+    })();
+  </script>
 </body>
 </html>
