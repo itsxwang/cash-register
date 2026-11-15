@@ -46,7 +46,7 @@ def main() -> None:
 
     # 1. config parsing + asset policy ----------------------------------------
     check("config parses", isinstance(cfg.get("addresses"), dict))
-    check("3 tools in config", len(cfg["tools"]) == 3)
+    check("4 products in config (3 tools + citation digest)", len(cfg["tools"]) == 4)
 
     banned = ("usdt", "usdc", "tether")
 
@@ -114,7 +114,7 @@ def main() -> None:
     # 6. catalog sync ------------------------------------------------------------
     cat_path = cr.write_catalog(cfg=cfg, site_dir=TMP / "site")
     catalog = json.loads(cat_path.read_text())
-    check("catalog has 3 tools", len(catalog["tools"]) == 3)
+    check("catalog has 4 products", len(catalog["tools"]) == 4)
     check("catalog chains are eth/sol/btc", set(catalog["chains"]) == {"eth", "sol", "btc"})
     check("catalog ETH label", catalog["chains"]["eth"]["label"] == "ETH (Base)")
     check("catalog eth decimals 18", catalog["chains"]["eth"]["decimals"] == 18)
@@ -237,6 +237,52 @@ def main() -> None:
           '[data-theme="dark"] .qrbox' in css and '[data-theme="dark"] .sheet' in css)
     check("theme JS present in store.js",
           "initTheme" in store_js and 'localStorage.setItem("cr.theme"' in store_js)
+
+    # 17. professionalism polish: 4th product, upsell, guide, OG, robots/sitemap, changelog
+    cit = json.loads(cat_path.read_text())["tools"]["citation-monitor-weekly-digest"]
+    check("citation digest in catalog at $19 with delivery note",
+          cit["price_usd"] == 19
+          and "every Monday" in cit.get("delivery_note", "")
+          and "within 7 days" in cit.get("delivery_note", ""))
+    check("citation digest landing + checkout pages exist",
+          (site / "tools/citation-monitor-weekly-digest/index.html").is_file()
+          and (site / "tools/citation-monitor-weekly-digest/checkout.html").is_file())
+    check("citation digest release zip built",
+          (REPO / "releases/citation-monitor-weekly-digest-v1.0.0.zip").is_file())
+    check("bundle upsell on tool checkouts (JS, not on bundle itself)",
+          "Get all 3 tools for $49" in store_js
+          and 'tool.id !== "bundle"' in store_js)
+    check("crypto-guide page exists + linked from every checkout",
+          (site / "crypto-guide.html").is_file()
+          and 'abs("/crypto-guide.html")' in store_js)
+    check("guide carries 4 steps + refund policy",
+          "Pick a chain" in (site / "crypto-guide.html").read_text(encoding="utf-8")
+          and "7-day refund" in (site / "crypto-guide.html").read_text(encoding="utf-8"))
+    check("changelog page exists + in navs",
+          (site / "changelog.html").is_file()
+          and all("changelog.html" in p.read_text(encoding="utf-8")
+                  for p in pages))
+    check("robots.txt + sitemap.xml at root",
+          (site / "robots.txt").is_file() and (site / "sitemap.xml").is_file())
+    sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
+    check("sitemap lists the 4 product pages",
+          all(f"tools/{t}/" in sitemap for t in
+              ("crypto-invoice-generator", "cron-ping-monitor",
+               "telegram-broadcaster", "citation-monitor-weekly-digest")))
+    no_og = [str(p.relative_to(site)) for p in pages
+             if "og:title" not in p.read_text(encoding="utf-8")]
+    check("og/twitter meta on all pages", not no_og, str(no_og))
+    og_dir = site / "og"
+    og_imgs = sorted(og_dir.glob("*.png")) if og_dir.is_dir() else []
+    try:
+        from PIL import Image  # Pillow is optional for the test, required for regen
+        sizes_ok = all(Image.open(p).size == (1200, 630) for p in og_imgs)
+    except ImportError:
+        sizes_ok = True
+    check("og images generated (1200x630, 6 variants)",
+          len(og_imgs) >= 6 and sizes_ok, f"{len(og_imgs)} images")
+    check("analytics beacon markers present for founder",
+          all("ANALYTICS-BEACON" in p.read_text(encoding="utf-8") for p in pages))
 
     db_file = db.db_path()
     check("db file exists", db_file.exists(), str(db_file))

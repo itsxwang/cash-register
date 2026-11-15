@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /data/orders/
+Disallow: /data/qr/
+
+Sitemap: https://itsxwang.github.io/cash-register/sitemap.xml

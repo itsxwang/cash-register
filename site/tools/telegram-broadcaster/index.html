@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9A%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
   <title>Telegram Broadcast &amp; Scheduler Bot — Xion's Micro Tools</title>
+  <meta name="description" content="Broadcast to your Telegram list and schedule posts with the raw Bot API — no framework, one file.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xion's Micro Tools">
+  <meta property="og:title" content="Telegram Broadcast &amp; Scheduler Bot — Xion's Micro Tools">
+  <meta property="og:description" content="Broadcast to your Telegram list and schedule posts with the raw Bot API — no framework, one file.">
+  <meta property="og:url" content="https://itsxwang.github.io/cash-register/tools/telegram-broadcaster/">
+  <meta property="og:image" content="https://itsxwang.github.io/cash-register/og/telegram-broadcaster.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Telegram Broadcast &amp; Scheduler Bot">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Telegram Broadcast &amp; Scheduler Bot — Xion's Micro Tools">
+  <meta name="twitter:description" content="Broadcast to your Telegram list and schedule posts with the raw Bot API — no framework, one file.">
+  <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/telegram-broadcaster.png">
+  
   <link rel="stylesheet" href="../../css/style.css">
   <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 </head>
@@ -16,6 +31,7 @@
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       <a href="../../index.html#tools">Tools</a>
       <a href="../../status.html">Order status</a>
+      <a href="../../changelog.html">Changelog</a>
     </nav>
 
     <div class="hero">
@@ -56,9 +72,42 @@ python3 broadcast_bot.py schedule add --at "2026-11-18 09:00" --text "Weekly dig
       <a class="btn" href="checkout.html">Buy with crypto →</a>
     </section>
 
+    <section class="section">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Can I get a refund?</summary>
+        <p>Yes — 7-day refund, no questions: email
+           <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> with your order id and
+           you get it back to your sending address.</p>
+      </details>
+      <details>
+        <summary>Do I get updates?</summary>
+        <p>Free minor updates for life. New versions are listed on the public
+           <a href="../../changelog.html">changelog</a>; re-download with your order id any time.</p>
+      </details>
+      <details>
+        <summary>How fast is support?</summary>
+        <p>Email-only (<a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a>), usually
+           same-day. No ticket portal, no chatbot.</p>
+      </details>
+      <details>
+        <summary>Which wallet do I need?</summary>
+        <p>Any wallet holding BTC, ETH (on Base) or SOL. Checkout shows an exact amount + a QR —
+           scan, send, done. New to crypto? Read the
+           <a href="../../crypto-guide.html">4-step payment guide</a>.</p>
+      </details>
+      <details>
+        <summary>Is my payment safe?</summary>
+        <p>You send directly to the founder's wallet from your own — no account, no card, no
+           middleman. The unique amount + memo match your order automatically, and the
+           <a href="../../crypto-guide.html">guide</a> shows exactly what happens after you send.</p>
+      </details>
+    </section>
+
     <footer><span class="muted">Built with the Cash Register stack.</span></footer>
   </div>
   <script src="../../js/qr.js"></script>
   <script src="../../js/store.js"></script>
+  <!-- ANALYTICS-BEACON (optional Cloudflare Web Analytics — replace this comment with the JS beacon) -->
 </body>
 </html>

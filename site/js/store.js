@@ -224,6 +224,9 @@
             "<div class='kv'><span class='label'>Memo</span><code id='memo'>" + esc(o.memo) + "</code>" +
             "<button class='btn ghost small copy-btn' data-copy='memo'>copy</button></div>" +
             "<div class='kv'><span class='label'>Network</span><span>" + esc(o.chain_name) + "</span></div>" +
+            (tool.delivery_note
+              ? "<div class='kv'><span class='label'>Delivery</span>" + esc(tool.delivery_note) + "</div>"
+              : "") +
             "<p class='hint'>Pay with any wallet that supports " + esc(o.chain_name) + ". The memo/unique amount is how the payment is matched to this order.</p>" +
             "</div><div class='qrbox'><div class='qr' id='qrhost'></div>" +
             "<p class='hint'>scan with your wallet</p></div></div>" +
@@ -253,7 +256,11 @@
           esc((cat.chains[c] || {}).label || c) + "</label>";
       }).join("") + "</div>" +
       "<div class='paybox'><div>" +
-      "<div class='kv'><span class='label'>Price</span><code id='usd'>" + money(tool.price_usd) + "</code></div>" +
+      "<div class='kv'><span class='label'>Price</span><code id='usd'>" + money(tool.price_usd) +
+        (tool.id === "citation-monitor-weekly-digest" ? " / month" : "") + "</code></div>" +
+      (tool.delivery_note
+        ? "<div class='kv'><span class='label'>Delivery</span>" + esc(tool.delivery_note) + "</div>"
+        : "") +
       "<div class='kv'><span class='label'>Send exactly</span><code id='amt'></code>" +
       "<button class='btn ghost small copy-btn' data-copy='amt'>copy</button></div>" +
       "<div class='kv'><span class='label'>To</span><code id='addr'></code>" +
@@ -264,6 +271,12 @@
       "<p class='hint'>This store confirms payments manually (founder checks the wallet, assisted by on-chain watchers). " +
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
       "</div><div class='qrbox'><div class='qr' id='qrhost'></div><p class='hint'>scan with your wallet</p></div></div>" +
+      (tool.id !== "bundle"
+        ? "<div class='upsell'>💎 <strong>Get all 3 tools for $49</strong> — one payment, lifetime updates. " +
+          "<a href='" + abs("/checkout.html?item=bundle") + "'>See the bundle →</a></div>"
+        : "") +
+      "<p class='hint'>New to paying with crypto? Read the <a href='" + abs("/crypto-guide.html") + "'>4-step payment guide</a> (1 min). " +
+      "Refunds within 7 days — email xion.dev7@gmail.com.</p>" +
       ivePaidBox(null) +
       "<p class='hint'>Order id: <code id='oid'>" + esc(orderId) + "</code> <button class='btn ghost small' id='reid'>new id</button> " +
       "— write it down, you'll use it on the <a href='" + abs("/status.html") + "'>status page</a>.</p>";
