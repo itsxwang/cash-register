@@ -56,8 +56,8 @@
         host.innerHTML = "<strong>Demo mode.</strong> Wallet addresses in this store are placeholders. " +
           "Replace them in <code>config.yaml</code> (see LAUNCH_CHECKLIST.md) before selling.";
       } else {
-        host.innerHTML = "<strong>Live store.</strong> Payments go to the addresses in " +
-          "<code>site/data/catalog.json</code>. Always send the exact amount shown.";
+        host.innerHTML = "<strong>Live store.</strong> You pay the wallet shown at checkout — " +
+          "always the exact amount, and your order id is your receipt.";
       }
     });
   }
