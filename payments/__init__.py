@@ -303,13 +303,30 @@ def rotate_download_token(order_id: str, *, cfg: dict | None = None) -> dict:
 # ---------------------------------------------------------------------------
 # Static storefront artifacts (JSON + QR) — no backend needed on the site
 # ---------------------------------------------------------------------------
+def _release_url(cfg: dict, release_file: str | None) -> str | None:
+    """GitHub Releases asset URL.
+
+    Convention (matches the founder's live releases): the release *tag* equals
+    the asset file name minus extension, so the asset lives at
+    <releases_base>/<tag>/<asset>. e.g.
+      crypto-invoice-generator-v1.1.0.zip ->
+      .../releases/download/crypto-invoice-generator-v1.1.0/crypto-invoice-generator-v1.1.0.zip
+    """
+    if not release_file:
+        return None
+    base = str(get_path(cfg, "delivery.releases_base", "")).rstrip("/")
+    if not base:
+        return None
+    tag = release_file[:-4] if release_file.endswith(".zip") else release_file
+    return f"{base}/{tag}/{release_file}"
+
+
 def public_order(order: dict, cfg: dict | None = None) -> dict:
     cfg = cfg or load_config()
     tool = _tool_cfg(cfg, order["tool_id"])
     paid = order["status"] in ("paid", "delivered")
     release_file = tool.get("release_file") or ""
-    base = str(get_path(cfg, "delivery.releases_base", "")).rstrip("/")
-    download_url = f"{base}/{release_file}" if (paid and release_file) else None
+    download_url = _release_url(cfg, release_file) if (paid and release_file) else None
     oid = order["order_id"]
     checkout_url = str(tool.get("checkout") or "")
     # bundle checkout already carries a query (?item=bundle) — join with &

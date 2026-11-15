@@ -134,6 +134,8 @@ def main() -> None:
     payload = json.loads((TMP / "site" / "data" / "orders" / f"{order['order_id']}.json").read_text())
     check("paid order exposes download url (v1.1.0 zip)",
           payload["download"]["url"].endswith("crypto-invoice-generator-v1.1.0.zip"))
+    check("download url carries the release tag segment (QA fix: no bare /download/<file>)",
+          "/download/crypto-invoice-generator-v1.1.0/" in payload["download"]["url"])
     check("awaiting order hides download url",
           json.loads((TMP / "site" / "data" / "orders" / f"{btc_order['order_id']}.json")
                      .read_text())["download"] is None)
@@ -191,6 +193,8 @@ def main() -> None:
     b_pub = cr.public_order(b_paid, cfg)
     check("paid bundle downloads the combined zip",
           (b_pub["download"] or {}).get("url", "").endswith("/cash-register-bundle-v1.1.0.zip"))
+    check("bundle download url carries tag segment",
+          "/download/cash-register-bundle-v1.1.0/" in (b_pub["download"] or {}).get("url", ""))
     check("bundle zip exists in releases/",
           (REPO / "releases" / "cash-register-bundle-v1.1.0.zip").is_file())
     catalog_b = json.loads(cat_path.read_text())["bundle"]
