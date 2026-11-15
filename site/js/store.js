@@ -29,7 +29,7 @@
 
   var catalogPromise = null;
   function catalog() {
-    if (!catalogPromise) { catalogPromise = fetchJSON("data/catalog.json").catch(function () { return null; }); }
+    if (!catalogPromise) { catalogPromise = fetchJSON("/data/catalog.json").catch(function () { return null; }); }
     return catalogPromise;
   }
 
@@ -195,7 +195,7 @@
 
   function renderCheckoutWithOrder(cat, tool, orderId) {
     var root = $("[data-checkout]");
-    fetchJSON("data/orders/" + encodeURIComponent(orderId) + ".json").then(function (o) {
+    fetchJSON("/data/orders/" + encodeURIComponent(orderId) + ".json").then(function (o) {
       var ch = cat.chains[o.chain] || {};
       var badge = "<span class='badge " + esc(o.status) + "'>" + esc(o.status.replace("_", " ")) + "</span>";
       root.innerHTML =
@@ -415,7 +415,7 @@
       return;
     }
 
-    fetchJSON("data/orders/" + encodeURIComponent(oid) + ".json").then(function (o) {
+    fetchJSON("/data/orders/" + encodeURIComponent(oid) + ".json").then(function (o) {
       var steps = [
         { key: "created", label: "Order created — payment details issued", done: true },
         { key: "sent", label: "You sent the payment (exact amount + memo)", done: o.status !== "awaiting_payment" },
@@ -454,7 +454,7 @@
       root.innerHTML = "<p>Missing order id. Find it on the <a href='" + abs("/status.html") + "'>status page</a>.</p>";
       return;
     }
-    fetchJSON("data/orders/" + encodeURIComponent(oid) + ".json").then(function (o) {
+    fetchJSON("/data/orders/" + encodeURIComponent(oid) + ".json").then(function (o) {
       if (o.status !== "paid" && o.status !== "delivered") {
         root.innerHTML = "<h2 class='mt0'>Not unlocked yet</h2>" +
           "<p>Order <code>" + esc(oid) + "</code> is <b>" + esc(o.status.replace("_", " ")) + "</b>.</p>" +
