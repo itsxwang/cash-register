@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How crypto payment works — 4 steps — Xion's Micro Tools</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xion's Micro Tools">
+  <meta property="og:title" content="How crypto payment works — 4 steps — Xion's Micro Tools">
+  <meta property="og:description" content="Paying with crypto takes about 2 minutes: pick a chain, send the exact amount, wait for confirmation, download. No card, no account, works worldwide.">
+  <meta property="og:url" content="https://itsxwang.github.io/cash-register/crypto-guide.html">
+  <meta property="og:image" content="https://itsxwang.github.io/cash-register/og/home.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="How crypto payment works">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How crypto payment works — 4 steps — Xion's Micro Tools">
+  <meta name="twitter:description" content="Paying with crypto takes about 2 minutes: pick a chain, send the exact amount, wait for confirmation, download. No card, no account, works worldwide.">
+  <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/home.png">
+  <meta name="description" content="Paying with crypto takes about 2 minutes: pick a chain, send the exact amount, wait for confirmation, download. No card, no account, works worldwide.">
+  <link rel="stylesheet" href="css/style.css">
+  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <span class="brand">⚙️ Xion's Micro Tools</span>
+      <span class="spacer"></span>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      <a href="index.html#tools">Tools</a>
+      <a href="changelog.html">Changelog</a>
+      <a href="status.html">Order status</a>
+    </nav>
+
+    <div class="hero">
+      <h1>How crypto payment works — in 4 steps</h1>
+      <p>No card needed, no account to create, works from any country. A payment takes
+         about 2 minutes from a phone or desktop wallet.</p>
+    </div>
+
+    <section class="section">
+      <ol class="steps">
+        <li>
+          <strong>Pick a chain at checkout.</strong>
+          <p>We accept <strong>ETH (Base)</strong>, <strong>SOL</strong> and <strong>BTC</strong>.
+             Any of them works — pick the one your wallet already holds. ETH on Base and SOL
+             have sub-cent network fees; BTC fees depend on network load.</p>
+        </li>
+        <li>
+          <strong>Send the EXACT amount shown.</strong>
+          <p>The checkout shows an exact amount like <code>0.01064 ETH</code> and a QR code your
+             wallet can scan. The tiny unique tail on the amount (and the memo — which is just
+             your order id, like <code>CR-K3M2XQ9F</code>) is how the payment is matched to your
+             order automatically. Scan the QR with your wallet, confirm, done — no memo typing
+             needed when you scan.</p>
+          <p class="hint" style="font-family:var(--mono)">Screenshot (text): wallet app → Scan QR →
+             shows "Send 0.01064 ETH to 0x45DF…d575 (Base)" → Confirm → ✓ sent</p>
+        </li>
+        <li>
+          <strong>Wait ≤ 10 minutes for auto-confirm.</strong>
+          <p>On-chain watchers (mempool.space / Solana RPC / Base explorers) match your
+             transaction automatically — usually within minutes, worst case ~10 minutes
+             after the network confirms it. You can also email
+             <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> with your order id and
+             the txid to speed things up; the founder confirms manually as backup.</p>
+        </li>
+        <li>
+          <strong>Download unlocks.</strong>
+          <p>Refresh <a href="status.html">status.html?order=YOUR-ORDER-ID</a> — when the status
+             turns <strong>paid</strong>, the download link unlocks on the same page. Save your
+             order id; it's your receipt and your re-download key.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>Why crypto?</h2>
+      <p><strong>No card needed, no account, works worldwide.</strong> There's no card processor
+         that can decline you, no signup form, and no region locks — if you have a wallet,
+         you can buy. Prices are quoted in USD; you pay the live equivalent in your coin,
+         shown exactly at checkout.</p>
+    </section>
+
+    <section class="section">
+      <h2>Refund policy</h2>
+      <p><strong>7-day refund, no questions.</strong> If a tool doesn't do what you expected,
+         email <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> within 7 days of
+         payment with your order id and you get a refund to your sending address. Downloads
+         aren't locked after a refund — we'd rather you keep it and tell us why it missed.</p>
+      <p class="hint">Support is email-only: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a>
+         — usually same-day.</p>
+    </section>
+
+    <footer><span class="muted">Crypto-only checkout · ETH (Base) · SOL · BTC</span></footer>
+  </div>
+  <script src="js/qr.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>

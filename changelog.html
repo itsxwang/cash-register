@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Changelog — lifetime updates — Xion's Micro Tools</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Xion's Micro Tools">
+  <meta property="og:title" content="Changelog — lifetime updates — Xion's Micro Tools">
+  <meta property="og:description" content="Every update to every tool, dated and public. Buying once gets you every minor version for life — re-download any time with your order id.">
+  <meta property="og:url" content="https://itsxwang.github.io/cash-register/changelog.html">
+  <meta property="og:image" content="https://itsxwang.github.io/cash-register/og/home.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Changelog">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Changelog — lifetime updates — Xion's Micro Tools">
+  <meta name="twitter:description" content="Every update to every tool, dated and public. Buying once gets you every minor version for life — re-download any time with your order id.">
+  <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/home.png">
+  <meta name="description" content="Every update to every tool, dated and public. Buying once gets you every minor version for life — re-download any time with your order id.">
+  <link rel="stylesheet" href="css/style.css">
+  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <span class="brand">⚙️ Xion's Micro Tools</span>
+      <span class="spacer"></span>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      <a href="index.html#tools">Tools</a>
+      <a href="crypto-guide.html">Crypto guide</a>
+      <a href="status.html">Order status</a>
+    </nav>
+
+    <div class="hero">
+      <h1>Changelog</h1>
+      <p>Every purchase includes <strong>lifetime updates</strong> — this page is the promise,
+         in public. Bought a tool? Come back here after any release and re-download with your
+         order id: <a href="status.html">status page</a>.</p>
+    </div>
+
+    <section class="section">
+      <h2>2026-11-15</h2>
+      <h3>New product: Citation Monitor — Weekly Digest (v1.0.0)</h3>
+      <p>Fourth listing: a weekly agent-run digest of where AI engines cite you vs competitors
+         across 36 buyer questions. $19/month, crypto-only. <a href="tools/citation-monitor-weekly-digest/">Details →</a></p>
+
+      <h3>Store: dark mode (site-wide)</h3>
+      <p>CSS-variable dark theme with an OS-preference default, a nav toggle, AA contrast in both
+         palettes, and scanner-safe (white-background) QR codes and printable invoices.</p>
+
+      <h3>Store: $49 lifetime bundle</h3>
+      <p>All three tools in one payment, one combined zip, same checkout flow
+         (<code>checkout.html?item=bundle</code>).</p>
+
+      <h3>Store: crypto payment guide</h3>
+      <p>New 4-step payment guide linked from every checkout, plus the 7-day refund policy in writing.</p>
+
+      <h3>Crypto Invoice Generator — v1.1.0</h3>
+      <p>Renamed from "Stablecoin Invoice Generator". BTC (BIP-21), native ETH on Base (EIP-681)
+         and SOL (Solana Pay) are now first-class billing options; optional custom-token field
+         for clients who insist; exact integer math for 18-decimal wei.</p>
+
+      <h3>Payments stack: asset policy</h3>
+      <p>The store accepts native BTC / ETH / SOL only — decentralized assets no company can
+         freeze. Centralized stablecoins are banned from our payment flow, enforced by tests.</p>
+    </section>
+
+    <section class="section">
+      <h2>2026-11-14</h2>
+      <h3>First launch</h3>
+      <p>Store opens with three tools: Crypto Invoice Generator v1.1.0, Cron Ping Monitor v1.0.0,
+         Telegram Broadcast &amp; Scheduler Bot v1.0.0. Checkout, on-chain watchers and delivery
+         all live.</p>
+    </section>
+
+    <footer><span class="muted">Questions about an update? xion.dev7@gmail.com</span></footer>
+  </div>
+  <script src="js/qr.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>
