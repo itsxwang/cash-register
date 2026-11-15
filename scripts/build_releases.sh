@@ -25,6 +25,13 @@ mkdir -p releases
   zip -q "$ROOT/releases/telegram-broadcaster-v1.0.0.zip" \
       broadcast_bot.py README.md )
 
+# Product #4 — Citation Monitor Weekly Digest v1.0.0 (agent-run service).
+# The zip is the subscriber's onboarding pack: service README + sample digest.
+# Delivery of the product itself is email (weekly digest), per config delivery_note.
+( cd tools_src/citation_digest &&
+  zip -q "$ROOT/releases/citation-monitor-weekly-digest-v1.0.0.zip" \
+      README.md sample_digest.html )
+
 # Lifetime bundle — all three tools in one zip, each in its own subfolder,
 # plus a top-level README explaining what's inside. One payment, one download.
 BUNDLE_ZIP="$ROOT/releases/cash-register-bundle-v1.1.0.zip"

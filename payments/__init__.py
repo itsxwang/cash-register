@@ -393,6 +393,7 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
             "chains": tool.get("chains", list(VALID_CHAINS)),
             "landing": tool.get("landing"),
             "checkout": tool.get("checkout"),
+            "delivery_note": tool.get("delivery_note", ""),
         }
 
     chain_id = get_path(cfg, "addresses.eth_chain_id", 8453)

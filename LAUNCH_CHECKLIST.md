@@ -78,10 +78,14 @@ Pick **one**:
       ```
       → `releases/crypto-invoice-generator-v1.1.0.zip`,
          `releases/cron-ping-monitor-v1.0.0.zip`,
-         `releases/telegram-broadcaster-v1.0.0.zip`
+         `releases/telegram-broadcaster-v1.0.0.zip`,
+         `releases/citation-monitor-weekly-digest-v1.0.0.zip`,
+         `releases/cash-register-bundle-v1.1.0.zip`
       (names are verified against `config.yaml` by the script).
-- [ ] GitHub → `cash-register-releases` → Draft new release per tool:
-      tag matching the file name, attach the zip.
+- [ ] GitHub → `cash-register-releases` → Draft new release per item:
+      tag = zip filename minus `.zip` (e.g. tag `citation-monitor-weekly-digest-v1.0.0`
+      for `citation-monitor-weekly-digest-v1.0.0.zip` — the store builds download
+      links as `<releases_base>/<tag>/<file>`), attach the zip.
 - [ ] Put the repo owner/name into `config.yaml → delivery.releases_base`,
       run `python3 -m payments sync`, commit, push.
 - [ ] Test the whole loop **yourself**: pay **$1 worth of ETH on Base (or SOL
@@ -123,3 +127,9 @@ Pick **one**:
       a buyer says "I paid but no download".
 - [ ] Delete `DEMO-0001/2` fixtures from the live site if you don't want them
       public: `git rm site/data/orders/DEMO-*.json site/data/qr/DEMO-*.svg`.
+- [ ] Optional — **Cloudflare Web Analytics (free, no cookies)**: create an
+      account at dash.cloudflare.com → Web Analytics → add the site, copy the
+      JS beacon snippet, then paste it just before `</body>` in every page of
+      `site/` (search for the marker `<!-- ANALYTICS-BEACON -->` placeholders —
+      replace them with the snippet; token to fill: `CLOUDFLARE_BEACON_TOKEN`).
+      Skip it entirely if you prefer zero third-party JS.

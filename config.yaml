@@ -95,6 +95,16 @@ tools:
     release_file: "telegram-broadcaster-v1.0.0.zip"
     landing: "/tools/telegram-broadcaster/"
     checkout: "/tools/telegram-broadcaster/checkout.html"
+  citation-monitor-weekly-digest:
+    name: "Citation Monitor — Weekly Digest"
+    blurb: "Every week an agent asks AI engines 36 real buyer questions about your category and emails you: where you're cited, where competitors win, and the 3 changes that flip it."
+    price_usd: 19
+    chains: [eth, sol, btc]
+    default_chain: eth
+    release_file: "citation-monitor-weekly-digest-v1.0.0.zip"
+    landing: "/tools/citation-monitor-weekly-digest/"
+    checkout: "/tools/citation-monitor-weekly-digest/checkout.html"
+    delivery_note: "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
 
 bundle:
   price_usd: 49
