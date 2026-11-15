@@ -105,3 +105,12 @@ def list_orders(conn: sqlite3.Connection, status: str | None = None,
 def next_sequence(conn: sqlite3.Connection) -> int:
     """Row count used for the per-order amount-noise suffix (amount uniqueness)."""
     return (conn.execute("SELECT COUNT(*) FROM orders").fetchone()[0] or 0) + 1
+
+
+def has_awaiting_amount(conn: sqlite3.Connection, chain: str,
+                        raw_amount: int) -> bool:
+    """True if another awaiting order already expects this exact amount."""
+    row = conn.execute(
+        "SELECT 1 FROM orders WHERE chain=? AND raw_amount=? "
+        "AND status='awaiting_payment' LIMIT 1", (chain, raw_amount)).fetchone()
+    return row is not None

@@ -79,6 +79,17 @@ def create_order(tool_id: str, price_usd: float | None = None, *,
     try:
         seq = db.next_sequence(conn)
         amt = amounts.compute_amount(cfg, chain, float(price_usd), seq)
+        # Collision guard: no two AWAITING orders may expect the same exact
+        # amount on the same chain, or a buyer's payment could auto-confirm
+        # the wrong order. Bump by one minimal step until unique.
+        step = amounts.bump_step(cfg, chain)
+        raw = amt["raw_amount"]
+        bumps = 0
+        while db.has_awaiting_amount(conn, chain, raw) and bumps < 100:
+            raw += step
+            bumps += 1
+        amt["raw_amount"] = raw
+        amt["amount"] = amounts.display_for(cfg, chain, raw)
         order_id = ids.new_order_id()
         order = {
             "order_id": order_id,

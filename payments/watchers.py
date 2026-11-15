@@ -150,17 +150,78 @@ def watch_sol(order: dict, cfg: dict) -> dict:
 # ---------------------------------------------------------------------------
 # ETH (native, on Base) — Etherscan v2 multichain (free tier, key from env)
 # ---------------------------------------------------------------------------
+def _iso_ts(s) -> int:
+    """ISO8601 (Blockscout style) -> epoch seconds; 0 on failure."""
+    try:
+        return int(_dt.datetime.fromisoformat(
+            str(s).replace("Z", "+00:00")).timestamp())
+    except (ValueError, TypeError, OverflowError):
+        return 0
+
+
+def _watch_eth_blockscout(order: dict, cfg: dict) -> dict | None:
+    """Blockscout v2 API — free, keyless (Base instance by default).
+
+    Returns None only when the API is unreachable, so callers can fall back.
+    """
+    base_url = get_path(cfg, "watchers.eth_blockscout",
+                        "https://base.blockscout.com").rstrip("/")
+    addr = (order.get("address") or "").lower()
+    raw_amount = int(order.get("raw_amount") or 0)   # exact wei
+    created_ts = _order_created_ts(order)
+
+    url = base_url + "/api/v2/addresses/" + addr + "/transactions?filter=to"
+    ok, data = http_get_json(url, timeout=12)
+    if not ok:
+        return None
+    items = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(items, list):
+        return _result(note="blockscout: unexpected response shape")
+    checked = 0
+    for t in items[:12]:  # 12-lookup bound, mirroring the Solana watcher
+        if not isinstance(t, dict):
+            continue
+        to = t.get("to")
+        to_hash = to.get("hash", "") if isinstance(to, dict) else str(to or "")
+        if to_hash.lower() != addr:
+            continue
+        if (t.get("raw_input") or "0x") not in ("0x", "0x0", ""):
+            continue   # plain native transfer only
+        ts = _iso_ts(t.get("timestamp"))
+        if created_ts and ts and ts < created_ts - 3600:
+            continue
+        checked += 1
+        try:
+            value = int(t.get("value") or 0)
+        except (ValueError, TypeError):
+            continue
+        if value == raw_amount:
+            return _result(found=True, confirmed=True,
+                           txid=t.get("hash"),
+                           note="exact native ETH amount (wei)", checked=checked)
+    return _result(note=f"no matching tx in last {checked} native ETH txs",
+                   checked=checked)
+
+
 def watch_eth(order: dict, cfg: dict) -> dict:
     """Match INCOMING NATIVE ETH transfers (normal txs, value in wei).
+
+    Provider order: Blockscout (free, keyless) -> Etherscan v2 (needs
+    ETHERSCAN_API_KEY; free plans do NOT cover all L2 chains).
 
     No ERC-20 logic: the store only accepts the native asset. Exact-wei match
     against the order's noisy amount, bounded to the 12 most recent txs (the
     same lookup bound used by the Solana watcher).
     """
+    via_blockscout = _watch_eth_blockscout(order, cfg)
+    if via_blockscout is not None:
+        return via_blockscout
+
     api_key = os.environ.get("ETHERSCAN_API_KEY", "").strip()
     if not api_key:
-        return _result(note="ETHERSCAN_API_KEY not set — ETH watcher skipped "
-                            "(manual CSV confirmations still work)")
+        return _result(note="ETH watcher: blockscout unreachable and no "
+                            "ETHERSCAN_API_KEY — skipped (manual CSV "
+                            "confirmations still work)")
     api = get_path(cfg, "watchers.eth_api", "https://api.etherscan.io/v2/api")
     chain_id = get_path(cfg, "addresses.eth_chain_id", 8453)
     addr = (order.get("address") or "").lower()
@@ -235,5 +296,8 @@ def probe(cfg: dict) -> dict:
                               {"jsonrpc": "2.0", "id": 1, "method": "getHealth"}, timeout=6)
     out["sol_public_rpc"] = bool(ok and isinstance(resp, dict) and resp.get("result") == "ok")
 
+    out["eth_blockscout"] = bool(http_get_json(
+        get_path(cfg, "watchers.eth_blockscout",
+                 "https://base.blockscout.com") + "/api/v2/stats", timeout=6)[0])
     out["eth_etherscan"] = bool(os.environ.get("ETHERSCAN_API_KEY", "").strip())
     return out

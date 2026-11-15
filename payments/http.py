@@ -26,6 +26,10 @@ def http_json(method: str, url: str, *, payload=None, headers=None,
               timeout: float = DEFAULT_TIMEOUT):
     """Return (ok, parsed_json). ok=False -> {'error': '...'} payload."""
     headers = dict(headers or {})
+    # Some free APIs (e.g. Blockscout) 403 default bot user-agents; identify
+    # as a normal browser client on both HTTP backends.
+    headers.setdefault(
+        "User-Agent", "Mozilla/5.0 (X11; Linux x86_64) CashRegister/1.1")
     try:
         if requests is not None:
             if method == "GET":

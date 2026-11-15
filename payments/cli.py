@@ -116,7 +116,7 @@ def cmd_doctor(args) -> int:
     cfg = load_config(args.config)
     print("Checking chain APIs (keyless endpoints + env keys)...")
     for name, ok in watchers.probe(cfg).items():
-        state = "OK" if ok else ("SKIPPED (no ETHERSCAN_API_KEY)" if name == "evm_etherscan" else "UNREACHABLE")
+        state = "OK" if ok else ("SKIPPED (no ETHERSCAN_API_KEY)" if name == "eth_etherscan" else "UNREACHABLE")
         print(f"  {name:<20} {state}")
     print("Watchers degrade gracefully: an unreachable chain is skipped, "
           "manual CSV confirmations always work.")

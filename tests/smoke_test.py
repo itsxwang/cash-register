@@ -83,8 +83,11 @@ def main() -> None:
     check("ETH raw_amount is integer wei", isinstance(wei, int))
     check("ETH amount in clean 0.00001 ETH steps", wei % step == 0)
     check("ETH wei float64-exact (13 trailing zeros)", ((wei // step) * 5 ** 13) < 2 ** 53)
-    check("ETH amount has per-order noise", wei % step == 0 and wei != (wei // step - (wei // step % 10)) * step)
-    order2 = cr.create_order("crypto-invoice-generator", 19.00)
+    more = [cr.create_order("crypto-invoice-generator", 19.00) for _ in range(11)]
+    all_raws = [wei] + [o["raw_amount"] for o in more]
+    check("12 same-price orders all get DISTINCT exact amounts (no zero-noise, bump-guard)",
+          len(set(all_raws)) == 12 and all(isinstance(r, int) and r % step == 0 for r in all_raws))
+    order2 = more[0]
     check("noise differs across orders", order2["raw_amount"] != wei)
     check("order persisted in sqlite", cr.get_order(order["order_id"]) is not None)
 

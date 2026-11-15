@@ -34,7 +34,7 @@ def compute_amount(cfg: dict, chain: str, price_usd: float, seq: int) -> dict:
         wei_total = Decimal(10) ** 18
         base_steps = int(((price * rate * wei_total) / step)
                          .to_integral_value(rounding=ROUND_HALF_UP))
-        noise_steps = seq % 10                      # 0..9 steps => up to 0.00009 ETH
+        noise_steps = ((seq - 1) % 9) + 1           # 1..9 steps — NEVER zero
         wei = int((base_steps + noise_steps) * step)  # exact integer wei, no floats
         display = (Decimal(wei) / wei_total).quantize(Decimal("0.00001"),
                                                       rounding=ROUND_HALF_UP)
@@ -53,6 +53,26 @@ def compute_amount(cfg: dict, chain: str, price_usd: float, seq: int) -> dict:
         return {"amount": lamports / 1e9, "raw_amount": lamports, "currency": "SOL"}
 
     raise ValueError(f"unknown chain: {chain}")
+
+
+def display_for(cfg: dict, chain: str, raw: int) -> float:
+    """Exact display amount for a given raw unit amount (post-bump)."""
+    if chain == "eth":
+        d = (Decimal(raw) / (Decimal(10) ** 18)).quantize(
+            Decimal("0.00001"), rounding=ROUND_HALF_UP)
+        return float(d)
+    if chain == "btc":
+        return raw / 1e8
+    if chain == "sol":
+        return raw / 1e9
+    raise ValueError(f"unknown chain: {chain}")
+
+
+def bump_step(cfg: dict, chain: str) -> int:
+    """Smallest raw-unit increment that keeps the amount pay-exact."""
+    if chain == "eth":
+        return ETH_STEP_WEI
+    return 1  # BTC sats / SOL lamports
 
 
 def chain_name(cfg: dict, chain: str) -> str:
