@@ -37,7 +37,8 @@
         "btc"
       ],
       "landing": "/tools/crypto-invoice-generator/",
-      "checkout": "/tools/crypto-invoice-generator/checkout.html"
+      "checkout": "/tools/crypto-invoice-generator/checkout.html",
+      "delivery_note": ""
     },
     "cron-ping-monitor": {
       "name": "Cron Ping Monitor",
@@ -49,7 +50,8 @@
         "btc"
       ],
       "landing": "/tools/cron-ping-monitor/",
-      "checkout": "/tools/cron-ping-monitor/checkout.html"
+      "checkout": "/tools/cron-ping-monitor/checkout.html",
+      "delivery_note": ""
     },
     "telegram-broadcaster": {
       "name": "Telegram Broadcast & Scheduler Bot",
@@ -61,7 +63,21 @@
         "btc"
       ],
       "landing": "/tools/telegram-broadcaster/",
-      "checkout": "/tools/telegram-broadcaster/checkout.html"
+      "checkout": "/tools/telegram-broadcaster/checkout.html",
+      "delivery_note": ""
+    },
+    "citation-monitor-weekly-digest": {
+      "name": "Citation Monitor \u2014 Weekly Digest",
+      "blurb": "Every week an agent asks AI engines 36 real buyer questions about your category and emails you: where you're cited, where competitors win, and the 3 changes that flip it.",
+      "price_usd": 19,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/citation-monitor-weekly-digest/",
+      "checkout": "/tools/citation-monitor-weekly-digest/checkout.html",
+      "delivery_note": "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
     }
   },
   "bundle": {
@@ -71,5 +87,5 @@
     "release_file": "cash-register-bundle-v1.1.0.zip"
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-15T09:20:01Z"
+  "generated_at": "2026-11-15T09:30:02Z"
 }
