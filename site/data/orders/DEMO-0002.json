@@ -20,5 +20,5 @@
   "status_url": "/status.html?order=DEMO-0002",
   "qr": "/data/qr/DEMO-0002.svg",
   "download": null,
-  "watch_note": null
+  "watch_note": "no matching tx in last 0 sol sigs"
 }
