@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -273,7 +274,7 @@ def main() -> None:
              if "og:title" not in p.read_text(encoding="utf-8")]
     check("og/twitter meta on all pages", not no_og, str(no_og))
     no_icon = [str(p.relative_to(site)) for p in sorted(site.rglob("*.html"))
-               if 'rel="icon"' not in p.read_text(encoding="utf-8")]
+               if not re.search(r'rel=["\']icon["\']', p.read_text(encoding="utf-8"))]
     check("inline favicon on all pages (no /favicon.ico 404)", not no_icon, str(no_icon))
     og_dir = site / "og"
     og_imgs = sorted(og_dir.glob("*.png")) if og_dir.is_dir() else []
