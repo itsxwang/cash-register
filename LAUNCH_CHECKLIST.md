@@ -41,7 +41,8 @@ Pick **one**:
       - `addresses.eth` — your receiving address for **native ETH on Base**
         (use a wallet you control; verify the network is Base before sharing)
       - `addresses.eth_chain_id` / `eth_chain_name` — keep `8453 / Base`
-      - `store.contact_email` / `store.contact_telegram` — where buyers send reports
+      - `store.contact_email` — where buyers send payment reports
+        (Telegram is NOT used for buyer support: no buyer-facing Telegram)
 - [ ] Regenerate the public data (this is what the site actually serves):
       ```bash
       python3 -m payments demo     # demo fixtures with your addresses
@@ -99,10 +100,14 @@ Pick **one**:
       answer every comment.
 - [ ] **Indie Hackers**: milestone post on the product page you create — include
       real revenue numbers as they come (transparency posts travel).
-- [ ] **Crypto-native watering holes**: Farcaster `/dev` + `/crypto` channels and
-      Telegram freelance groups (CryptoJobsList chat, Web3 job/collab groups) —
+- [ ] **Crypto-native watering holes**: Farcaster `/dev` + `/crypto` channels,
+      Discord servers of the crypto job communities, X/Twitter threads —
       the invoice generator is the wedge: reply to "how do I invoice my crypto
       clients?" threads with a genuine demo link, not an ad.
+      (Do not use Telegram for promotion: the founder's Telegram account is
+      frozen — Telegram is dead as a channel for us except tool #3, which is
+      a product we sell, and cron-ping's optional alerts, which are a feature
+      buyers use in their own copy.)
 - [ ] Optional: **Show HN** ("Show HN: Static-site crypto checkout with on-chain
       watchers, no Stripe") — post when the store has processed ≥1 real payment.
 

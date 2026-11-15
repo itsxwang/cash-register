@@ -3,8 +3,7 @@
     "name": "Xion's Micro Tools",
     "tagline": "Tiny paid tools for indie devs and crypto freelancers",
     "url": "https://itsxwang.github.io/cash-register/",
-    "contact_email": "you@example.com",
-    "contact_telegram": "@yourhandle"
+    "contact_email": "xion.dev7@gmail.com"
   },
   "chains": {
     "eth": {
@@ -26,7 +25,13 @@
       "decimals": 8
     }
   },
-  "fx": null,
+  "fx": {
+    "usd_btc": 1.564602434521388e-05,
+    "usd_eth": 0.0005596785206577342,
+    "usd_sol": 0.014230823964707557,
+    "source": "live",
+    "updated_at": "2026-11-15T08:27:31Z"
+  },
   "tools": {
     "crypto-invoice-generator": {
       "name": "Crypto Invoice Generator",
@@ -67,8 +72,10 @@
   },
   "bundle": {
     "price_usd": 49,
-    "note": "All three tools, lifetime updates, one payment."
+    "note": "All three tools, lifetime updates, one payment.",
+    "checkout": "/checkout.html?item=bundle",
+    "release_file": "cash-register-bundle-v1.1.0.zip"
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-15T08:20:01Z"
+  "generated_at": "2026-11-15T08:27:31Z"
 }

@@ -53,8 +53,23 @@ def _now() -> str:
 
 def _tool_cfg(cfg: dict, tool_id: str) -> dict:
     tools = get_path(cfg, "tools", {}) or {}
+    if tool_id == "bundle":
+        # The lifetime bundle is a first-class purchasable item: same order
+        # flow, single combined release zip, all chains accepted.
+        bundle = get_path(cfg, "bundle", {}) or {}
+        return {
+            "name": "Lifetime bundle — all tools",
+            "blurb": bundle.get("note", ""),
+            "price_usd": bundle.get("price_usd"),
+            "chains": list(VALID_CHAINS),
+            "default_chain": "eth",
+            "release_file": bundle.get("release_file"),
+            "landing": "/",
+            "checkout": "/checkout.html?item=bundle",
+        }
     if tool_id not in tools:
-        raise ValueError(f"unknown tool '{tool_id}'. Known tools: {', '.join(sorted(tools))}")
+        raise ValueError(f"unknown tool '{tool_id}'. Known tools: "
+                         f"{', '.join(sorted(list(tools) + ['bundle']))}")
     return tools[tool_id]
 
 
@@ -296,6 +311,9 @@ def public_order(order: dict, cfg: dict | None = None) -> dict:
     base = str(get_path(cfg, "delivery.releases_base", "")).rstrip("/")
     download_url = f"{base}/{release_file}" if (paid and release_file) else None
     oid = order["order_id"]
+    checkout_url = str(tool.get("checkout") or "")
+    # bundle checkout already carries a query (?item=bundle) — join with &
+    checkout_url += ("&" if "?" in checkout_url else "?") + f"order={oid}"
     return {
         "order_id": oid,
         "tool": {"id": order["tool_id"], "name": tool.get("name", order["tool_id"])},
@@ -311,7 +329,7 @@ def public_order(order: dict, cfg: dict | None = None) -> dict:
         "status": order["status"],
         "created_at": order.get("created_at"),
         "paid_at": order.get("paid_at"),
-        "checkout_url": str(tool.get("checkout") or "") + f"?order={oid}",
+        "checkout_url": checkout_url,
         "status_url": f"/status.html?order={oid}",
         "qr": f"/data/qr/{oid}.svg",
         "download": ({"url": download_url, "token": order.get("download_token")}
@@ -367,7 +385,6 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
             "tagline": get_path(cfg, "store.tagline", ""),
             "url": get_path(cfg, "store.url", ""),
             "contact_email": get_path(cfg, "store.contact_email", ""),
-            "contact_telegram": get_path(cfg, "store.contact_telegram", ""),
         },
         "chains": {
             "eth": {
@@ -386,6 +403,8 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
         "bundle": {
             "price_usd": get_path(cfg, "bundle.price_usd"),
             "note": get_path(cfg, "bundle.note", ""),
+            "checkout": "/checkout.html?item=bundle",
+            "release_file": get_path(cfg, "bundle.release_file", ""),
         },
         "manual_confirm_note":
             "Payments are confirmed by the founder (manual CSV, assisted by "

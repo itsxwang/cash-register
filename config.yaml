@@ -18,8 +18,7 @@ store:
   name: "Xion's Micro Tools"
   tagline: "Tiny paid tools for indie devs and crypto freelancers"
   url: "https://itsxwang.github.io/cash-register/"   # live after Pages is enabled
-  contact_email: "you@example.com"
-  contact_telegram: "@yourhandle"
+  contact_email: "xion.dev7@gmail.com"
 
 # ---------------------------------------------------------------------------
 # Receiving addresses (decentralized assets only: BTC / ETH / SOL, native)
@@ -100,3 +99,4 @@ tools:
 bundle:
   price_usd: 49
   note: "All three tools, lifetime updates, one payment."
+  release_file: "cash-register-bundle-v1.1.0.zip"

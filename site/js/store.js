@@ -175,13 +175,24 @@
   function renderCheckout() {
     var root = $("[data-checkout]");
     if (!root) return;
-    var toolId = pageToolId();
-    var urlOrder = new URLSearchParams(location.search).get("order");
+    var params = new URLSearchParams(location.search);
+    var item = params.get("item") || pageToolId();
+    var urlOrder = params.get("order");
 
     catalog().then(function (cat) {
       if (!cat) { root.innerHTML = "<p class='muted'>Catalog unavailable — serve this site over HTTP.</p>"; return; }
-      var tool = cat.tools[toolId];
-      if (!tool) { root.innerHTML = "<p class='muted'>Unknown tool.</p>"; return; }
+      var tool = null;
+      if (item === "bundle" && cat.bundle) {
+        tool = {
+          id: "bundle",
+          name: "Lifetime bundle — all tools",
+          price_usd: cat.bundle.price_usd,
+          chains: Object.keys(cat.chains)
+        };
+      } else {
+        tool = (cat.tools || {})[item];
+      }
+      if (!tool) { root.innerHTML = "<p class='muted'>Unknown item.</p>"; return; }
       $$("[data-tool-name]").forEach(function (el) { el.textContent = tool.name; });
 
       if (urlOrder) { renderCheckoutWithOrder(cat, tool, urlOrder); }
@@ -319,12 +330,11 @@
       "</div>" +
       "<div class='row'>" +
       "<a class='btn' id='mailto'>Email the report</a>" +
-      "<a class='btn ghost' id='tglink' target='_blank' rel='noopener'>Send via Telegram</a>" +
       "<button class='btn ghost' id='copyreport'>Copy report</button>" +
       "</div>" +
-      "<p class='hint'>After you report, the founder confirms (CSV + on-chain watchers) and your " +
-      "download link appears on the <a href='" + abs("/status.html") + "'>status page</a>. " +
-      "Allow a few minutes.</p></div>";
+      "<p class='hint'>The button opens your mail app with everything prefilled. After you send it, " +
+      "the founder confirms (CSV + on-chain watchers) and your download link appears on the " +
+      "<a href='" + abs("/status.html") + "'>status page</a>. Allow a few minutes.</p></div>";
   }
 
   function reportText(o, amt, tx) {
@@ -340,13 +350,11 @@
   function wireIvePaid(o) {
     var box = $("#ivepaid");
     if (!box) return;
-    var mailto = $("#mailto"), tg = $("#tglink"), cp = $("#copyreport");
-    var founderEmail = null, founderTg = null;
+    var mailto = $("#mailto"), cp = $("#copyreport");
+    var founderEmail = null;
     catalog().then(function (cat) {
       if (!cat) return;
       founderEmail = cat.store.contact_email;
-      founderTg = cat.store.contact_telegram;
-      if (founderTg && tg) tg.href = "https://t.me/" + founderTg.replace(/^@/, "");
       refreshLinks();
     });
 
@@ -360,8 +368,6 @@
       if (mailto) mailto.href = "mailto:" + (founderEmail || "") +
         "?subject=" + encodeURIComponent("Payment report — order " + o.order_id) +
         "&body=" + encodeURIComponent(b);
-      if (tg) tg.href = "https://t.me/share/url?url=" + encodeURIComponent(" ") +
-        "&text=" + encodeURIComponent(b);
     }
     ["#paidamt", "#paidtx"].forEach(function (sel) {
       var el = $(sel); if (el) el.addEventListener("input", refreshLinks);
@@ -473,7 +479,33 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* dark mode — CSS variables only; choice persists in localStorage      */
+  /* (the head anti-FOUC snippet already set data-theme before CSS paint) */
+  /* ------------------------------------------------------------------ */
+  function initTheme() {
+    var btn = $("#theme-toggle");
+    if (!btn) return;
+    applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+    btn.addEventListener("click", function () {
+      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try { localStorage.setItem("cr.theme", next); } catch (e) {}
+    });
+  }
+
+  function applyTheme(theme) {
+    var btn = $("#theme-toggle");
+    document.documentElement.setAttribute("data-theme", theme);
+    if (btn) {
+      btn.textContent = theme === "dark" ? "☀️" : "🌙";
+      btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
   function init() {
+    initTheme();
     demoBanner();
     renderHome();
     injectPrices();

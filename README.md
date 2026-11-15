@@ -69,8 +69,8 @@ their choice, made locally, never routed through this store.
    │    + memo + wallet QR
    │    (QR built client-side)
    ├─ pays from any wallet
-   └─ "I've paid" → email/Telegram
-        report (order id, txid)  ────────►  1) `payments ingest --order CR-XX… --tool t
+   └─ "I've paid" → email report
+        (mailto, prefilled)  ─────────►  1) `payments ingest --order CR-XX… --tool t
                                                     (registers the id, optional --amount)
                                             2) confirms the money arrived:
                                                v0: wallet app → append row to
@@ -136,8 +136,8 @@ Run `python3 -m payments doctor` to probe every chain API before launch.
    GitHub Release files themselves are not access-controlled — if you need
    hard one-time enforcement later, that's the first thing a paid-tier
    backend would add (see LAUNCH_CHECKLIST.md).
-6. **Manual delivery (also v0):** from the buyer's report you can just reply on
-   Telegram/email with the release link — the storefront link is a convenience,
+6. **Manual delivery (also v0):** from the buyer's email report you can just
+   reply with the release link — the storefront link is a convenience,
    not a dependency.
 
 ## How to add tool #4

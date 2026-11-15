@@ -26,6 +26,7 @@ os.environ["CASHREGISTER_SITE_DIR"] = str(TMP / "site")  # keep test artifacts o
 
 import payments as cr  # noqa: E402
 from payments import db, manual  # noqa: E402
+from payments import _tool_cfg as _bundle_item  # bundle regression checks
 from payments.config import parse_config  # noqa: E402
 
 PASS = 0
@@ -171,6 +172,67 @@ def main() -> None:
     check("landing carries the policy line", "coins nobody can freeze" in html or "no company can freeze" in html)
     app_js = (site / "tools" / "crypto-invoice-generator" / "app.js").read_text(encoding="utf-8")
     check("app has custom-token option", "tokenContract" in app_js and "custom" in app_js)
+
+    # 14. bundle is a first-class purchasable item (regression: $19 bug) ------------------
+    bcfg = _bundle_item(cfg, "bundle")
+    check("bundle item priced 49 (not a tool price)",
+          bcfg["price_usd"] == 49 and bcfg["price_usd"] not in (19, 9, 15))
+    check("bundle release file configured", bcfg["release_file"] == "cash-register-bundle-v1.1.0.zip")
+    check("bundle checkout is root checkout with item param",
+          bcfg["checkout"] == "/checkout.html?item=bundle")
+    check("bundle accepts all chains", set(bcfg["chains"]) == {"eth", "sol", "btc"})
+    b_order = cr.create_order("bundle", chain="eth")
+    check("bundle order charges 49 USD", b_order["price_usd"] == 49)
+    b_pub = cr.public_order(b_order, cfg)
+    check("bundle order checkout_url is well-formed (?item=bundle&order=…)",
+          b_pub["checkout_url"].startswith("/checkout.html?item=bundle&order=")
+          and b_pub["checkout_url"].count("?") == 1)
+    b_paid = dict(b_order, status="paid")
+    b_pub = cr.public_order(b_paid, cfg)
+    check("paid bundle downloads the combined zip",
+          (b_pub["download"] or {}).get("url", "").endswith("/cash-register-bundle-v1.1.0.zip"))
+    check("bundle zip exists in releases/",
+          (REPO / "releases" / "cash-register-bundle-v1.1.0.zip").is_file())
+    catalog_b = json.loads(cat_path.read_text())["bundle"]
+    check("catalog bundle block carries checkout + release",
+          catalog_b["checkout"] == "/checkout.html?item=bundle"
+          and catalog_b["release_file"] == "cash-register-bundle-v1.1.0.zip"
+          and catalog_b["price_usd"] == 49)
+
+    # 15. buyer-facing flows are email-only (Telegram is dead for us) ---------------------
+    idx = (site / "index.html").read_text(encoding="utf-8")
+    check("home bundle button routes to ?item=bundle",
+          'href="checkout.html?item=bundle"' in idx)
+    check("home has no 'email or Telegram' buyer copy",
+          "email or Telegram" not in idx)
+    root_checkout = (site / "checkout.html").read_text(encoding="utf-8")
+    check("root bundle checkout page exists", root_checkout.count("data-checkout") >= 1)
+    store_js = (site / "js" / "store.js").read_text(encoding="utf-8")
+    check("checkout JS supports ?item=bundle", 'params.get("item")' in store_js
+          and "item === \"bundle\"" in store_js)
+    check("'I've paid' flow is email-only in JS",
+          "tglink" not in store_js and "t.me/" not in store_js)
+    catalog_store = json.loads(cat_path.read_text())["store"]
+    check("catalog carries the real contact email",
+          catalog_store["contact_email"] == "xion.dev7@gmail.com")
+    check("catalog has no contact_telegram", "contact_telegram" not in catalog_store)
+    check("config has no contact_telegram key", "contact_telegram" not in cfg["store"])
+
+    # 16. dark mode is wired everywhere ----------------------------------------------------
+    pages = [site / "index.html", site / "status.html", site / "download.html", site / "checkout.html"]
+    pages += sorted((site / "tools").glob("*/index.html"))
+    pages += sorted((site / "tools").glob("*/checkout.html"))
+    pages += [site / "tools" / "crypto-invoice-generator" / "app.html"]
+    missing_theme = [str(p.relative_to(site)) for p in pages
+                     if "cr.theme" not in p.read_text(encoding="utf-8")
+                     or "theme-toggle" not in p.read_text(encoding="utf-8")]
+    check("anti-FOUC snippet + toggle on all 11 pages", not missing_theme, str(missing_theme))
+    css = (site / "css" / "style.css").read_text(encoding="utf-8")
+    check("dark palette uses CSS variables", '[data-theme="dark"]' in css and "--bg: #0b1220" in css)
+    check("QR + invoice sheet forced light in dark mode",
+          '[data-theme="dark"] .qrbox' in css and '[data-theme="dark"] .sheet' in css)
+    check("theme JS present in store.js",
+          "initTheme" in store_js and 'localStorage.setItem("cr.theme"' in store_js)
 
     db_file = db.db_path()
     check("db file exists", db_file.exists(), str(db_file))
