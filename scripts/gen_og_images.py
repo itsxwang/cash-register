@@ -42,6 +42,10 @@ IMAGES = {
         "title": "Citation Monitor — Weekly Digest",
         "subtitle": "Where AI engines cite you vs competitors, every Monday",
     },
+    "citation-monitor-agency": {
+        "title": "Citation Monitor — Agency",
+        "subtitle": "3 client brands tracked in one Monday report",
+    },
 }
 
 

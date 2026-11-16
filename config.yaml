@@ -106,6 +106,17 @@ tools:
     checkout: "/tools/citation-monitor-weekly-digest/checkout.html"
     delivery_note: "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
 
+  citation-monitor-agency:
+    name: "Citation Monitor — Agency (3 brands)"
+    blurb: "The weekly AI-visibility digest for a whole client roster: 3 brands tracked in parallel, per-brand sections in one Monday report."
+    price_usd: 39
+    chains: [eth, sol, btc]
+    default_chain: eth
+    release_file: "citation-monitor-agency-v1.0.0.zip"
+    landing: "/tools/citation-monitor-agency/"
+    checkout: "/tools/citation-monitor-agency/checkout.html"
+    delivery_note: "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
+
 bundle:
   price_usd: 49
   note: "All three tools, lifetime updates, one payment."
