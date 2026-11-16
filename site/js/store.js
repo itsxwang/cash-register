@@ -194,7 +194,6 @@
       }
       if (!tool) { root.innerHTML = "<p class='muted'>Unknown item.</p>"; return; }
       $$("[data-tool-name]").forEach(function (el) { el.textContent = tool.name; });
-      document.title = "Checkout — " + tool.name;
 
       if (urlOrder) { renderCheckoutWithOrder(cat, tool, urlOrder); }
       else { renderSelfServe(cat, tool); }
@@ -252,6 +251,7 @@
 
     root.innerHTML =
       "<h3 class='mt0'>Checkout — <span data-tool-name>" + esc(tool.name) + "</span></h3>" +
+      (function () { try { document.title = "Checkout — " + tool.name; } catch (e) {} return ""; })() +
       "<div class='chainpick' id='chainpick'>" + chains.map(function (c, i) {
         return "<label><input type='radio' name='chain' value='" + esc(c) + "'" + (i === 0 ? " checked" : "") + ">" +
           esc((cat.chains[c] || {}).label || c) + "</label>";
