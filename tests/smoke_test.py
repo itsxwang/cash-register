@@ -47,7 +47,7 @@ def main() -> None:
 
     # 1. config parsing + asset policy ----------------------------------------
     check("config parses", isinstance(cfg.get("addresses"), dict))
-    check("4 products in config (3 tools + citation digest)", len(cfg["tools"]) == 4)
+    check("5 products in config (3 tools + digest + agency)", len(cfg["tools"]) == 5)
 
     banned = ("usdt", "usdc", "tether")
 
@@ -115,7 +115,7 @@ def main() -> None:
     # 6. catalog sync ------------------------------------------------------------
     cat_path = cr.write_catalog(cfg=cfg, site_dir=TMP / "site")
     catalog = json.loads(cat_path.read_text())
-    check("catalog has 4 products", len(catalog["tools"]) == 4)
+    check("catalog has 5 products", len(catalog["tools"]) == 5)
     check("catalog chains are eth/sol/btc", set(catalog["chains"]) == {"eth", "sol", "btc"})
     check("catalog ETH label", catalog["chains"]["eth"]["label"] == "ETH (Base)")
     check("catalog eth decimals 18", catalog["chains"]["eth"]["decimals"] == 18)
@@ -266,10 +266,11 @@ def main() -> None:
     check("robots.txt + sitemap.xml at root",
           (site / "robots.txt").is_file() and (site / "sitemap.xml").is_file())
     sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
-    check("sitemap lists the 4 product pages",
+    check("sitemap lists the 5 product pages",
           all(f"tools/{t}/" in sitemap for t in
               ("crypto-invoice-generator", "cron-ping-monitor",
-               "telegram-broadcaster", "citation-monitor-weekly-digest")))
+               "telegram-broadcaster", "citation-monitor-weekly-digest",
+               "citation-monitor-agency")))
     no_og = [str(p.relative_to(site)) for p in pages
              if "og:title" not in p.read_text(encoding="utf-8")]
     check("og/twitter meta on all pages", not no_og, str(no_og))
@@ -287,6 +288,60 @@ def main() -> None:
           len(og_imgs) >= 6 and sizes_ok, f"{len(og_imgs)} images")
     check("analytics beacon markers present for founder",
           all("ANALYTICS-BEACON" in p.read_text(encoding="utf-8") for p in pages))
+
+    # 18. design round: fonts, motion, 3D hero, redesigned components
+    fonts_dir = site / "fonts"
+    woff2 = sorted(fonts_dir.glob("*.woff2")) if fonts_dir.is_dir() else []
+    check("7 self-hosted woff2 fonts present (SG 500/700, Inter 400/500/600, JBM 400/600)",
+          len(woff2) == 7
+          and any("space-grotesk" in f.name and "700" in f.name for f in woff2)
+          and any("inter-" in f.name and "600" in f.name for f in woff2)
+          and any("jetbrains-mono" in f.name and "600" in f.name for f in woff2),
+          f"{len(woff2)} files")
+    css_text = (site / "css" / "style.css").read_text(encoding="utf-8")
+    check("@font-face for all three families with font-display: swap",
+          all(fam in css_text for fam in ("Space Grotesk", "Inter", "JetBrains Mono"))
+          and css_text.count("font-display: swap;") == 7)
+    no_preload = [str(p.relative_to(site)) for p in pages
+                  if "space-grotesk-latin-700-normal.woff2" not in p.read_text(encoding="utf-8")]
+    check("preload of SG700 + Inter400 on every page", not no_preload, str(no_preload))
+    check("JetBrains Mono wired to amounts/addresses (.price/--mono)",
+          ".price { font-family: var(--mono)" in css_text
+          and '--mono: "JetBrains Mono"' in css_text)
+    check("motion.js on every page + reveal CSS + reduced-motion kill-switch",
+          all("js/motion.js" in p.read_text(encoding="utf-8") for p in pages)
+          and ".js .reveal" in css_text and "prefers-reduced-motion: reduce" in css_text)
+    reveal_checkout = [str(p.relative_to(site)) for p in sorted(site.rglob("checkout.html"))
+                       if re.search(r'class="section[^"]*reveal[^"]*"[^>]*data-checkout|data-checkout[^>]*reveal', p.read_text(encoding="utf-8"))]
+    check("checkout sections never reveal-hidden (conversion focus)",
+          not reveal_checkout, str(reveal_checkout))
+    check("one gradient CTA class, gradient limited to .btn.primary + chip",
+          css_text.count("linear-gradient(135deg, #8ab4ff") == 2  # var + single use
+          and ".btn.primary {" in css_text)
+    check("hero3d module exists, referenced by index.html only",
+          (site / "js" / "hero3d.js").is_file()
+          and 'src="js/hero3d.js"' in (site / "index.html").read_text(encoding="utf-8")
+          and sum('hero3d' in p.read_text(encoding="utf-8") for p in pages) == 1)
+    check("three.js vendored as ES module",
+          (site / "js" / "vendor" / "three.module.min.js").is_file()
+          and "Three.js Authors" in (site / "js" / "vendor" / "three.module.min.js").read_text(encoding="utf-8", errors="ignore")[:200])
+    idx_text = (site / "index.html").read_text(encoding="utf-8")
+    check("hero art + static SVG fallback on index",
+          'class="hero-art"' in idx_text and "hero-art-fallback" in idx_text
+          and "<defs" in idx_text.split("hero-art-fallback")[1][:600]
+          and "coinBTC" in idx_text and "coinSOL" in idx_text)
+    check("trust strip under hero (4 guarantees)",
+          all(s in idx_text for s in ("On-chain auto-confirm", "7-day refund",
+                                      "Email support", "No card needed")))
+    check("redesigned cards: outcome copy + <=3 bullets + mono price in renderHome",
+          "CARD_COPY" in store_js and "tool-card--bullets" in store_js
+          and "price--big" in store_js)
+    check("bundle card emphasized with honest chip",
+          "tool-card--bundle" in idx_text and "Best value" in idx_text
+          and "Save $17" not in idx_text)
+    check("unified footnav footers (4 links + support email)",
+          all("footnav" in p.read_text(encoding="utf-8") for p in pages)
+          and all("xion.dev7@gmail.com" in p.read_text(encoding="utf-8") for p in pages))
 
     db_file = db.db_path()
     check("db file exists", db_file.exists(), str(db_file))

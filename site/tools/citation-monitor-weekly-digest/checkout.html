@@ -20,7 +20,9 @@
   <meta name="twitter:description" content="Every week an agent asks AI engines 36 real buyer questions about your category and emails you: where you're cited, where competitors win, and the 3 changes that flip it.">
   <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/citation-monitor-weekly-digest.png">
   <link rel="stylesheet" href="../../css/style.css">
-  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-reduced","1");}else{document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("reveal-fallback")},1200);}}catch(e){}})();</script>
+  <link rel="preload" href="../../fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
   <div class="wrap">
@@ -37,11 +39,14 @@
       <h2>Checkout</h2>
       <p class="muted">Loading checkout… (serve over HTTP: <code>python3 -m http.server</code>)</p>
     </section>
-
-    <footer><span class="muted">Crypto-only checkout · ETH (Base) · SOL · BTC</span></footer>
+  <footer>
+    <nav class="footnav"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
+    <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> · crypto-only: BTC / ETH / SOL · built with the Cash Register stack</span>
+  </footer>
   </div>
   <script src="../../js/qr.js"></script>
   <script src="../../js/store.js"></script>
+  <script src="../../js/motion.js"></script>
   <!-- ANALYTICS-BEACON (optional Cloudflare Web Analytics — replace this comment with the JS beacon) -->
 </body>
 </html>

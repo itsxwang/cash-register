@@ -20,7 +20,9 @@
   <meta name="twitter:description" content="A tiny cron-friendly uptime pinger with a static status page you can host anywhere for $0.">
   <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/cron-ping-monitor.png">
   <link rel="stylesheet" href="../../css/style.css">
-  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-reduced","1");}else{document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("reveal-fallback")},1200);}}catch(e){}})();</script>
+  <link rel="preload" href="../../fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
   <div class="wrap">
@@ -44,7 +46,7 @@
       <div class="banner" data-demo-banner></div>
     </div>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>What it does</h2>
       <div class="grid">
         <div class="card"><h3>⏱️ Cron-native</h3><p>One run = one sweep: ping every monitor, append to
@@ -57,7 +59,7 @@
       <pre style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px;overflow:auto"><code>* * * * * cd ~/monitors &amp;&amp; python3 cron_ping.py --notify-telegram</code></pre>
     </section>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>What's in the download</h2>
       <ul>
         <li><code>cron_ping.py</code> — the monitor (stdlib only)</li>
@@ -68,7 +70,7 @@
       <a class="btn" href="checkout.html">Buy with crypto →</a>
     </section>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>FAQ</h2>
       <details>
         <summary>Can I get a refund?</summary>
@@ -99,11 +101,14 @@
            <a href="../../crypto-guide.html">guide</a> shows exactly what happens after you send.</p>
       </details>
     </section>
-
-    <footer><span class="muted">Built with the Cash Register stack.</span></footer>
+  <footer>
+    <nav class="footnav"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
+    <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> · crypto-only: BTC / ETH / SOL · built with the Cash Register stack</span>
+  </footer>
   </div>
   <script src="../../js/qr.js"></script>
   <script src="../../js/store.js"></script>
+  <script src="../../js/motion.js"></script>
   <!-- ANALYTICS-BEACON (optional Cloudflare Web Analytics — replace this comment with the JS beacon) -->
 </body>
 </html>
