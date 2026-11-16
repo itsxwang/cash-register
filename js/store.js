@@ -65,6 +65,40 @@
   /* ------------------------------------------------------------------ */
   /* home: render the tool grid from the catalog                          */
   /* ------------------------------------------------------------------ */
+  /* card copy: outcome-led headline + <=3 scannable bullets per tool */
+  var CARD_COPY = {
+    "crypto-invoice-generator": {
+      headline: "Look professional when crypto clients pay you",
+      bullets: ["Printable invoice + QR any wallet can scan",
+                "BTC / ETH (Base) / SOL in one tool",
+                "100% client-side — no data leaves your device"]
+    },
+    "cron-ping-monitor": {
+      headline: "Know a cron job died before your users do",
+      bullets: ["One-line ping, email alert on a miss",
+                "Static status page on $0 hosting",
+                "SQLite history — zero infrastructure"]
+    },
+    "telegram-broadcaster": {
+      headline: "Reach your Telegram list without a SaaS bill",
+      bullets: ["Broadcast + schedule with the raw Bot API",
+                "One file, no framework to install",
+                "Batched sends that respect rate limits"]
+    },
+    "citation-monitor-weekly-digest": {
+      headline: "Know where AI engines cite you — every Monday",
+      bullets: ["36 real buyer questions, 2 engines weekly",
+                "You vs competitors, with quoted sources",
+                "3 ranked changes that flip the gap"]
+    },
+    "citation-monitor-agency": {
+      headline: "AI-visibility reports for your whole client roster",
+      bullets: ["3 brands tracked in parallel",
+                "One Monday report, per-brand sections",
+                "Client-ready tables you can forward"]
+    }
+  };
+
   function renderHome() {
     var grid = $("[data-tools-grid]");
     if (!grid) return;
@@ -72,12 +106,21 @@
       if (!cat || !cat.tools) { grid.innerHTML = "<p class='muted'>Catalog unavailable (open via a web server, e.g. <code>python3 -m http.server</code>).</p>"; return; }
       grid.innerHTML = Object.keys(cat.tools).map(function (id) {
         var t = cat.tools[id];
-        return "<div class='card'>" +
-          "<h3>" + esc(t.name) + "</h3>" +
-          "<p>" + esc(t.blurb) + "</p>" +
-          "<div class='price'>" + money(t.price_usd) + " <small>one-off, crypto</small></div>" +
-          "<div class='row'><a class='btn small' href='" + esc(abs(t.landing)) + "'>Details</a>" +
-          "<a class='btn ghost small' href='" + esc(abs(t.checkout)) + "'>Checkout</a></div>" +
+        var copy = CARD_COPY[id] || { headline: t.blurb, bullets: [] };
+        var isSub = /monthly|\/mo|per month|month/i.test(t.delivery_note || "") || id.indexOf("weekly-digest") !== -1 || id.indexOf("agency") !== -1;
+        var bullets = copy.bullets.slice(0, 3).map(function (b) {
+          return "<li>" + esc(b) + "</li>";
+        }).join("");
+        return "<div class='card tool-card' data-tool-card='" + esc(id) + "'>" +
+          "<h3>" + esc(copy.headline) + "</h3>" +
+          "<p class='tool-card--what'>" + esc(t.name) + "</p>" +
+          (bullets ? "<ul class='tool-card--bullets'>" + bullets + "</ul>" : "<p>" + esc(t.blurb) + "</p>") +
+          "<div class='price'><span class='price--big'>" + money(t.price_usd) + "</span>" +
+            " <small>" + (isSub ? "/month, crypto" : "one-off, crypto") + "</small></div>" +
+          "<div class='row'>" +
+            "<a class='btn' href='" + esc(abs(t.checkout)) + "'>Buy with crypto</a>" +
+            "<a class='btn ghost small' href='" + esc(abs(t.landing)) + "'>Details</a>" +
+          "</div>" +
           "</div>";
       }).join("");
       var b = $("[data-bundle]");

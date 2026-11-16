@@ -205,6 +205,22 @@ input, textarea, select, .theme-toggle, .chip {
   .hero-art-fallback { display: block !important; }
 }
 
+/* redesigned product cards (renderHome) */
+.tool-card h3 { font-size: 1.25rem; margin-bottom: 2px; }
+.tool-card--what {
+  color: var(--muted); font-size: 0.85rem; margin: 0 0 10px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.tool-card--bullets {
+  margin: 0 0 12px; padding-left: 18px; color: var(--ink);
+  font-size: 0.92rem;
+}
+.tool-card--bullets li { margin: 4px 0; }
+.tool-card--bullets li::marker { color: var(--accent); }
+.price--big { font-size: 1.7rem; }
+.price small { font-weight: 400; font-size: 0.8rem; color: var(--muted); font-family: var(--font-body); }
+.tool-card .row { margin-top: 4px; }
+
 /* trust strip under hero: 4 icons+labels */
 .trust {
   display: flex; gap: 8px 26px; flex-wrap: wrap; align-items: center;
