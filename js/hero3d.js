@@ -39,14 +39,17 @@
     var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
     camera.position.set(0, 0.15, 7.2);
 
-    /* matte lighting: soft hemisphere + key + brand-tinted rim */
+    /* matte lighting: soft hemisphere + key + brand-tinted rim + camera fill */
     scene.add(new THREE.HemisphereLight(0xe8f0ff, 0x0b1220, 1.1));
-    var key = new THREE.DirectionalLight(0xffffff, 1.5);
-    key.position.set(-3, 4, 5);
+    var key = new THREE.DirectionalLight(0xffffff, 1.4);
+    key.position.set(-3, 5, 4);
     scene.add(key);
-    var rim = new THREE.DirectionalLight(0x7ee0c0, 0.9);
+    var rim = new THREE.DirectionalLight(0x7ee0c0, 0.8);
     rim.position.set(4, -2, -3);
     scene.add(rim);
+    var fill = new THREE.DirectionalLight(0xdde7ff, 0.55);
+    fill.position.set(0, 0.6, 6);
+    scene.add(fill);
 
     function coin(colorHex, rimHex) {
       var geo = new THREE.CylinderGeometry(1, 1, 0.16, 48);
