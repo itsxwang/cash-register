@@ -194,6 +194,7 @@
       }
       if (!tool) { root.innerHTML = "<p class='muted'>Unknown item.</p>"; return; }
       $$("[data-tool-name]").forEach(function (el) { el.textContent = tool.name; });
+      document.title = "Checkout — " + tool.name;
 
       if (urlOrder) { renderCheckoutWithOrder(cat, tool, urlOrder); }
       else { renderSelfServe(cat, tool); }
