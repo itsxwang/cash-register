@@ -1,4 +1,42 @@
 /* Cash Register storefront — no framework, no build step. */
+
+/* ---- self-hosted fonts (OFL, latin subset, font-display: swap) ------------ */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../fonts/space-grotesk-latin-500-normal.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/inter-latin-400-normal.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/inter-latin-500-normal.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/inter-latin-600-normal.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../fonts/jetbrains-mono-latin-600-normal.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
 :root {
   --bg: #f8fafc;
   --surface: #ffffff;
@@ -13,7 +51,10 @@
   --banner-ink: #92400e;
   --warn-bg: #fffbeb;
   --warn-line: #f59e0b;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-head: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --grad-cta: linear-gradient(135deg, #8ab4ff, #7ee0c0);
 }
 
 /* ---- dark mode: pure CSS variables, no frameworks ------------------------
@@ -71,10 +112,17 @@
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--ink);
   line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+/* headings + brand get Space Grotesk */
+h1, h2, h3, h4, .brand, .nav .brand, .btn, .chip, .trust label {
+  font-family: var(--font-head);
+  letter-spacing: -0.02em;
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -100,6 +148,107 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40
 .btn:hover { text-decoration: none; filter: brightness(1.08); }
 .btn.ghost { background: var(--surface); color: var(--accent); border: 1px solid var(--line); }
 .btn.small { padding: 7px 12px; font-size: 0.9rem; }
+/* the one gradient CTA (spec: max ONE per viewport) — primary actions only */
+.btn.primary {
+  background: linear-gradient(135deg, #8ab4ff, #7ee0c0);
+  color: #0b1220; font-weight: 600;
+  box-shadow: 0 1px 2px rgba(11, 18, 32, 0.18);
+}
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.primary:active { filter: brightness(0.98); }
+
+/* ---- motion (calm confidence) -------------------------------------------
+ * Scroll reveal: fade+rise 12px, 500ms ease-out, 60ms stagger (motion.js).
+ * Gated on html.js (set pre-paint) so no-JS visitors never see hidden content;
+ * reduced-motion users get everything visible + zero animation.
+ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.js .reveal.revealed {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+/* safety: if motion.js never runs, un-hide after 1.2s */
+.js.reveal-fallback .reveal:not(.revealed) { opacity: 1 !important; transform: none !important; }
+
+/* hover: cards lift 2px + border brightens; nothing bounces */
+@media (hover: hover) {
+  .card, .tool-card, .steps li, .faq details {
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease,
+                background-color 0.25s ease, color 0.25s ease;
+  }
+  .card:hover, .tool-card:hover, .faq details:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+}
+
+/* theme switch: 250ms color transition on the common surfaces */
+.nav, .panel, .card, .tool-card, .faq details, .steps li, .badge, .upsell, .banner,
+input, textarea, select, .theme-toggle, .chip {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js .reveal { opacity: 1; transform: none; }
+  .hero-art-canvas { display: none !important; }
+  .hero-art-fallback { display: block !important; }
+}
+
+/* trust strip under hero: 4 icons+labels */
+.trust {
+  display: flex; gap: 8px 26px; flex-wrap: wrap; align-items: center;
+  padding: 14px 0; margin-top: 26px; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 0.9rem;
+}
+.trust span { display: inline-flex; align-items: center; gap: 7px; }
+.trust svg { flex: 0 0 auto; opacity: 0.9; }
+
+/* hero art (3D canvas / SVG fallback) — fixed height, never pushes content */
+.hero { padding: 54px 0 30px; max-width: 720px; }
+.hero:has(.hero-art) {
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
+  gap: 26px; align-items: center; padding: 54px 0 30px; max-width: 980px;
+}
+.hero:has(.hero-art) > * { min-width: 0; }
+.hero-copy { max-width: 620px; }
+.hero-copy { max-width: 620px; }
+.hero-art {
+  position: relative; height: 300px; pointer-events: none;
+  contain: strict;
+}
+.hero-art canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.hero-art-fallback { display: none; width: 100%; height: 100%; }
+@media (max-width: 767px) {
+  .hero:has(.hero-art) { grid-template-columns: 1fr; padding-top: 40px; }
+  .hero-art { height: 200px; order: -1; }
+  .hero-art canvas { display: none !important; }
+  .hero-art-fallback { display: block !important; }
+}
+
+/* bundle emphasis */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--grad-cta); color: #0b1220;
+}
+.tool-card--bundle { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+
+/* footer nav (unified across pages) */
+.footnav { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.footnav a { color: var(--muted); font-size: 0.9rem; }
+.footnav a:hover { color: var(--ink); }
 
 /* bundle upsell banner (tool checkouts) */
 .upsell {
@@ -123,7 +272,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40
 }
 .card h3 { margin: 0; font-size: 1.15rem; }
 .card p { margin: 0; color: var(--muted); font-size: 0.95rem; flex: 1; }
-.price { font-weight: 700; font-size: 1.05rem; }
+.price { font-family: var(--mono); font-weight: 600; font-size: 1.05rem; letter-spacing: 0; }
 .price small { color: var(--muted); font-weight: 400; }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 

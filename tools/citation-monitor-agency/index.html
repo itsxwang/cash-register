@@ -20,7 +20,9 @@
   <meta name="twitter:description" content="Every week an agent asks AI engines 36 real buyer questions for each of your 3 client brands and emails you: where you're cited, where competitors win, and the 3 changes that flip it.">
   <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/citation-monitor-agency.png">
   <link rel="stylesheet" href="../../css/style.css">
-  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-reduced","1");}else{document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("reveal-fallback")},1200);}}catch(e){}})();</script>
+  <link rel="preload" href="../../fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
   <div class="wrap">
@@ -46,7 +48,7 @@
       <div class="banner" data-demo-banner></div>
     </div>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>What lands in your inbox every Monday</h2>
       <div class="grid">
         <div class="card"><h3>🎯 Your citation share</h3><p>Of the 36 answers, how many mention your product —
@@ -63,7 +65,7 @@
          baseline week: competitors cited in 25/36 answers, demo brand at 0/36. That gap is the product.</p>
     </section>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>How delivery works</h2>
       <ul>
         <li><strong>$39/month</strong>, paid in BTC / ETH / SOL — each month's payment is a new order,
@@ -76,7 +78,7 @@
       <a class="btn" href="checkout.html">Subscribe with crypto →</a>
     </section>
 
-    <section class="section">
+    <section class="section reveal">
       <h2>FAQ</h2>
       <details>
         <summary>Can I get a refund?</summary>
@@ -108,11 +110,14 @@
            7 days if anything is off.</p>
       </details>
     </section>
-
-    <footer><span class="muted">Crypto-only billing · ETH (Base) · SOL · BTC · support: xion.dev7@gmail.com</span></footer>
+  <footer>
+    <nav class="footnav"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
+    <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> · crypto-only: BTC / ETH / SOL · built with the Cash Register stack</span>
+  </footer>
   </div>
   <script src="../../js/qr.js"></script>
   <script src="../../js/store.js"></script>
+  <script src="../../js/motion.js"></script>
   <!-- ANALYTICS-BEACON (optional Cloudflare Web Analytics — replace this comment with the JS beacon) -->
 </body>
 </html>
