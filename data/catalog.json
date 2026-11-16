@@ -78,6 +78,19 @@
       "landing": "/tools/citation-monitor-weekly-digest/",
       "checkout": "/tools/citation-monitor-weekly-digest/checkout.html",
       "delivery_note": "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
+    },
+    "citation-monitor-agency": {
+      "name": "Citation Monitor \u2014 Agency (3 brands)",
+      "blurb": "The weekly AI-visibility digest for a whole client roster: 3 brands tracked in parallel, per-brand sections in one Monday report.",
+      "price_usd": 39,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/citation-monitor-agency/",
+      "checkout": "/tools/citation-monitor-agency/checkout.html",
+      "delivery_note": "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
     }
   },
   "bundle": {
@@ -87,5 +100,5 @@
     "release_file": "cash-register-bundle-v1.1.0.zip"
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-16T08:20:01Z"
+  "generated_at": "2026-11-16T08:23:44Z"
 }
