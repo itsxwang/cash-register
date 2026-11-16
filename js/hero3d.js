@@ -114,6 +114,13 @@
     }
 
     var last = performance.now(), acc = 0, STEP = 1 / 30;
+    /* per-coin drift: small circular orbit + bob; faces stay camera-facing
+     * (they're rotationally symmetric, so no visible spin is needed) */
+    var seed = [
+      { cx: -1.55, cy: 0.35, cz: 0.4, ph: 0.0 },
+      { cx: 1.35, cy: -0.5, cz: -0.2, ph: 2.1 },
+      { cx: 1.9, cy: 1.05, cz: 0.7, ph: 4.2 }
+    ];
     function tick(now) {
       requestAnimationFrame(tick);
       var dt = Math.min((now - last) / 1000, 0.1);
@@ -126,13 +133,14 @@
       px += (tx - px) * 0.04;      // damped parallax
       py += (ty - py) * 0.04;
 
-      group.rotation.y += dt * 0.22;
-      btc.position.y = 0.35 + Math.sin(now * 0.00042) * 0.16;
-      eth.position.y = -0.5 + Math.sin(now * 0.00033 + 2.1) * 0.14;
-      sol.position.y = 1.05 + Math.sin(now * 0.00051 + 4.2) * 0.12;
-      btc.rotation.x = 0.45; btc.rotation.z = 0.15;
-      eth.rotation.x = 0.5;  eth.rotation.z = -0.2;
-      sol.rotation.x = 0.35; sol.rotation.z = 0.25;
+      [btc, eth, sol].forEach(function (c, i) {
+        var s = seed[i], w = now * 0.00035 + s.ph;
+        c.position.x = s.cx + Math.sin(w) * 0.28;
+        c.position.z = s.cz + Math.cos(w) * 0.34;
+        c.position.y = s.cy + Math.sin(w * 1.35) * 0.16;
+        c.rotation.x = 1.3 + Math.sin(w * 0.8) * 0.12;
+        c.rotation.z = (i - 1) * 0.16;
+      });
 
       camera.position.x = px * 0.5;
       camera.position.y = 0.15 + py * -0.35;
