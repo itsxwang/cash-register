@@ -129,11 +129,16 @@ a:hover { text-decoration: underline; }
 .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
 
 /* nav + footer */
-.nav { display: flex; align-items: center; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.nav { display: flex; align-items: center; gap: 18px; padding: 14px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .nav .brand { font-weight: 700; letter-spacing: -0.02em; }
 .nav .spacer { flex: 1; }
 .nav a { color: var(--muted); font-size: 0.95rem; }
 .nav a:hover { color: var(--ink); }
+@media (max-width: 480px) {
+  .nav { gap: 10px 14px; padding: 10px 0; }
+  .nav .brand { width: 100%; }        /* brand on its own line, links wrap below */
+  .nav a { font-size: 0.9rem; }
+}
 footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40px; color: var(--muted); font-size: 0.9rem; }
 
 /* hero */
