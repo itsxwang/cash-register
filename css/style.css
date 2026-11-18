@@ -357,12 +357,20 @@ input, textarea, select, .theme-toggle, .chip {
 .hero-art { position: relative; pointer-events: none; }
 .hero-art svg { display: block; width: 100%; height: auto; }
 .coin-float {
-  animation: coin-float 7s ease-in-out infinite alternate;
+  animation: coin-float 5.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
   transform-box: fill-box; transform-origin: center;
+  will-change: transform;
 }
-.coin-eth.coin-float { animation-delay: 1.2s; }
-.coin-sol.coin-float { animation-delay: 2.4s; }
-@keyframes coin-float { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+/* negative delays = coins start mid-cycle, old "staggered start" read as steps */
+.coin-eth.coin-float { animation-delay: -2s; }
+.coin-sol.coin-float { animation-delay: -3.7s; }
+@keyframes coin-float {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(3px, -10px) rotate(1deg); }
+  50%  { transform: translate(0, -19px) rotate(0deg); }
+  75%  { transform: translate(-3px, -10px) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
 @media (max-width: 767px) {
   .hero:has(.hero-art) { grid-template-columns: 1fr; padding-top: 40px; }
   .hero-art { order: -1; }
