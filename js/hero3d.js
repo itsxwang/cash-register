@@ -136,9 +136,9 @@
     });
 
     /* loose triangle, each coin scaled + phased for a floating feel */
-    btc.position.set(-1.55, 0.35, 0.4);  btc.scale.setScalar(1.15);
-    eth.position.set(1.35, -0.5, -0.2);  eth.scale.setScalar(0.95);
-    sol.position.set(1.9, 1.05, 0.7);    sol.scale.setScalar(0.7);
+    btc.position.set(-1.28, 0.35, 0.4);  btc.scale.setScalar(1.03);
+    eth.position.set(1.22, -0.5, -0.2);  eth.scale.setScalar(0.9);
+    sol.position.set(1.72, 0.95, 0.7);   sol.scale.setScalar(0.66);
 
     var group = new THREE.Group();
     group.add(btc); group.add(eth); group.add(sol);
@@ -179,11 +179,13 @@
     }
 
     var last = performance.now(), acc = 0, STEP = 1 / 30;
-    /* per-coin drift: small circular orbit + bob; faces stay camera-facing */
+    /* per-coin drift: small circular orbit + bob; faces stay camera-facing.
+     * Radii/scales are clip-safe: worst case (drift + parallax camera.x ±0.5)
+     * keeps every coin inside the viewport at host aspect 1.2–1.7. */
     var seed = [
-      { cx: -1.55, cy: 0.35, cz: 0.4, ph: 0.0 },
-      { cx: 1.35, cy: -0.5, cz: -0.2, ph: 2.1 },
-      { cx: 1.9, cy: 1.05, cz: 0.7, ph: 4.2 }
+      { cx: -1.28, cy: 0.35, cz: 0.4, ph: 0.0 },
+      { cx: 1.22, cy: -0.5, cz: -0.2, ph: 2.1 },
+      { cx: 1.72, cy: 0.95, cz: 0.7, ph: 4.2 }
     ];
     function tick(now) {
       requestAnimationFrame(tick);
@@ -199,10 +201,10 @@
 
       [btc, eth, sol].forEach(function (c, i) {
         var s = seed[i], w = now * 0.00035 + s.ph;
-        c.position.x = s.cx + Math.sin(w) * 0.28;
-        c.position.z = s.cz + Math.cos(w) * 0.34;
+        c.position.x = s.cx + Math.sin(w) * 0.2;
+        c.position.z = s.cz + Math.cos(w) * 0.26;
         c.position.y = s.cy + Math.sin(w * 1.35) * 0.16;
-        c.rotation.x = 1.3 + Math.sin(w * 0.8) * 0.12;
+        c.rotation.x = 1.08 + Math.sin(w * 0.8) * 0.08;
         c.rotation.z = (i - 1) * 0.16;
       });
 

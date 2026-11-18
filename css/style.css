@@ -109,7 +109,7 @@
 .theme-toggle:hover { border-color: var(--accent); }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; } /* full-bleed sticky nav must not add horizontal scroll */
 body {
   margin: 0;
   font-family: var(--font-body);
