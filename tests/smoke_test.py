@@ -315,6 +315,14 @@ def main() -> None:
                        if re.search(r'class="section[^"]*reveal[^"]*"[^>]*data-checkout|data-checkout[^>]*reveal', p.read_text(encoding="utf-8"))]
     check("checkout sections never reveal-hidden (conversion focus)",
           not reveal_checkout, str(reveal_checkout))
+    tool_pages = sorted((site / "tools").glob("*/index.html")) + sorted((site / "tools").glob("*/checkout.html"))
+    check("tool pages share the root nav: pill toggle knob + navcta + 3-col footer",
+          len(tool_pages) == 10
+          and all('class="knob"' in p.read_text(encoding="utf-8")
+                  and 'class="btn navcta"' in p.read_text(encoding="utf-8")
+                  and "foot-cols" in p.read_text(encoding="utf-8")
+                  and "MutationObserver" in p.read_text(encoding="utf-8")
+                  for p in tool_pages))
     check("one gradient CTA class, gradient limited to .btn.primary + chip",
           css_text.count("linear-gradient(135deg, #14b8a6") == 2  # var + single use
           and ".btn.primary {" in css_text)
