@@ -233,7 +233,7 @@ def main() -> None:
                      or "theme-toggle" not in p.read_text(encoding="utf-8")]
     check("anti-FOUC snippet + toggle on all 11 pages", not missing_theme, str(missing_theme))
     css = (site / "css" / "style.css").read_text(encoding="utf-8")
-    check("dark palette uses CSS variables", '[data-theme="dark"]' in css and "--bg: #0b1220" in css)
+    check("dark palette uses CSS variables", '[data-theme="dark"]' in css and "--bg: #0a0e1a" in css)
     check("QR + invoice sheet forced light in dark mode",
           '[data-theme="dark"] .qrbox' in css and '[data-theme="dark"] .sheet' in css)
     check("theme JS present in store.js",
@@ -316,7 +316,7 @@ def main() -> None:
     check("checkout sections never reveal-hidden (conversion focus)",
           not reveal_checkout, str(reveal_checkout))
     check("one gradient CTA class, gradient limited to .btn.primary + chip",
-          css_text.count("linear-gradient(135deg, #8ab4ff") == 2  # var + single use
+          css_text.count("linear-gradient(135deg, #14b8a6") == 2  # var + single use
           and ".btn.primary {" in css_text)
     check("hero3d module exists, referenced by index.html only",
           (site / "js" / "hero3d.js").is_file()
