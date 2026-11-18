@@ -27,14 +27,37 @@
 <body>
   <div class="wrap">
     <nav class="nav">
-      <span class="brand">⚙️ Xion's Micro Tools</span>
+      <a class="brand" href="index.html">⚙️ Xion's Micro Tools</a>
       <span class="spacer"></span>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
       <a href="index.html#tools">Tools</a>
-      <a href="changelog.html">Changelog</a>
+      <a href="index.html#how">How it works</a>
       <a href="status.html">Order status</a>
+      <a href="changelog.html">Changelog</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span class="knob" aria-hidden="true">
+          <svg class="i-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="i-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
+      <a class="btn navcta" href="index.html#tools">Get a tool</a>
     </nav>
-
+    <script>
+      /* keeps the pill switch on store.js's existing #theme-toggle hook: store.js
+       * already manages aria-pressed/aria-label, but its applyTheme() rewrites
+       * textContent (the legacy emoji shared with other pages) — this observer
+       * re-mounts the knob in the same task's microtask window, so the emoji is
+       * never painted. No library, ~6 lines. */
+      (function () {
+        var b = document.getElementById("theme-toggle");
+        if (!b) return;
+        b.setAttribute("aria-pressed",
+          document.documentElement.getAttribute("data-theme") === "dark" ? "true" : "false");
+        var knob = b.innerHTML;
+        new MutationObserver(function () {
+          if (!b.querySelector(".knob")) b.innerHTML = knob;
+        }).observe(b, { childList: true });
+      })();
+    </script>
     <div class="hero">
       <h1>How crypto payment works — in 4 steps</h1>
       <p>No card needed, no account to create, works from any country. A payment takes
@@ -94,8 +117,17 @@
          — usually same-day.</p>
     </section>
   <footer>
-    <nav class="footnav"><a href="index.html#tools">Tools</a><a href="crypto-guide.html">Crypto guide</a><a href="changelog.html">Changelog</a><a href="status.html">Order status</a></nav>
-    <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> · crypto-only: BTC / ETH / SOL · built with the Cash Register stack</span>
+    <div class="foot-cols">
+      <div>
+        <span class="brand">⚙️ Xion's Micro Tools</span>
+        <p class="muted">Tiny paid tools for solo operators — crypto-native checkout, no card processors, files in minutes.</p>
+      </div>
+      <nav class="footnav" aria-label="Site"><a href="index.html#tools">Tools</a><a href="crypto-guide.html">Crypto guide</a><a href="changelog.html">Changelog</a><a href="status.html">Order status</a></nav>
+      <div>
+        <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a></span><br>
+        <span class="muted">crypto-only: BTC / ETH / SOL · built with the Cash Register stack</span>
+      </div>
+    </div>
   </footer>
   </div>
   <script src="js/qr.js"></script>
