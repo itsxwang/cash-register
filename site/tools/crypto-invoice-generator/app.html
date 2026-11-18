@@ -24,22 +24,29 @@
   <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-reduced","1");}else{document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("reveal-fallback")},1200);}}catch(e){}})();</script>
   <link rel="preload" href="../../fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="app.css?v=2">
 </head>
 <body>
   <div class="wrap">
     <nav class="nav no-print">
-      <span class="brand">🧾 Crypto Invoice Generator <span class="badge">v1.1.0</span></span>
+      <a class="brand" href="index.html">🧾 Crypto Invoice Generator <span class="badge">v1.1.0</span></a>
       <span class="spacer"></span>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
-      <a href="index.html">← Tool page</a>
+      <a href="index.html">Tool page</a>
       <a href="../../index.html">Store</a>
+      <a href="../../status.html">Order status</a>
       <a href="../../changelog.html">Changelog</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <span class="knob" aria-hidden="true">
+          <svg class="i-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="i-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
+      <a class="btn navcta" href="checkout.html">Buy — $19.00</a>
     </nav>
 
     <div class="appbar no-print">
       <div class="row">
-        <button class="btn" id="btn-print">Print / Save PDF</button>
+        <button class="btn primary" id="btn-print">Print / Save PDF</button>
         <button class="btn ghost" id="btn-export">Export standalone HTML</button>
         <button class="btn ghost" id="btn-example">Load example</button>
         <button class="btn ghost" id="btn-new">Save &amp; new invoice</button>
@@ -137,21 +144,32 @@
     </div>
 
     <footer class="no-print">
-      <nav class="footnav"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
-      <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a> · runs 100% client-side · v1.1.0</span>
+      <div class="foot-cols">
+        <div>
+          <span class="brand">⚙️ Xion's Micro Tools</span>
+          <p class="muted">Tiny paid tools for solo operators — crypto-native checkout, no card processors, files in minutes.</p>
+        </div>
+        <nav class="footnav" aria-label="Site"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
+        <div>
+          <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a></span><br>
+          <span class="muted">crypto-only: BTC / ETH / SOL · runs 100% client-side · v1.1.0</span>
+        </div>
+      </div>
     </footer>
   </div>
 
   <script src="../../js/qr.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
   <script>
-    /* theme toggle for the app page (app.js is self-contained; store.js not loaded here) */
+    /* theme toggle for the app page (app.js is self-contained; store.js not loaded here).
+       Keeps the pill knob node alive so its slide transition always animates. */
     (function () {
       var btn = document.getElementById("theme-toggle");
       if (!btn) return;
+      var knob = btn.innerHTML;
       function paint() {
+        if (!btn.querySelector(".knob")) btn.innerHTML = knob;
         var dark = document.documentElement.getAttribute("data-theme") === "dark";
-        btn.textContent = dark ? "☀️" : "🌙";
         btn.setAttribute("aria-pressed", dark ? "true" : "false");
         btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       }
