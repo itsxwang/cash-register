@@ -41,13 +41,16 @@
   --bg: #f8fafc;
   --surface: #ffffff;
   --ink: #0f172a;
-  --muted: #64748b;
+  --muted: #505765; /* fallback for engines without color-mix: ink @ 72% over bg */
+  --muted: color-mix(in srgb, var(--ink) 72%, var(--bg));
   --line: rgba(15, 23, 42, 0.1);
   --accent: #0f766e;
   --accent-ink: #ffffff;
   --accent-soft: #f0fdfa;
   --good: #047857;
   --good-soft: #ecfdf5;
+  --bad: #b91c1c;
+  --bad-soft: rgba(220, 38, 38, 0.12);
   --banner-ink: #92400e;
   --warn-bg: #fffbeb;
   --warn-line: #f59e0b;
@@ -75,13 +78,16 @@
   --bg: #0a0e1a;
   --surface: rgba(255, 255, 255, 0.03);
   --ink: #e2e8f0;
-  --muted: #9fb0d0;
+  --muted: #a6abb4; /* fallback for engines without color-mix: ink @ 72% over bg */
+  --muted: color-mix(in srgb, var(--ink) 72%, var(--bg));
   --line: rgba(148, 163, 184, 0.16);
   --accent: #2dd4bf;
   --accent-ink: #052e2b;
   --accent-soft: rgba(45, 212, 191, 0.12);
   --good: #34d399;
   --good-soft: #0f2e23;
+  --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.14);
   --banner-ink: #fbbf24;
   --warn-bg: #2a2410;
   --warn-line: #d97706;
@@ -170,7 +176,7 @@ body {
   background-attachment: fixed, fixed;
   background-repeat: no-repeat;
   color: var(--ink);
-  line-height: 1.55;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
@@ -179,8 +185,9 @@ h1, h2, h3, h4, .brand, .nav .brand, .btn, .chip, .trust label {
   font-family: var(--font-head);
   letter-spacing: -0.02em;
 }
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
 a:hover { text-decoration: underline; }
+code { font-family: var(--mono); font-size: 0.92em; }
 .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
 
 /* nav: sticky translucent glass bar. .nav lives inside .wrap, so negative
@@ -417,6 +424,20 @@ input, textarea, select, .theme-toggle, .chip {
 .section { margin: 96px 0; }
 @media (max-width: 640px) { .section { margin: 56px 0; } }
 .section h2 { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2rem); letter-spacing: -0.02em; margin: 0 0 24px; }
+
+/* eyebrow device: tiny uppercase accent kicker above section titles (Linear-style).
+ * store.js replaces [data-*] innerHTML at render time, so the store pages carry the
+ * eyebrow as a ::before pseudo on the section — pseudos survive innerHTML swaps. */
+.eyebrow, [data-checkout]::before, [data-status]::before, [data-download]::before {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 10px;
+}
+[data-checkout]::before { content: "Crypto payment"; }
+[data-status]::before { content: "Tracking"; }
+[data-download]::before { content: "Delivery"; }
+.eyebrow + h2, .eyebrow + h3 { margin-top: 0; }
+.prose { max-width: 68ch; }
 /* numbered step cards with a connecting hairline (checkout + how-it-works + guide) */
 .steps { counter-reset: step; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .steps li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
@@ -477,20 +498,48 @@ input, textarea, select, .theme-toggle, .chip {
 .qrbox { text-align: center; }
 .qrbox .qr { display: inline-block; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
 .qrbox svg, .qrbox img { display: block; }
-.hint { color: var(--muted); font-size: 0.85rem; }
+.hint {
+  color: var(--muted); font-size: 0.9rem; margin: 12px 0;
+  padding: 10px 14px; border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.hint:empty { display: none; } /* e.g. #fxhint before rates resolve */
 
-/* status timeline */
+/* status timeline: generous hairline-separated rows */
 .timeline { list-style: none; padding: 0; margin: 18px 0; }
-.timeline li { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; color: var(--muted); }
+.timeline li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; color: var(--muted); border-bottom: 1px solid var(--line); }
+.timeline li:last-child { border-bottom: none; }
 .timeline li::before { content: "○"; font-size: 1.1rem; line-height: 1.4; }
 .timeline li.done { color: var(--ink); }
 .timeline li.done::before { content: "●"; color: var(--good); }
+/* status pills: dot + label, tinted per state */
 .badge {
-  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 10px; border-radius: 999px;
   font-size: 0.8rem; font-weight: 600; background: var(--accent-soft); color: var(--accent);
 }
+.badge::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: currentColor; flex: 0 0 auto; }
 .badge.paid, .badge.delivered { background: var(--good-soft, #ecfdf5); color: var(--good); }
 .badge.awaiting_payment { background: var(--warn-bg); color: var(--banner-ink, #92400e); }
+.badge.failed, .badge.refunded { background: var(--bad-soft); color: var(--bad); }
+
+/* download page: one big clear action, delivery details in mono */
+[data-download] .btn { padding: 12px 22px; font-size: 1rem; }
+[data-download] .muted { font-family: var(--mono); font-size: 0.85rem; }
+
+/* changelog: left-rail release timeline — hairline spine, accent dot per release */
+.changelog { border-left: 1px solid var(--line); padding-left: 28px; margin-left: 5px; display: grid; gap: 30px; }
+.release { position: relative; }
+.release::before {
+  content: ""; position: absolute; left: -34px; top: 3px; width: 11px; height: 11px;
+  border-radius: 999px; background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.rel-date { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+.release-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.release-card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.release-card h3:not(:first-child) { margin-top: 20px; }
+.release-card h3 + p { margin-top: 0; }
 
 /* forms */
 input[type="text"], input[type="email"], input[type="number"], textarea, select {
