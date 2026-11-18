@@ -554,9 +554,15 @@
     var btn = $("#theme-toggle");
     document.documentElement.setAttribute("data-theme", theme);
     if (btn) {
-      btn.textContent = theme === "dark" ? "☀️" : "🌙";
-      btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-      btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+      /* Pill switch: keep the existing knob node so its transform transition
+       * actually animates (replacing innerHTML with the legacy emoji killed the
+       * slide and made the observer transplant the knob at its end position). */
+      if (btn.querySelector(".knob")) {
+        btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+        btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+      } else {
+        btn.textContent = theme === "dark" ? "☀️" : "🌙";
+      }
     }
   }
 
