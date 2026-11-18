@@ -333,9 +333,9 @@ def main() -> None:
           and idx_text.count('<path id="glyph-') == 3
           and "#9945FF" in idx_text and "#14F195" in idx_text
           and "<feGaussianBlur" in idx_text)
-    check("coins animate everywhere: CSS keyframes + stagger + reduced-motion kill",
+    check("coins animate everywhere: CSS keyframes + phase shift + reduced-motion kill",
           "@keyframes coin-float" in css_text and "transform-box: fill-box" in css_text
-          and "animation-delay: 1.2s" in css_text and "animation-delay: 2.4s" in css_text
+          and "animation-delay: -2s" in css_text and "animation-delay: -3.7s" in css_text
           and re.search(r"prefers-reduced-motion: reduce[\s\S]*?\.coin-float \{ animation: none", css_text))
     check("no WebGL/three.js remnants ship to buyers",
           not (site / "js" / "hero3d.js").exists()
