@@ -381,9 +381,14 @@
 
   /* ---------------- boot ---------------- */
   load();
-  // inject invoice css (preview) — export reuses the same string
+  // inject invoice css (preview) — export reuses the same string.
+  // IMPORTANT: the invoice document's body{} rule is scoped to .sheet here —
+  // injecting it globally forced a white body and killed dark mode on the app page.
   var style = document.createElement("style");
-  style.textContent = INVOICE_CSS;
+  style.textContent = INVOICE_CSS.join("\n").replace(
+    /body\{margin:0;font-family:[^}]*\}/,
+    ".sheet{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0f172a}"
+  );
   document.head.appendChild(style);
   if (!localStorage.getItem(KEY)) {
     state.meta.number = nextNumber(1);
