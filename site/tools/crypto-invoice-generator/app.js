@@ -385,7 +385,7 @@
   // IMPORTANT: the invoice document's body{} rule is scoped to .sheet here —
   // injecting it globally forced a white body and killed dark mode on the app page.
   var style = document.createElement("style");
-  style.textContent = INVOICE_CSS.join("\n").replace(
+  style.textContent = INVOICE_CSS.replace(
     /body\{margin:0;font-family:[^}]*\}/,
     ".sheet{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0f172a}"
   );
