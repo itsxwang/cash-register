@@ -88,35 +88,61 @@
           </span>
         </div>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <svg class="hero-art-fallback" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three floating coins: Bitcoin, Ethereum, Solana">
-          <defs>
-            <radialGradient id="coinBTC" cx="35%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#ffbb66"/><stop offset="70%" stop-color="#f7931a"/><stop offset="100%" stop-color="#c46a00"/>
-            </radialGradient>
-            <radialGradient id="coinETH" cx="35%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#93aaff"/><stop offset="70%" stop-color="#627eea"/><stop offset="100%" stop-color="#3f56b5"/>
-            </radialGradient>
-            <radialGradient id="coinSOL" cx="35%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#7ff2c8"/><stop offset="70%" stop-color="#14f195"/><stop offset="100%" stop-color="#9945ff"/>
-            </radialGradient>
-          </defs>
-          <g transform="translate(70,78)">
-            <circle r="42" fill="url(#coinBTC)"/>
-            <circle r="42" fill="none" stroke="#0b1220" stroke-opacity="0.25" stroke-width="2"/>
-            <text y="16" text-anchor="middle" font-family="monospace" font-weight="700" font-size="38" fill="#0b1220" fill-opacity="0.85">₿</text>
-          </g>
-          <g transform="translate(165,120)">
-            <circle r="34" fill="url(#coinETH)"/>
-            <circle r="34" fill="none" stroke="#0b1220" stroke-opacity="0.25" stroke-width="2"/>
-            <text y="13" text-anchor="middle" font-family="monospace" font-weight="700" font-size="30" fill="#0b1220" fill-opacity="0.85">Ξ</text>
-          </g>
-          <g transform="translate(232,58)">
-            <circle r="27" fill="url(#coinSOL)"/>
-            <circle r="27" fill="none" stroke="#0b1220" stroke-opacity="0.25" stroke-width="2"/>
-            <text y="10" text-anchor="middle" font-family="monospace" font-weight="700" font-size="24" fill="#0b1220" fill-opacity="0.85">◎</text>
-          </g>
-        </svg>
+          <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg" role="presentation" aria-hidden="true" focusable="false">
+        <defs>
+          <radialGradient id="grad-btc" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#ffb347"/><stop offset="72%" stop-color="#e08508"/><stop offset="100%" stop-color="#b96f04"/>
+          </radialGradient>
+          <radialGradient id="grad-eth" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#8ea7f5"/><stop offset="72%" stop-color="#5d75d6"/><stop offset="100%" stop-color="#4a5fbf"/>
+          </radialGradient>
+          <radialGradient id="grad-sol" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#1a1030"/><stop offset="75%" stop-color="#120c22"/><stop offset="100%" stop-color="#0b0e1a"/>
+          </radialGradient>
+          <linearGradient id="solbar-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#9945FF"/><stop offset="100%" stop-color="#14F195"/>
+          </linearGradient>
+          <path id="glyph-btc" d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.05-1.244 15.525.362 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.548v-.002zm-6.35-4.613c.24-1.59-.974-2.45-2.64-3.03l.54-2.153-1.315-.33-.525 2.107c-.345-.087-.705-.167-1.064-.25l.526-2.127-1.32-.329-.537 2.148c-.286-.067-.57-.13-.859-.194l-1.865-.466-.34 1.367s.975.224.955.238c.535.134.63.486.615.766l-1.558 6.254c-.065.162-.23.406-.602.313.013.02-.955-.238-.955-.238l-.67 1.542 1.758.438c.327.082.647.168.964.25l-.593 2.382 1.316.328.539-2.162c.36.098.71.188 1.054.273l-.535 2.145 1.318.33.592-2.377c2.247.425 3.937.254 4.65-1.779.574-1.637-.028-2.582-1.212-3.197.862-.199 1.512-.765 1.688-1.935zm-3.015 4.222c-.407 1.632-3.16.75-4.053.53l.724-2.9c.893.223 3.757.665 3.329 2.37zm.407-4.271c-.372 1.487-2.667.732-3.412.547l.657-2.64c.745.185 3.146.532 2.755 2.093z"/>
+          <path id="glyph-eth" d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z"/>
+          <path id="glyph-sol" d="m23.8764 18.0313-3.962 4.1393a.9201.9201 0 0 1-.306.2106.9407.9407 0 0 1-.367.0742H.4599a.4689.4689 0 0 1-.2522-.0733.4513.4513 0 0 1-.1696-.1962.4375.4375 0 0 1-.0314-.2545.4438.4438 0 0 1 .117-.2298l3.9649-4.1393a.92.92 0 0 1 .3052-.2102.9407.9407 0 0 1 .3658-.0746H23.54a.4692.4692 0 0 1 .2523.0734.4531.4531 0 0 1 .1697.196.438.438 0 0 1 .0313.2547.4442.4442 0 0 1-.1169.2297zm-3.962-8.3355a.9202.9202 0 0 0-.306-.2106.941.941 0 0 0-.367-.0742H.4599a.4687.4687 0 0 0-.2522.0734.4513.4513 0 0 0-.1696.1961.4376.4376 0 0 0-.0314.2546.444.444 0 0 0 .117.2297l3.9649 4.1394a.9204.9204 0 0 0 .3052.2102c.1154.049.24.0744.3658.0746H23.54a.469.469 0 0 0 .2523-.0734.453.453 0 0 0 .1697-.1961.4382.4382 0 0 0 .0313-.2546.4444.4444 0 0 0-.1169-.2297zM.46 6.7225h18.7815a.9411.9411 0 0 0 .367-.0742.9202.9202 0 0 0 .306-.2106l3.962-4.1394a.4442.4442 0 0 0 .117-.2297.4378.4378 0 0 0-.0314-.2546.453.453 0 0 0-.1697-.196.469.469 0 0 0-.2523-.0734H4.7596a.941.941 0 0 0-.3658.0745.9203.9203 0 0 0-.3052.2102L.1246 5.9687a.4438.4438 0 0 0-.1169.2295.4375.4375 0 0 0 .0312.2544.4512.4512 0 0 0 .1692.196.4689.4689 0 0 0 .2518.0739z"/>
+          <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+        </defs>
+    <g transform="rotate(-8 100 168)">
+      <ellipse cx="100" cy="241" rx="51.2" ry="9.0" fill="#050810" opacity="0.22" filter="url(#soft)"/>
+      <g class="coin-btc coin-float">
+        <circle cx="100" cy="168" r="64" fill="url(#grad-btc)"/>
+        <circle cx="100" cy="168" r="64" fill="none" stroke="#6b3f00" stroke-opacity="0.6" stroke-width="1.5"/>
+        <circle cx="100" cy="168" r="55" fill="none" stroke="#a35f00" stroke-opacity="0.35" stroke-width="1.5"/>
+        <path d="M 153.2 158.6 A 54 54 0 0 1 90.6 114.8" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="7" stroke-linecap="round"/>
+        <use href="#glyph-btc" fill="#7a4500" transform="translate(61.3 129.3) scale(3.31)"/>
+        <use href="#glyph-btc" fill="#a35f00" transform="translate(60.3 128.3) scale(3.31)"/>
+      </g>
+    </g>
+
+    <g transform="rotate(6 312 228)">
+      <ellipse cx="312" cy="289" rx="41.6" ry="7.3" fill="#050810" opacity="0.22" filter="url(#soft)"/>
+      <g class="coin-eth coin-float">
+        <circle cx="312" cy="228" r="52" fill="url(#grad-eth)"/>
+        <circle cx="312" cy="228" r="52" fill="none" stroke="#31418f" stroke-opacity="0.6" stroke-width="1.5"/>
+        <circle cx="312" cy="228" r="43" fill="none" stroke="#2c3d8f" stroke-opacity="0.5" stroke-width="1.5"/>
+        <path d="M 353.4 220.7 A 42 42 0 0 1 304.7 186.6" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="6" stroke-linecap="round"/>
+        <use href="#glyph-eth" fill="#ffffff" fill-opacity="0.85" transform="translate(279.7 195.7) scale(2.69)"/>
+      </g>
+    </g>
+
+    <g transform="rotate(-4 415 84)">
+      <ellipse cx="415" cy="135" rx="33.6" ry="5.9" fill="#050810" opacity="0.22" filter="url(#soft)"/>
+      <g class="coin-sol coin-float">
+        <circle cx="415" cy="84" r="45.5" fill="none" stroke="#9945FF" stroke-opacity="0.2" stroke-width="3.5" filter="url(#soft)"/>
+        <circle cx="415" cy="84" r="42" fill="url(#grad-sol)"/>
+        <circle cx="415" cy="84" r="42" fill="none" stroke="#000000" stroke-opacity="0.6" stroke-width="1.5"/>
+        <circle cx="415" cy="84" r="33" fill="none" stroke="#000000" stroke-opacity="0.35" stroke-width="1.5"/>
+        <path d="M 446.5 78.4 A 32 32 0 0 1 409.4 52.5" fill="none" stroke="#ffffff" stroke-opacity="0.1" stroke-width="5" stroke-linecap="round"/>
+        <use href="#glyph-sol" fill="url(#solbar-grad)" transform="translate(389.0 58.0) scale(2.17)"/>
+      </g>
+    </g>
+      </svg>
       </div>
     </div>
 
@@ -196,7 +222,6 @@
   <script src="js/qr.js"></script>
   <script src="js/store.js"></script>
   <script src="js/motion.js"></script>
-  <script type="module" src="js/hero3d.js?v=3"></script>
   <!-- ANALYTICS-BEACON (optional Cloudflare Web Analytics — replace this comment with the JS beacon) -->
 </body>
 </html>

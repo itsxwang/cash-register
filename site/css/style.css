@@ -303,8 +303,7 @@ input, textarea, select, .theme-toggle, .chip {
     transition-duration: 0.01ms !important;
   }
   .js .reveal { opacity: 1; transform: none; }
-  .hero-art-canvas { display: none !important; }
-  .hero-art-fallback { display: block !important; }
+  .coin-float { animation: none; }
 }
 
 /* redesigned product cards (renderHome) */
@@ -339,7 +338,7 @@ input, textarea, select, .theme-toggle, .chip {
 }
 .trust svg { flex: 0 0 auto; opacity: 0.9; }
 
-/* hero art (3D canvas / SVG fallback) — fixed height, never pushes content */
+/* hero art: inline SVG enamel coins — identical in every browser, zero JS/WebGL */
 .hero { padding: 54px 0 30px; max-width: 720px; }
 .hero:has(.hero-art) {
   display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
@@ -347,18 +346,18 @@ input, textarea, select, .theme-toggle, .chip {
 }
 .hero:has(.hero-art) > * { min-width: 0; }
 .hero-copy { max-width: 620px; }
-.hero-copy { max-width: 620px; }
-.hero-art {
-  position: relative; height: 300px; pointer-events: none;
-  contain: strict;
+.hero-art { position: relative; pointer-events: none; }
+.hero-art svg { display: block; width: 100%; height: auto; }
+.coin-float {
+  animation: coin-float 7s ease-in-out infinite alternate;
+  transform-box: fill-box; transform-origin: center;
 }
-.hero-art canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
-.hero-art-fallback { display: none; width: 100%; height: 100%; }
+.coin-eth.coin-float { animation-delay: 1.2s; }
+.coin-sol.coin-float { animation-delay: 2.4s; }
+@keyframes coin-float { from { transform: translateY(0); } to { transform: translateY(-10px); } }
 @media (max-width: 767px) {
   .hero:has(.hero-art) { grid-template-columns: 1fr; padding-top: 40px; }
-  .hero-art { height: 200px; order: -1; }
-  .hero-art canvas { display: none !important; }
-  .hero-art-fallback { display: block !important; }
+  .hero-art { order: -1; }
 }
 
 /* bundle emphasis */

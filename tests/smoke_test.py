@@ -318,18 +318,24 @@ def main() -> None:
     check("one gradient CTA class, gradient limited to .btn.primary + chip",
           css_text.count("linear-gradient(135deg, #14b8a6") == 2  # var + single use
           and ".btn.primary {" in css_text)
-    check("hero3d module exists, referenced by index.html only",
-          (site / "js" / "hero3d.js").is_file()
-          and 'src="js/hero3d.js' in (site / "index.html").read_text(encoding="utf-8")  # prefix: cache-bust ?v= appended
-          and sum('hero3d' in p.read_text(encoding="utf-8") for p in pages) == 1)
-    check("three.js vendored as ES module",
-          (site / "js" / "vendor" / "three.module.min.js").is_file()
-          and "Three.js Authors" in (site / "js" / "vendor" / "three.module.min.js").read_text(encoding="utf-8", errors="ignore")[:200])
     idx_text = (site / "index.html").read_text(encoding="utf-8")
-    check("hero art + static SVG fallback on index",
-          'class="hero-art"' in idx_text and "hero-art-fallback" in idx_text
-          and "<defs" in idx_text.split("hero-art-fallback")[1][:600]
-          and "coinBTC" in idx_text and "coinSOL" in idx_text)
+    check("hero coins are inline SVG enamel pins (no WebGL): 3 groups + official glyphs",
+          all(f'class="coin-{c} coin-float"' in idx_text for c in ("btc", "eth", "sol"))
+          and 'viewBox="0 0 520 340"' in idx_text
+          and idx_text.count('<path id="glyph-') == 3
+          and "#9945FF" in idx_text and "#14F195" in idx_text
+          and "<feGaussianBlur" in idx_text)
+    check("coins animate everywhere: CSS keyframes + stagger + reduced-motion kill",
+          "@keyframes coin-float" in css_text and "transform-box: fill-box" in css_text
+          and "animation-delay: 1.2s" in css_text and "animation-delay: 2.4s" in css_text
+          and re.search(r"prefers-reduced-motion: reduce[\s\S]*?\.coin-float \{ animation: none", css_text))
+    check("no WebGL/three.js remnants ship to buyers",
+          not (site / "js" / "hero3d.js").exists()
+          and not (site / "js" / "vendor" / "three.module.min.js").exists()
+          and all("hero3d" not in p.read_text(encoding="utf-8") for p in pages))
+    check("hero art carries gradient defs + engraved/edge detailing on index",
+          'class="hero-art"' in idx_text and idx_text.count("<radialGradient") == 3
+          and "glyph-btc" in idx_text and "solbar-grad" in idx_text)
     check("trust strip under hero (4 guarantees)",
           all(s in idx_text for s in ("On-chain auto-confirm", "7-day refund",
                                       "Email support", "No card needed")))
