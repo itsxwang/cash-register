@@ -320,7 +320,7 @@ def main() -> None:
           and ".btn.primary {" in css_text)
     check("hero3d module exists, referenced by index.html only",
           (site / "js" / "hero3d.js").is_file()
-          and 'src="js/hero3d.js"' in (site / "index.html").read_text(encoding="utf-8")
+          and 'src="js/hero3d.js' in (site / "index.html").read_text(encoding="utf-8")  # prefix: cache-bust ?v= appended
           and sum('hero3d' in p.read_text(encoding="utf-8") for p in pages) == 1)
     check("three.js vendored as ES module",
           (site / "js" / "vendor" / "three.module.min.js").is_file()
