@@ -39,7 +39,7 @@ follow.
 
 ## Billing
 
-$19/month in BTC / ETH / SOL. Each month's payment is a new order (same
+$39/month in BTC / ETH / SOL. Each month's payment is a new order (same
 checkout flow, new order id) — cancel anytime by simply not renewing; no
 dunning, no lock-in.
 
