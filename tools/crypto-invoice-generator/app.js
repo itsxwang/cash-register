@@ -1,4 +1,4 @@
-/* Crypto Invoice Generator v1.1.0 — 100% client-side.
+/* Crypto Invoice Generator v1.1.1 — 100% client-side.
  * State lives in localStorage. The invoice sheet renders from a single
  * render() pass; Print/Save-PDF uses the browser; "Export standalone HTML"
  * writes a self-contained file (inline CSS + inline QR SVG).
