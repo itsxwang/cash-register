@@ -1,4 +1,4 @@
-/* Crypto Invoice Generator v1.1.0 — 100% client-side.
+/* Crypto Invoice Generator v1.1.1 — 100% client-side.
  * State lives in localStorage. The invoice sheet renders from a single
  * render() pass; Print/Save-PDF uses the browser; "Export standalone HTML"
  * writes a self-contained file (inline CSS + inline QR SVG).
@@ -109,7 +109,7 @@
     ".totals .grand{border-top:2px solid #0f172a;font-weight:700;font-size:15px}",
     ".pay{margin-top:28px;border:2px solid #4f46e5;border-radius:14px;padding:16px 18px;display:flex;gap:20px;align-items:flex-start;background:#eef2ff}",
     ".pay .qrbox{background:#fff;border-radius:10px;padding:8px;flex:0 0 auto}",
-    ".pay .qrbox svg{display:block}",
+    ".pay .qrbox svg{display:block;max-width:100%;height:auto}",
     ".pay h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#4f46e5}",
     ".pay .kv{display:block;grid-template-columns:none;gap:0;align-items:initial;font-size:12.5px;line-height:1.7}",
     ".pay .kv b{font-variant-numeric:tabular-nums}",
@@ -121,6 +121,39 @@
   ].join("\n");
 
   /* ---------------- payment resolution ---------------- */
+  var NETWORK_SHORT = {
+    eth: "Base (0x…) address",
+    sol: "Solana address",
+    btc: "Bitcoin address"
+  };
+
+  function addrKind(a) {
+    a = (a || "").trim();
+    if (!a) return "";
+    if (/^0x[0-9a-fA-F]{40}$/.test(a)) return "eth";
+    if (/^(bc1[a-zA-HJ-NP-Z0-9]{25,62}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/.test(a)) return "btc";
+    if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a)) return "sol";
+    return "unknown";
+  }
+
+  function addrWarning() {
+    var el = $("#addr-warning");
+    if (!el) return;
+    var addr = (state.pay.address || "").trim();
+    var net = state.pay.network;
+    var msg = "";
+    if (addr && net !== "custom") {
+      var kind = addrKind(addr);
+      if (kind === "unknown") {
+        msg = "That doesn't look like a valid " + NETWORK_SHORT[net] + " — double-check it before sending this invoice.";
+      } else if (kind !== net) {
+        msg = "This looks like a " + kind.toUpperCase() + " address, but \"Get paid on\" is set to " +
+              NETWORK_SHORT[net] + ". The QR would not be payable — change one of them.";
+      }
+    }
+    el.textContent = msg;
+  }
+
   var NETWORK_LABEL = {
     eth: "ETH (native) — Base",
     sol: "SOL (native) — Solana",
@@ -199,7 +232,7 @@
       var qr = qrcode(0, "M");
       qr.addData(text);
       qr.make();
-      return qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+      return qr.createSvgTag({ cellSize: 4, margin: 2 });
     } catch (e) { return ""; }
   }
 
@@ -210,7 +243,10 @@
     var t = totals();
     var plan = paymentUnits(t.total);
     var uri = paymentUri(net, t.total);
-    var qr = qrSvg(uri);
+    // Never render a QR for an address that does not match the selected
+    // network: a scannable-but-unpayable QR on an invoice is worse than none.
+    var addrOk = net === "custom" || !uri || addrKind(state.pay.address) === net;
+    var qr = addrOk ? qrSvg(uri) : "";
 
     var amountLine = plan.units
       ? "<b>" + esc(unitsToUriAmount(plan.units, plan.dec)) + "</b> (" + esc(plan.exactSource === "manual" ? "set manually" : "exact, from invoice total") + ")"
@@ -278,6 +314,7 @@
     // custom-token fields visibility
     var ct = $("#custom-token-fields");
     if (ct) ct.classList.toggle("hidden", net !== "custom");
+    addrWarning();
   }
 
   /* ---------------- form binding ---------------- */

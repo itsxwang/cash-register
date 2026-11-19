@@ -29,7 +29,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-UA = "cron-ping-monitor/1.0 (+https://github.com/YOUR_GITHUB_USERNAME/cash-register)"
+UA = "cron-ping-monitor/1.0"
 HISTORY_KEEP = 4000
 
 
@@ -42,7 +42,11 @@ def load_monitors(path: Path) -> list[dict]:
         print(f"error: monitors file not found: {path}\n"
               f"Copy monitors.example.json to monitors.json and edit it.", file=sys.stderr)
         sys.exit(2)
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        print(f"error: {path} is not valid JSON (line {exc.lineno}: {exc.msg})", file=sys.stderr)
+        sys.exit(2)
     if isinstance(data, dict):
         data = data.get("monitors", [])
     out = []
@@ -150,6 +154,7 @@ h1{font-size:1.6rem;margin:0 0 4px}
 .pill{padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:700}
 .pill.up{background:#06281f;color:var(--good)}
 .pill.down{background:#2b1113;color:var(--bad)}
+.pill.unknown{background:#1e2a44;color:var(--muted)}
 .stats{display:flex;gap:18px;color:var(--muted);font-size:.85rem;margin:10px 0 8px}
 .stats b{color:var(--ink);font-variant-numeric:tabular-nums}
 .bars{display:flex;gap:2px;align-items:flex-end;height:34px;margin-top:6px}
@@ -203,6 +208,7 @@ def render_status_html(monitors: list[dict], history: list[dict]) -> str:
 
     return ("<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'>"
             "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+            "<meta http-equiv='refresh' content='60'>"
             "<title>Status — all monitors</title>"
             f"<style>{STATUS_CSS}</style></head><body><div class='wrap'>"
             "<h1>📊 Service status</h1>"

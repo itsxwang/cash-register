@@ -95,8 +95,12 @@ def add_subscriber(chat_id: int) -> bool:
     return True
 
 
-def send_one(token: str, chat_id: int, text: str, dry: bool) -> tuple[bool, str]:
-    payload = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
+def send_one(token: str, chat_id: int, text: str, dry: bool, html: bool = False) -> tuple[bool, str]:
+    # Plain text by default: a stray "<" or "&" in an HTML-parsed message makes
+    # Telegram reject the whole send. Opt into HTML with --html.
+    payload = {"chat_id": chat_id, "text": text}
+    if html:
+        payload["parse_mode"] = "HTML"
     if dry:
         return True, "dry-run"
     try:
@@ -145,7 +149,7 @@ def cmd_list(token: str, args) -> None:
 
 
 def cmd_send(token: str, args) -> None:
-    ok, info = send_one(token, int(args.chat_id), args.text, args.dry_run)
+    ok, info = send_one(token, int(args.chat_id), args.text, args.dry_run, getattr(args, "html", False))
     print(("sent" if ok else f"FAILED: {info}"), f"-> {args.chat_id}")
     if not ok:
         sys.exit(1)
@@ -158,7 +162,7 @@ def cmd_broadcast(token: str, args) -> None:
         return
     sent, failed = 0, []
     for chat_id in subs:
-        ok, info = send_one(token, chat_id, args.text, args.dry_run)
+        ok, info = send_one(token, chat_id, args.text, args.dry_run, getattr(args, "html", False))
         if ok:
             sent += 1
         else:
@@ -172,11 +176,16 @@ def cmd_broadcast(token: str, args) -> None:
 def cmd_schedule(args) -> None:
     items = load_json(SCHEDULE, [])
     if args.schedule_cmd == "add":
-        at = datetime.strptime(args.at, "%Y-%m-%d %H:%M")
+        try:
+            at = datetime.strptime(args.at, "%Y-%m-%d %H:%M")
+        except ValueError:
+            print('error: --at must look like "2026-11-20 09:00" (24h local time)', file=sys.stderr)
+            sys.exit(2)
         item = {
             "id": f"sched-{int(time.time() * 1000)}",
             "at": at.strftime("%Y-%m-%d %H:%M"),
             "text": args.text,
+            "html": bool(getattr(args, "html", False)),
             "status": "pending",
         }
         items.append(item)
@@ -202,7 +211,8 @@ def cmd_run_scheduler(token: str, args) -> None:
                     subs = subscribers()
                     ok_count = 0
                     for chat_id in subs:
-                        ok, _ = send_one(token, chat_id, it["text"], args.dry_run)
+                        ok, _ = send_one(token, chat_id, it["text"], args.dry_run,
+                                         bool(it.get("html", False)))
                         ok_count += 1 if ok else 0
                         if not args.dry_run:
                             time.sleep(RATE_PER_SECOND)
@@ -237,10 +247,12 @@ def main() -> int:
     p = sub.add_parser("send", help="message one chat id")
     p.add_argument("chat_id")
     p.add_argument("text")
+    p.add_argument("--html", action="store_true", help="parse the text as Telegram HTML (default: plain text)")
     p.add_argument("--dry-run", action="store_true")
 
     p = sub.add_parser("broadcast", help="message every subscriber")
     p.add_argument("text")
+    p.add_argument("--html", action="store_true", help="parse the text as Telegram HTML (default: plain text)")
     p.add_argument("--dry-run", action="store_true")
 
     p = sub.add_parser("schedule", help="schedule posts")
@@ -248,6 +260,7 @@ def main() -> int:
     sp = sched.add_parser("add")
     sp.add_argument("--at", required=True, help='"YYYY-MM-DD HH:MM" (24h, local time)')
     sp.add_argument("--text", required=True)
+    sp.add_argument("--html", action="store_true", help="parse the text as Telegram HTML (default: plain text)")
     sched.add_parser("list")
 
     p = sub.add_parser("run-scheduler", help="send due scheduled posts in a loop")

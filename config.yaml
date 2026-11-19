@@ -74,7 +74,7 @@ tools:
     price_usd: 19
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "crypto-invoice-generator-v1.1.0.zip"
+    release_file: "crypto-invoice-generator-v1.1.1.zip"
     landing: "/tools/crypto-invoice-generator/"
     checkout: "/tools/crypto-invoice-generator/checkout.html"
   cron-ping-monitor:
@@ -83,7 +83,7 @@ tools:
     price_usd: 9
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "cron-ping-monitor-v1.0.0.zip"
+    release_file: "cron-ping-monitor-v1.0.1.zip"
     landing: "/tools/cron-ping-monitor/"
     checkout: "/tools/cron-ping-monitor/checkout.html"
   telegram-broadcaster:
@@ -92,7 +92,7 @@ tools:
     price_usd: 15
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "telegram-broadcaster-v1.0.0.zip"
+    release_file: "telegram-broadcaster-v1.0.1.zip"
     landing: "/tools/telegram-broadcaster/"
     checkout: "/tools/telegram-broadcaster/checkout.html"
   citation-monitor-weekly-digest:
@@ -101,7 +101,7 @@ tools:
     price_usd: 19
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "citation-monitor-weekly-digest-v1.0.0.zip"
+    release_file: "citation-monitor-weekly-digest-v1.0.1.zip"
     landing: "/tools/citation-monitor-weekly-digest/"
     checkout: "/tools/citation-monitor-weekly-digest/checkout.html"
     delivery_note: "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
@@ -112,7 +112,7 @@ tools:
     price_usd: 39
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "citation-monitor-agency-v1.0.0.zip"
+    release_file: "citation-monitor-agency-v1.0.1.zip"
     landing: "/tools/citation-monitor-agency/"
     checkout: "/tools/citation-monitor-agency/checkout.html"
     delivery_note: "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
@@ -120,4 +120,4 @@ tools:
 bundle:
   price_usd: 49
   note: "All three tools, lifetime updates, one payment."
-  release_file: "cash-register-bundle-v1.1.0.zip"
+  release_file: "cash-register-bundle-v1.1.1.zip"

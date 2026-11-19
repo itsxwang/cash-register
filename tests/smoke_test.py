@@ -133,10 +133,10 @@ def main() -> None:
     cr.write_order_assets(paid, cfg=cfg, site_dir=TMP / "site")  # mirror mark_paid's site sync
     cr.write_order_assets(btc_order, cfg=cfg, site_dir=TMP / "site")
     payload = json.loads((TMP / "site" / "data" / "orders" / f"{order['order_id']}.json").read_text())
-    check("paid order exposes download url (v1.1.0 zip)",
-          payload["download"]["url"].endswith("crypto-invoice-generator-v1.1.0.zip"))
+    check("paid order exposes download url (v1.1.1 zip)",
+          payload["download"]["url"].endswith("crypto-invoice-generator-v1.1.1.zip"))
     check("download url carries the release tag segment (QA fix: no bare /download/<file>)",
-          "/download/crypto-invoice-generator-v1.1.0/" in payload["download"]["url"])
+          "/download/crypto-invoice-generator-v1.1.1/" in payload["download"]["url"])
     check("awaiting order hides download url",
           json.loads((TMP / "site" / "data" / "orders" / f"{btc_order['order_id']}.json")
                      .read_text())["download"] is None)
@@ -180,7 +180,7 @@ def main() -> None:
     bcfg = _bundle_item(cfg, "bundle")
     check("bundle item priced 49 (not a tool price)",
           bcfg["price_usd"] == 49 and bcfg["price_usd"] not in (19, 9, 15))
-    check("bundle release file configured", bcfg["release_file"] == "cash-register-bundle-v1.1.0.zip")
+    check("bundle release file configured", bcfg["release_file"] == "cash-register-bundle-v1.1.1.zip")
     check("bundle checkout is root checkout with item param",
           bcfg["checkout"] == "/checkout.html?item=bundle")
     check("bundle accepts all chains", set(bcfg["chains"]) == {"eth", "sol", "btc"})
@@ -193,15 +193,15 @@ def main() -> None:
     b_paid = dict(b_order, status="paid")
     b_pub = cr.public_order(b_paid, cfg)
     check("paid bundle downloads the combined zip",
-          (b_pub["download"] or {}).get("url", "").endswith("/cash-register-bundle-v1.1.0.zip"))
+          (b_pub["download"] or {}).get("url", "").endswith("/cash-register-bundle-v1.1.1.zip"))
     check("bundle download url carries tag segment",
-          "/download/cash-register-bundle-v1.1.0/" in (b_pub["download"] or {}).get("url", ""))
+          "/download/cash-register-bundle-v1.1.1/" in (b_pub["download"] or {}).get("url", ""))
     check("bundle zip exists in releases/",
-          (REPO / "releases" / "cash-register-bundle-v1.1.0.zip").is_file())
+          (REPO / "releases" / "cash-register-bundle-v1.1.1.zip").is_file())
     catalog_b = json.loads(cat_path.read_text())["bundle"]
     check("catalog bundle block carries checkout + release",
           catalog_b["checkout"] == "/checkout.html?item=bundle"
-          and catalog_b["release_file"] == "cash-register-bundle-v1.1.0.zip"
+          and catalog_b["release_file"] == "cash-register-bundle-v1.1.1.zip"
           and catalog_b["price_usd"] == 49)
 
     # 15. buyer-facing flows are email-only (Telegram is dead for us) ---------------------
@@ -249,7 +249,7 @@ def main() -> None:
           (site / "tools/citation-monitor-weekly-digest/index.html").is_file()
           and (site / "tools/citation-monitor-weekly-digest/checkout.html").is_file())
     check("citation digest release zip built",
-          (REPO / "releases/citation-monitor-weekly-digest-v1.0.0.zip").is_file())
+          (REPO / "releases/citation-monitor-weekly-digest-v1.0.1.zip").is_file())
     check("bundle upsell on tool checkouts (JS, not on bundle itself)",
           "Get all 3 tools for $49" in store_js
           and 'tool.id !== "bundle"' in store_js)

@@ -69,6 +69,32 @@
       <p class="eyebrow">Release notes</p>
       <div class="changelog">
         <div class="release">
+          <p class="rel-date">2026-11-19</p>
+          <div class="release-card">
+            <h3>Crypto Invoice Generator — v1.1.1</h3>
+            <p>Rebuilt app shell to match the store (sliding theme pill, 3-column footer,
+               "Buy" CTA). Fixed dark mode being overridden by the invoice print stylesheet,
+               and fixed a dark-on-dark payment line inside the invoice preview. Native date
+               pickers now follow the theme. Exported invoices are unchanged.</p>
+
+            <h3>Cron Ping Monitor — v1.0.1</h3>
+            <p>The generated status page now auto-refreshes every 60s. Clean product
+               User-Agent (no placeholder), a readable error for malformed
+               <code>monitors.json</code>, and a styled state for monitors with no history yet.</p>
+
+            <h3>Telegram Broadcast &amp; Scheduler Bot — v1.0.1</h3>
+            <p>Messages are now sent as plain text by default, so a stray <code>&lt;</code> or
+               <code>&amp;</code> can no longer make Telegram reject a broadcast; opt into HTML
+               formatting with <code>--html</code>. Bad <code>--at</code> dates now print a
+               one-line error instead of a traceback.</p>
+
+            <h3>Delivery: releases published</h3>
+            <p>Every product zip is now built from the current sources, tested, and published
+               as a GitHub Release asset — the download link on your order page resolves to a
+               real file.</p>
+          </div>
+        </div>
+        <div class="release">
           <p class="rel-date">2026-11-15</p>
           <div class="release-card">
             <h3>New product: Citation Monitor — Weekly Digest (v1.0.0)</h3>

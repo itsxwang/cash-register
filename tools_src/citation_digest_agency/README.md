@@ -1,4 +1,4 @@
-# Citation Monitor — Agency — Agency Plan — 3 brands ($39/month)
+# Citation Monitor — Agency Plan — 3 brands ($39/month)
 
 Your subscription: every Monday an agent asks AI engines (ChatGPT-class models
 via Groq, Gemini) **36 real buyer questions** about your product category and

@@ -20,6 +20,7 @@ python3 broadcast_bot.py list
 python3 broadcast_bot.py send 123456789 "private ping"
 python3 broadcast_bot.py broadcast "New drop is live 🚀"
 python3 broadcast_bot.py schedule add --at "2026-11-20 09:00" --text "Weekly digest"
+# add --html to any send/broadcast/schedule command to use Telegram HTML formatting
 python3 broadcast_bot.py schedule list
 python3 broadcast_bot.py run-scheduler --interval 30    # long-running, or via cron
 ```
@@ -28,6 +29,16 @@ Cron for the scheduler instead of a resident process:
 
 ```
 * * * * * cd /path && python3 broadcast_bot.py run-scheduler --interval 55 >> cron.log 2>&1
+```
+
+## Message formatting
+
+Messages are sent as **plain text** by default, so characters like `<`, `>` and
+`&` never break a send. If you want Telegram's HTML formatting (bold, links,
+code), add `--html` and write valid HTML tags:
+
+```bash
+python3 broadcast_bot.py broadcast "<b>New drop</b> is live: https://example.com" --html
 ```
 
 ## Offline testing

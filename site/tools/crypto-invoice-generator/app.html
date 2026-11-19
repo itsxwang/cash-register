@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9A%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
-  <title>Crypto Invoice Generator v1.1.0</title>
+  <title>Crypto Invoice Generator v1.1.1</title>
   <meta name="description" content="Professional printable invoices with a BTC/ETH/SOL address + QR for the payer. 100% client-side.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Xion's Micro Tools">
-  <meta property="og:title" content="Crypto Invoice Generator v1.1.0">
+  <meta property="og:title" content="Crypto Invoice Generator v1.1.1">
   <meta property="og:description" content="Professional printable invoices with a BTC/ETH/SOL address + QR for the payer. 100% client-side.">
   <meta property="og:url" content="https://itsxwang.github.io/cash-register/tools/crypto-invoice-generator/app.html">
   <meta property="og:image" content="https://itsxwang.github.io/cash-register/og/crypto-invoice-generator.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Crypto Invoice Generator v1.1.0">
+  <meta property="og:image:alt" content="Crypto Invoice Generator v1.1.1">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Crypto Invoice Generator v1.1.0">
+  <meta name="twitter:title" content="Crypto Invoice Generator v1.1.1">
   <meta name="twitter:description" content="Professional printable invoices with a BTC/ETH/SOL address + QR for the payer. 100% client-side.">
   <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/crypto-invoice-generator.png">
   
@@ -29,7 +29,7 @@
 <body>
   <div class="wrap">
     <nav class="nav no-print">
-      <a class="brand" href="index.html">🧾 Crypto Invoice Generator <span class="badge">v1.1.0</span></a>
+      <a class="brand" href="index.html">🧾 Crypto Invoice Generator <span class="badge">v1.1.1</span></a>
       <span class="spacer"></span>
       <a href="index.html">Tool page</a>
       <a href="../../index.html">Store</a>
@@ -117,6 +117,7 @@
           <label class="field">Receiving address
             <input type="text" data-bind="pay.address" placeholder="0x… / bc1q… / Solana address">
           </label>
+          <p class="addr-warning" id="addr-warning" role="status"></p>
           <div id="custom-token-fields" class="hidden">
             <label class="field">Token contract address
               <input type="text" data-bind="pay.tokenContract" placeholder="0x… (ERC-20/compatible contract)">
@@ -152,14 +153,14 @@
         <nav class="footnav" aria-label="Site"><a href="../../index.html#tools">Tools</a><a href="../../crypto-guide.html">Crypto guide</a><a href="../../changelog.html">Changelog</a><a href="../../status.html">Order status</a></nav>
         <div>
           <span class="muted">Support: <a href="mailto:xion.dev7@gmail.com">xion.dev7@gmail.com</a></span><br>
-          <span class="muted">crypto-only: BTC / ETH / SOL · runs 100% client-side · v1.1.0</span>
+          <span class="muted">crypto-only: BTC / ETH / SOL · runs 100% client-side · v1.1.1</span>
         </div>
       </div>
     </footer>
   </div>
 
   <script src="../../js/qr.js"></script>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=6"></script>
   <script>
     /* theme toggle for the app page (app.js is self-contained; store.js not loaded here).
        Keeps the pill knob node alive so its slide transition always animates. */

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# Build the sellable release zips (3 tools + lifetime bundle) into releases/
-# (gitignored). Reproducible: same inputs -> same file names; no absolute paths.
-# Names must match config.yaml tools.<id>.release_file / bundle.release_file —
-# verified at the end.
+# Build the sellable release zips (3 tools + 2 services + lifetime bundle) into
+# releases/ (gitignored). Names must match config.yaml tools.<id>.release_file /
+# bundle.release_file — verified at the end.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -10,38 +9,70 @@ cd "$ROOT"
 rm -rf releases
 mkdir -p releases
 
-# Tool #1 — Crypto Invoice Generator v1.1.0 (client-side app + product README)
-( cd site/tools/crypto-invoice-generator &&
-  zip -q -r "$ROOT/releases/crypto-invoice-generator-v1.1.0.zip" \
-      app.html app.css app.js README.md )
+INVOICE_STAGE="$(mktemp -d)"
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$INVOICE_STAGE" "$STAGE"' EXIT
 
-# Tool #2 — Cron Ping Monitor v1.0.0
+# The invoice app is developed inside the store (it shares the design system),
+# but the sold download must work offline on its own. Stage a self-contained
+# copy: shared stylesheet + fonts + qr/motion scripts, paths rewritten.
+stage_invoice() {
+  local dest="$1"
+  mkdir -p "$dest/css" "$dest/js" "$dest/fonts"
+  cp site/tools/crypto-invoice-generator/app.html \
+     site/tools/crypto-invoice-generator/app.css \
+     site/tools/crypto-invoice-generator/app.js \
+     site/tools/crypto-invoice-generator/README.md "$dest/"
+  cp site/css/style.css "$dest/css/"
+  cp site/js/qr.js site/js/motion.js "$dest/js/"
+  cp site/fonts/*.woff2 "$dest/fonts/"
+  python3 - "$dest/app.html" <<'PY'
+import sys
+p = sys.argv[1]
+s = open(p, encoding="utf-8").read()
+# local assets first, then remaining store links point at the live store
+s = s.replace('href="../../css/style.css"', 'href="css/style.css"')
+s = s.replace('href="../../fonts/', 'href="fonts/')
+s = s.replace('src="../../js/qr.js"', 'src="js/qr.js"')
+s = s.replace('src="../../js/motion.js"', 'src="js/motion.js"')
+s = s.replace('href="../../', 'href="https://itsxwang.github.io/cash-register/')
+s = s.replace('src="../../', 'src="https://itsxwang.github.io/cash-register/')
+open(p, "w", encoding="utf-8").write(s)
+PY
+}
+
+# Tool #1 — Crypto Invoice Generator v1.1.1 (client-side app + product README)
+stage_invoice "$INVOICE_STAGE"
+( cd "$INVOICE_STAGE" && zip -q -r "$ROOT/releases/crypto-invoice-generator-v1.1.1.zip" . )
+
+# Tool #2 — Cron Ping Monitor v1.0.1
 ( cd tools_src/cron_ping &&
-  zip -q "$ROOT/releases/cron-ping-monitor-v1.0.0.zip" \
+  zip -q "$ROOT/releases/cron-ping-monitor-v1.0.1.zip" \
       cron_ping.py monitors.example.json README.md )
 
-# Tool #3 — Telegram Broadcast & Scheduler Bot v1.0.0
+# Tool #3 — Telegram Broadcast & Scheduler Bot v1.0.1
 ( cd tools_src/tg_broadcast &&
-  zip -q "$ROOT/releases/telegram-broadcaster-v1.0.0.zip" \
+  zip -q "$ROOT/releases/telegram-broadcaster-v1.0.1.zip" \
       broadcast_bot.py README.md )
 
-# Product #4 — Citation Monitor Weekly Digest v1.0.0 (agent-run service).
+# Product #4 — Citation Monitor Weekly Digest v1.0.1 (agent-run service).
 # The zip is the subscriber's onboarding pack: service README + sample digest.
 # Delivery of the product itself is email (weekly digest), per config delivery_note.
 ( cd tools_src/citation_digest &&
-  zip -q "$ROOT/releases/citation-monitor-weekly-digest-v1.0.0.zip" \
+  zip -q "$ROOT/releases/citation-monitor-weekly-digest-v1.0.1.zip" \
+      README.md sample_digest.html )
+
+# Product #5 — Citation Monitor Agency (agent-run service, 3 brands).
+( cd tools_src/citation_digest_agency &&
+  zip -q "$ROOT/releases/citation-monitor-agency-v1.0.1.zip" \
       README.md sample_digest.html )
 
 # Lifetime bundle — all three tools in one zip, each in its own subfolder,
 # plus a top-level README explaining what's inside. One payment, one download.
-BUNDLE_ZIP="$ROOT/releases/cash-register-bundle-v1.1.0.zip"
-STAGE="$(mktemp -d)"
-trap 'rm -rf "$STAGE"' EXIT
-mkdir -p "$STAGE/cash-register-bundle/crypto-invoice-generator" \
-         "$STAGE/cash-register-bundle/cron-ping-monitor" \
+BUNDLE_ZIP="$ROOT/releases/cash-register-bundle-v1.1.1.zip"
+mkdir -p "$STAGE/cash-register-bundle/cron-ping-monitor" \
          "$STAGE/cash-register-bundle/telegram-broadcaster"
-( cd site/tools/crypto-invoice-generator &&
-  cp app.html app.css app.js README.md "$STAGE/cash-register-bundle/crypto-invoice-generator/" )
+stage_invoice "$STAGE/cash-register-bundle/crypto-invoice-generator"
 ( cd tools_src/cron_ping &&
   cp cron_ping.py monitors.example.json README.md "$STAGE/cash-register-bundle/cron-ping-monitor/" )
 ( cd tools_src/tg_broadcast &&
@@ -52,7 +83,8 @@ cat > "$STAGE/cash-register-bundle/README.md" <<'MD'
 Thank you for buying the lifetime bundle! Everything you paid for is in the
 subfolders; each tool also has its own README.
 
-- `crypto-invoice-generator/` — open `app.html` in any browser (works offline)
+- `crypto-invoice-generator/` — open `app.html` in any browser (fully offline:
+  the folder includes its own CSS, fonts and QR library — keep it together)
 - `cron-ping-monitor/` — `python3 cron_ping.py --help` (stdlib only)
 - `telegram-broadcaster/` — `python3 broadcast_bot.py --help` (needs a bot token)
 
