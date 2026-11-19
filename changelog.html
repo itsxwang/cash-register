@@ -19,7 +19,7 @@
   <meta name="twitter:description" content="Every update to every tool, dated and public. Buying once gets you every minor version for life — re-download any time with your order id.">
   <meta name="twitter:image" content="https://itsxwang.github.io/cash-register/og/home.png">
   <meta name="description" content="Every update to every tool, dated and public. Buying once gets you every minor version for life — re-download any time with your order id.">
-  <link rel="stylesheet" href="css/style.css?v=9">
+  <link rel="stylesheet" href="css/style.css?v=10">
   <script>(function(){try{var t=localStorage.getItem("cr.theme");if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-reduced","1");}else{document.documentElement.classList.add("js");setTimeout(function(){document.documentElement.classList.add("reveal-fallback")},1200);}}catch(e){}})();</script>
   <link rel="preload" href="fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -75,7 +75,9 @@
             <p>Rebuilt app shell to match the store (sliding theme pill, 3-column footer,
                "Buy" CTA). Fixed dark mode being overridden by the invoice print stylesheet,
                and fixed a dark-on-dark payment line inside the invoice preview. Native date
-               pickers now follow the theme. Exported invoices are unchanged.</p>
+               pickers now follow the theme. Select lists and placeholder text now use
+               explicit theme colors, so nothing washes out in dark mode. On phones the
+               line-item rows stack and the invoice table fits without clipping.</p>
 
             <h3>Cron Ping Monitor — v1.0.1</h3>
             <p>The generated status page now auto-refreshes every 60s. Clean product

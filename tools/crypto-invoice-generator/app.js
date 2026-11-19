@@ -117,6 +117,8 @@
     ".inv-notes{margin-top:22px;font-size:12.5px;color:#334155}",
     ".inv-foot{margin-top:34px;border-top:1px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;font-size:11px;color:#94a3b8}",
     "@media print{.sheet{padding:0}}",
+    // Phone widths: keep the invoice readable without horizontal scrolling.
+    "@media screen and (max-width:560px){.sheet{padding:24px 18px}table.inv{font-size:11px;table-layout:fixed}table.inv th:nth-child(1),table.inv td:nth-child(1){width:38%}table.inv th:nth-child(2),table.inv td:nth-child(2){width:16%}table.inv th:nth-child(3),table.inv td:nth-child(3){width:23%}table.inv th:nth-child(4),table.inv td:nth-child(4){width:23%}table.inv th,table.inv td{padding:6px 3px;overflow-wrap:anywhere}table.inv th{font-size:8.5px;letter-spacing:0;white-space:normal}table.inv th.num{white-space:normal}.inv-parties{gap:12px}.brandline{gap:10px}}",
     "@page{size:A4;margin:14mm}"
   ].join("\n");
 
