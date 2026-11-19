@@ -3,8 +3,11 @@
 .appbar { margin: 22px 0 12px; }
 .appbar .row { gap: 10px; flex-wrap: wrap; }
 .appbar .hint { margin-top: 10px; }
-.app-layout { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 24px; align-items: start; }
-@media (max-width: 900px) { .app-layout { grid-template-columns: 1fr; } }
+.app-layout { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 24px; align-items: start; min-width: 0; }
+.app-layout > * { min-width: 0; }
+@media (max-width: 900px) { .app-layout { grid-template-columns: minmax(0, 1fr); } }
+.app-form, .app-form .panel, .app-form .field { min-width: 0; }
+.app-form input, .app-form select, .app-form textarea { min-width: 0; max-width: 100%; box-sizing: border-box; }
 
 .app-form .panel { margin-bottom: 16px; }
 .app-form h3 { font-size: 1rem; }
@@ -13,7 +16,16 @@
 .sheet { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; box-shadow: 0 24px 70px rgba(2, 6, 23, 0.14); }
 [data-theme="dark"] .sheet { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55); }
 
-#items .item-row { display: grid; grid-template-columns: 1fr 70px 100px 32px; gap: 8px; margin-bottom: 8px; align-items: center; }
+#items .item-row { display: grid; grid-template-columns: minmax(0, 1fr) 70px 100px 32px; gap: 8px; margin-bottom: 8px; align-items: center; }
+#items .item-row > * { min-width: 0; }
+@media (max-width: 520px) {
+  /* Stack the description above qty/price/remove so the form never overflows. */
+  #items .item-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px; }
+  #items .item-row > :first-child { grid-column: 1 / -1; }
+}
+
+/* On a phone the A4 sheet is fluid and tighter; print rules are separate. */
+.preview-pane { min-width: 0; }
 #items .item-row input { padding: 7px 9px; }
 #items .item-row .remove {
   border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent);
@@ -37,3 +49,9 @@
 /* address/network mismatch warning (form only — never shown on the invoice) */
 .addr-warning { margin: 6px 0 0; font-size: 0.85rem; color: var(--bad); }
 .addr-warning:empty { display: none; }
+
+/* The brand already links to the tool page; drop the duplicate nav link on
+   phones so the sticky bar stays two rows tall. */
+@media (max-width: 620px) {
+  .nav a:not(.brand)[href="index.html"] { display: none; }
+}
