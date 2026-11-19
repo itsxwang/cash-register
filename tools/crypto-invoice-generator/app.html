@@ -117,6 +117,7 @@
           <label class="field">Receiving address
             <input type="text" data-bind="pay.address" placeholder="0x… / bc1q… / Solana address">
           </label>
+          <p class="addr-warning" id="addr-warning" role="status"></p>
           <div id="custom-token-fields" class="hidden">
             <label class="field">Token contract address
               <input type="text" data-bind="pay.tokenContract" placeholder="0x… (ERC-20/compatible contract)">
@@ -159,7 +160,7 @@
   </div>
 
   <script src="../../js/qr.js"></script>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=6"></script>
   <script>
     /* theme toggle for the app page (app.js is self-contained; store.js not loaded here).
        Keeps the pill knob node alive so its slide transition always animates. */

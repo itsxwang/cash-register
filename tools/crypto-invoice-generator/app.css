@@ -33,3 +33,7 @@
   .hint { display: none; }
 }
 @page { size: A4; margin: 12mm; }
+
+/* address/network mismatch warning (form only — never shown on the invoice) */
+.addr-warning { margin: 6px 0 0; font-size: 0.85rem; color: var(--bad); }
+.addr-warning:empty { display: none; }
