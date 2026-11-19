@@ -118,6 +118,6 @@ tools:
     delivery_note: "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
 
 bundle:
-  price_usd: 49
+  price_usd: 39
   note: "All three tools, lifetime updates, one payment."
   release_file: "cash-register-bundle-v1.1.1.zip"

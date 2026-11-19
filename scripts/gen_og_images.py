@@ -41,7 +41,7 @@ IMAGES = {
     },
     "bundle": {
         "title": "Lifetime bundle — all 3 tools",
-        "subtitle": "$49 · one payment · lifetime updates",
+        "subtitle": "$39 · one payment · lifetime updates",
     },
     "crypto-invoice-generator": {
         "title": "Crypto Invoice Generator",

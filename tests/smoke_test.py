@@ -178,14 +178,14 @@ def main() -> None:
 
     # 14. bundle is a first-class purchasable item (regression: $19 bug) ------------------
     bcfg = _bundle_item(cfg, "bundle")
-    check("bundle item priced 49 (not a tool price)",
-          bcfg["price_usd"] == 49 and bcfg["price_usd"] not in (19, 9, 15))
+    check("bundle item priced 39 (not a tool price)",
+          bcfg["price_usd"] == 39 and bcfg["price_usd"] not in (19, 9, 15))
     check("bundle release file configured", bcfg["release_file"] == "cash-register-bundle-v1.1.1.zip")
     check("bundle checkout is root checkout with item param",
           bcfg["checkout"] == "/checkout.html?item=bundle")
     check("bundle accepts all chains", set(bcfg["chains"]) == {"eth", "sol", "btc"})
     b_order = cr.create_order("bundle", chain="eth")
-    check("bundle order charges 49 USD", b_order["price_usd"] == 49)
+    check("bundle order charges 39 USD", b_order["price_usd"] == 39)
     b_pub = cr.public_order(b_order, cfg)
     check("bundle order checkout_url is well-formed (?item=bundle&order=…)",
           b_pub["checkout_url"].startswith("/checkout.html?item=bundle&order=")
@@ -202,7 +202,7 @@ def main() -> None:
     check("catalog bundle block carries checkout + release",
           catalog_b["checkout"] == "/checkout.html?item=bundle"
           and catalog_b["release_file"] == "cash-register-bundle-v1.1.1.zip"
-          and catalog_b["price_usd"] == 49)
+          and catalog_b["price_usd"] == 39)
 
     # 15. buyer-facing flows are email-only (Telegram is dead for us) ---------------------
     idx = (site / "index.html").read_text(encoding="utf-8")
@@ -251,7 +251,7 @@ def main() -> None:
     check("citation digest release zip built",
           (REPO / "releases/citation-monitor-weekly-digest-v1.0.1.zip").is_file())
     check("bundle upsell on tool checkouts (JS, not on bundle itself)",
-          "Get all 3 tools for $49" in store_js
+          "Get all 3 tools for $39" in store_js
           and 'tool.id !== "bundle"' in store_js)
     check("crypto-guide page exists + linked from every checkout",
           (site / "crypto-guide.html").is_file()
