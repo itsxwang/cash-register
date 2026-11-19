@@ -199,23 +199,23 @@ a:hover { text-decoration: underline; }
 code { font-family: var(--mono); font-size: 0.92em; }
 .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
 
-/* nav: sticky translucent glass bar. .nav lives inside .wrap, so negative
- * inline margins stretch the glass full-bleed and matching padding-inline
- * pulls the content back into the container; html{overflow-x:clip} absorbs
- * the sub-pixel 50vw/scrollbar overshoot without creating a scrollbar. */
+/* nav: sticky translucent glass bar, contained in the reading column so it
+ * can never push the page wider than the viewport (the old 50vw full-bleed
+ * trick overflowed by half a scrollbar on desktop browsers). */
 .nav {
-  position: sticky; top: 0; z-index: 40;
+  position: sticky; top: 10px; z-index: 40;
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
   min-height: 64px;
-  margin-inline: calc(50% - 50vw);
-  padding-block: 8px;
-  padding-inline: calc(50vw - 50%);
-  border-bottom: 1px solid var(--line);
-  border-bottom: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+  margin: 14px 0 0;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, currentColor 8%, transparent);
+  border-radius: 14px;
   background: var(--bg);
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 12px 32px -22px rgba(2, 6, 23, 0.55);
 }
 .nav .brand { font-weight: 700; letter-spacing: -0.02em; }
 .nav .spacer { flex: 1; }
@@ -234,6 +234,7 @@ code { font-family: var(--mono); font-size: 0.92em; }
 }
 footer { border-top: 1px solid var(--line); margin-top: 96px; padding: 32px 0 40px; color: var(--muted); font-size: 0.8125rem; }
 @media (max-width: 640px) { footer { margin-top: 56px; } }
+:target { scroll-margin-top: 96px; }
 /* 3-column footer (index); other pages keep their single-row footnav */
 .foot-cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 24px; align-items: start; }
 .foot-cols .brand { font-weight: 700; font-size: 0.9rem; }
