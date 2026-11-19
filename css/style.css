@@ -59,6 +59,7 @@
   --warn-line: #f59e0b;
   --option-bg: #ffffff;
   --option-ink: #0f172a;
+  --placeholder: #5b6472;
   --font-head: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -85,6 +86,7 @@
   --ink: #e2e8f0;
   --option-bg: #151c2e;
   --option-ink: #e2e8f0;
+  --placeholder: #8b93a1;
   --muted: #a6abb4; /* fallback for engines without color-mix: ink @ 72% over bg */
   --muted: color-mix(in srgb, var(--ink) 72%, var(--bg));
   --line: rgba(148, 163, 184, 0.16);
@@ -320,6 +322,12 @@ select option, select optgroup {
 select option:checked, select option:hover {
   background-color: var(--accent);
   color: var(--accent-ink);
+}
+
+/* Browser-default placeholders are near-invisible on dark inputs. */
+input::placeholder, textarea::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
