@@ -57,6 +57,8 @@
   --banner-ink: #92400e;
   --warn-bg: #fffbeb;
   --warn-line: #f59e0b;
+  --option-bg: #ffffff;
+  --option-ink: #0f172a;
   --font-head: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -81,6 +83,8 @@
   --bg: #0a0e1a;
   --surface: rgba(255, 255, 255, 0.03);
   --ink: #e2e8f0;
+  --option-bg: #151c2e;
+  --option-ink: #e2e8f0;
   --muted: #a6abb4; /* fallback for engines without color-mix: ink @ 72% over bg */
   --muted: color-mix(in srgb, var(--ink) 72%, var(--bg));
   --line: rgba(148, 163, 184, 0.16);
@@ -304,6 +308,18 @@ footer { border-top: 1px solid var(--line); margin-top: 96px; padding: 32px 0 40
 .nav, .panel, .card, .tool-card, .faq details, .steps li, .badge, .upsell, .banner,
 input, textarea, select, .theme-toggle, .chip {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Native <select> popups do not always follow color-scheme (Linux Chrome paints
+   a white list while options inherit the dark theme's light ink). Style the
+   options explicitly so the open list is readable in both themes. */
+select option, select optgroup {
+  background-color: var(--option-bg);
+  color: var(--option-ink);
+}
+select option:checked, select option:hover {
+  background-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

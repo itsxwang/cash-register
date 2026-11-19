@@ -316,7 +316,7 @@
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
       "</div><div class='qrbox'><div class='qr' id='qrhost'></div><p class='hint'>scan with your wallet</p></div></div>" +
       (tool.id !== "bundle"
-        ? "<div class='upsell'>💎 <strong>Get all 3 tools for $49</strong> — one payment, lifetime updates. " +
+        ? "<div class='upsell'>💎 <strong>Get all 3 tools for $39</strong> — one payment, lifetime updates. " +
           "<a href='" + abs("/checkout.html?item=bundle") + "'>See the bundle →</a></div>"
         : "") +
       "<p class='hint'>New to paying with crypto? Read the <a href='" + abs("/crypto-guide.html") + "'>4-step payment guide</a> (1 min). " +
