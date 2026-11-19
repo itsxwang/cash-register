@@ -27,16 +27,26 @@ stage_invoice() {
   cp site/js/qr.js site/js/motion.js "$dest/js/"
   cp site/fonts/*.woff2 "$dest/fonts/"
   python3 - "$dest/app.html" <<'PY'
+import re
 import sys
 p = sys.argv[1]
 s = open(p, encoding="utf-8").read()
-# local assets first, then remaining store links point at the live store
-s = s.replace('href="../../css/style.css"', 'href="css/style.css"')
+# local assets first, then remaining store links point at the live store.
+# Match without the closing quote so cache-busting queries (?v=9) survive.
+s = s.replace('href="../../css/style.css', 'href="css/style.css')
+s = s.replace('href="../../favicon', 'href="favicon')
+# Nav links in the standalone copy: point at the live store pages (the zip
+# does not contain them), so nothing in the download is a dead link.
+s = s.replace('href="checkout.html"', 'href="https://itsxwang.github.io/cash-register/tools/crypto-invoice-generator/checkout.html"')
+s = s.replace('href="index.html"', 'href="https://itsxwang.github.io/cash-register/tools/crypto-invoice-generator/"')
 s = s.replace('href="../../fonts/', 'href="fonts/')
 s = s.replace('src="../../js/qr.js"', 'src="js/qr.js"')
 s = s.replace('src="../../js/motion.js"', 'src="js/motion.js"')
 s = s.replace('href="../../', 'href="https://itsxwang.github.io/cash-register/')
 s = s.replace('src="../../', 'src="https://itsxwang.github.io/cash-register/')
+# The standalone copy ships its own assets, so cache-busting queries are
+# pointless there — and file:// handling of query strings varies. Strip them.
+s = re.sub(r'"((?:app\.css|app\.js|css/style\.css|js/[^"?]+))\?v=\d+"', r'"\1"', s)
 open(p, "w", encoding="utf-8").write(s)
 PY
 }
