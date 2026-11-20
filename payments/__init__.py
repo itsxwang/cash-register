@@ -379,10 +379,11 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
     """Generate the public catalog the static storefront JS consumes."""
     cfg = cfg or load_config()
     site = Path(site_dir) if site_dir else DEFAULT_SITE_DIR
-    fx_rates = {}
-    if refresh_fx:
-        from . import fx as fx_mod
-        fx_rates = fx_mod.rates(cfg)
+    # Always carry a rate snapshot. fx.rates() tries the free APIs first and
+    # falls back to config.yaml, so this never blocks a sync and never leaves
+    # the storefront without a payable amount.
+    from . import fx as fx_mod
+    fx_rates = fx_mod.rates(cfg)
 
     tools_pub = {}
     for tid, tool in (get_path(cfg, "tools", {}) or {}).items():

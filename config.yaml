@@ -36,9 +36,10 @@ addresses:
 # Meaning: 1 USD buys this much of the asset.
 # ---------------------------------------------------------------------------
 fx:
-  usd_btc: 0.0000152
-  usd_eth: 0.000333
-  usd_sol: 0.0065
+  # Fallback snapshot 2026-11-20 (live APIs are tried first on every sync).
+  usd_btc: 0.000016213
+  usd_eth: 0.000572797
+  usd_sol: 0.013879251
   btc_price_endpoint: "https://mempool.space/api/v1/prices"
   eth_price_endpoint: "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
   sol_price_endpoint: "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"

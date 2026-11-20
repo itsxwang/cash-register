@@ -185,6 +185,7 @@
   }
 
   function makeQR(text, host) {
+    if (!host) return;
     host.innerHTML = "";
     if (!text) return;
     var qr = qrcode(0, "M");
@@ -258,7 +259,7 @@
         (o.status === "paid" && o.download
           ? "<div class='panel'><h3>You're in. Download:</h3>" +
             "<a class='btn' id='dl' href='" + esc(abs(o.download.url)) + "'>Download " + esc(o.tool.name) + "</a>" +
-            "<p class='hint'>Link includes your token. If it stops working, ask for a re-issue.</p></div>"
+            "<p class='hint'>Direct download from our release page. Keep this order id as your receipt.</p></div>"
           : "<div class='paybox'><div>" +
             "<div class='kv'><span class='label'>Send exactly</span><code id='amt'>" + esc(o.amount) + " " + esc(o.currency) + "</code>" +
             "<button class='btn ghost small copy-btn' data-copy='amt'>copy</button></div>" +
@@ -275,7 +276,7 @@
             "<p class='hint'>scan with your wallet</p></div></div>" +
             ivePaidBox(o)) +
         "<p><a href='" + esc(abs(o.status_url)) + "'>Check order status →</a></p>";
-      if (o.payment_uri) makeQR(o.payment_uri, $("#qrhost"));
+      if (o.payment_uri && o.status !== "paid") makeQR(o.payment_uri, $("#qrhost"));
       wireCopyButtons();
       wireIvePaid(o);
     }).catch(function (e) {
