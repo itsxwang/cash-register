@@ -278,14 +278,18 @@ def main() -> None:
                if not re.search(r'rel=["\']icon["\']', p.read_text(encoding="utf-8"))]
     check("inline favicon on all pages (no /favicon.ico 404)", not no_icon, str(no_icon))
     og_dir = site / "og"
-    og_imgs = sorted(og_dir.glob("*.png")) if og_dir.is_dir() else []
+    og_imgs = sorted(p for p in og_dir.glob("*.png") if not p.name.endswith("-icon.png")) \
+        if og_dir.is_dir() else []
+    icon = og_dir / "crypto-invoice-icon.png"
     try:
         from PIL import Image  # Pillow is optional for the test, required for regen
         sizes_ok = all(Image.open(p).size == (1200, 630) for p in og_imgs)
+        icon_ok = icon.is_file() and Image.open(icon).size == (512, 512)
     except ImportError:
-        sizes_ok = True
+        sizes_ok = icon_ok = True
     check("og images generated (1200x630, 6 variants)",
           len(og_imgs) >= 6 and sizes_ok, f"{len(og_imgs)} images")
+    check("square 512px directory icon present", icon_ok)
     check("analytics beacon markers present for founder",
           all("ANALYTICS-BEACON" in p.read_text(encoding="utf-8") for p in pages))
 
