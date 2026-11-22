@@ -333,7 +333,12 @@ def public_order(order: dict, cfg: dict | None = None) -> dict:
     checkout_url += ("&" if "?" in checkout_url else "?") + f"order={oid}"
     return {
         "order_id": oid,
-        "tool": {"id": order["tool_id"], "name": tool.get("name", order["tool_id"])},
+        "tool": {
+            "id": order["tool_id"],
+            "name": tool.get("name", order["tool_id"]),
+            "delivery": tool.get("delivery", "download"),
+            "delivery_note": tool.get("delivery_note", ""),
+        },
         "chain": order["chain"],
         "chain_name": order.get("chain_name") or amounts.chain_name(cfg, order["chain"]),
         "address": order.get("address"),
@@ -394,6 +399,8 @@ def write_catalog(*, cfg: dict | None = None, site_dir: str | Path | None = None
             "chains": tool.get("chains", list(VALID_CHAINS)),
             "landing": tool.get("landing"),
             "checkout": tool.get("checkout"),
+            "delivery": tool.get("delivery", "download"),
+            "billing": tool.get("billing", "one-off"),
             "delivery_note": tool.get("delivery_note", ""),
         }
 

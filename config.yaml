@@ -102,7 +102,8 @@ tools:
     price_usd: 19
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "citation-monitor-weekly-digest-v1.0.1.zip"
+    delivery: email
+    billing: monthly
     landing: "/tools/citation-monitor-weekly-digest/"
     checkout: "/tools/citation-monitor-weekly-digest/checkout.html"
     delivery_note: "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
@@ -113,7 +114,8 @@ tools:
     price_usd: 39
     chains: [eth, sol, btc]
     default_chain: eth
-    release_file: "citation-monitor-agency-v1.0.1.zip"
+    delivery: email
+    billing: monthly
     landing: "/tools/citation-monitor-agency/"
     checkout: "/tools/citation-monitor-agency/checkout.html"
     delivery_note: "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."

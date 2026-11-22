@@ -107,7 +107,8 @@
       grid.innerHTML = Object.keys(cat.tools).map(function (id) {
         var t = cat.tools[id];
         var copy = CARD_COPY[id] || { headline: t.blurb, bullets: [] };
-        var isSub = /monthly|\/mo|per month|month/i.test(t.delivery_note || "") || id.indexOf("weekly-digest") !== -1 || id.indexOf("agency") !== -1;
+        var isSub = t.delivery === "email" || t.billing === "monthly" ||
+          /monthly|\/mo|per month|month/i.test(t.delivery_note || "");
         var bullets = copy.bullets.slice(0, 3).map(function (b) {
           return "<li>" + esc(b) + "</li>";
         }).join("");
@@ -256,7 +257,17 @@
       root.innerHTML =
         "<h3 class='mt0'>Order " + esc(o.order_id) + " " + badge + "</h3>" +
         "<p class='muted'>" + esc(o.tool.name) + " — " + money(o.price_usd) + "</p>" +
-        (o.status === "paid" && o.download
+        (o.status === "paid" && o.tool.delivery === "email"
+          ? "<div class='panel'><h3>You're in. Your digest starts now.</h3>" +
+            "<p>Email <a href='mailto:" + esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "'>" +
+            esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a> (or reply to your payment confirmation) with:</p>" +
+            "<ul><li>the product or brand URL to track,</li>" +
+            "<li>3–5 competitor names,</li>" +
+            "<li>the inbox that should receive the digest.</li></ul>" +
+            "<p class='hint'>First digest within 7 days, then every Monday. " +
+            "Order " + esc(o.order_id) + " is your receipt" +
+            (o.tool.delivery_note ? " — " + esc(o.tool.delivery_note).replace(/\.$/, "") : "") + ".</p></div>"
+          : o.status === "paid" && o.download
           ? "<div class='panel'><h3>You're in. Download:</h3>" +
             "<a class='btn' id='dl' href='" + esc(abs(o.download.url)) + "'>Download " + esc(o.tool.name) + "</a>" +
             "<p class='hint'>Direct download from our release page. Keep this order id as your receipt.</p></div>"
@@ -302,7 +313,7 @@
       }).join("") + "</div>" +
       "<div class='paybox'><div>" +
       "<div class='kv'><span class='label'>Price</span><code id='usd'>" + money(tool.price_usd) +
-        (tool.id === "citation-monitor-weekly-digest" ? " / month" : "") + "</code></div>" +
+        (tool.billing === "monthly" || tool.delivery === "email" ? " / month" : "") + "</code></div>" +
       (tool.delivery_note
         ? "<div class='kv'><span class='label'>Delivery</span>" + esc(tool.delivery_note) + "</div>"
         : "") +
@@ -315,6 +326,10 @@
       "<p class='hint' id='fxhint'></p>" +
       "<p class='hint'>This store confirms payments manually (founder checks the wallet, assisted by on-chain watchers). " +
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
+      (tool.delivery === "email"
+        ? "<p class='hint'><strong>After payment:</strong> reply to the confirmation email with your product URL and 3–5 competitors. " +
+          "First digest within 7 days, then every Monday.</p>"
+        : "") +
       "</div><div class='qrbox'><div class='qr' id='qrhost'></div><p class='hint'>scan with your wallet</p></div></div>" +
       (tool.id !== "bundle"
         ? "<div class='upsell'>💎 <strong>Get all 3 tools for $39</strong> — one payment, lifetime updates. " +
@@ -391,7 +406,7 @@
       "<button class='btn ghost' id='copyreport'>Copy report</button>" +
       "</div>" +
       "<p class='hint'>The button opens your mail app with everything prefilled. After you send it, " +
-      "the founder confirms (CSV + on-chain watchers) and your download link appears on the " +
+      "the founder confirms (CSV + on-chain watchers) and your order unlocks on the " +
       "<a href='" + abs("/status.html") + "'>status page</a>. Allow a few minutes.</p></div>";
   }
 
@@ -480,11 +495,13 @@
     }
 
     fetchJSON("/data/orders/" + encodeURIComponent(oid) + ".json").then(function (o) {
+      var emailDelivery = o.tool.delivery === "email";
       var steps = [
         { key: "created", label: "Order created — payment details issued", done: true },
         { key: "sent", label: "You sent the payment (exact amount + memo)", done: o.status !== "awaiting_payment" },
         { key: "confirmed", label: "Founder confirmed (manual CSV / on-chain watcher)", done: o.status === "paid" || o.status === "delivered" },
-        { key: "download", label: "Download link unlocked", done: o.status === "paid" || o.status === "delivered" }
+        { key: "download", label: emailDelivery ? "First digest queued (email within 7 days)" : "Download link unlocked",
+          done: o.status === "paid" || o.status === "delivered" }
       ];
       root.innerHTML =
         "<h2 class='mt0'>Order " + esc(o.order_id) + " <span class='badge " + esc(o.status) + "'>" +
@@ -493,12 +510,16 @@
         "<ul class='timeline'>" + steps.map(function (s) {
           return "<li" + (s.done ? " class='done'" : "") + ">" + esc(s.label) + "</li>";
         }).join("") + "</ul>" +
-        (o.status === "paid" && o.download
+        (o.status === "paid" && emailDelivery
+          ? "<a class='btn' href='" + abs("/download.html") + "?order=" + encodeURIComponent(o.order_id) + "'>See delivery steps →</a> "
+          : o.status === "paid" && o.download
           ? "<a class='btn' href='" + esc(abs(o.download.url)) + "'>Go to download →</a> "
           : o.status === "awaiting_payment"
             ? "<a class='btn ghost' href='" + esc(abs(o.checkout_url)) + "'>Show payment details →</a> "
             : "") +
-        "<a class='btn ghost' href='" + abs("/download.html") + "?order=" + encodeURIComponent(o.order_id) + "'>Download page</a>" +
+        (emailDelivery
+          ? ""
+          : "<a class='btn ghost' href='" + abs("/download.html") + "?order=" + encodeURIComponent(o.order_id) + "'>Download page</a>") +
         "<p class='hint'>Watch note: " + esc(o.watch_note || "—") + "</p>";
     }).catch(function () {
       form("<h2>Order status</h2><p>Order <code>" + esc(oid) + "</code> isn't registered yet.</p>" +
@@ -523,6 +544,21 @@
         root.innerHTML = "<h2 class='mt0'>Not unlocked yet</h2>" +
           "<p>Order <code>" + esc(oid) + "</code> is <b>" + esc(o.status.replace("_", " ")) + "</b>.</p>" +
           "<p><a href='" + esc(abs(o.status_url)) + "'>Check status →</a></p>";
+        return;
+      }
+      if (o.tool.delivery === "email") {
+        root.innerHTML = "<h2 class='mt0'>Delivery — " + esc(o.tool.name) + "</h2>" +
+          "<p class='muted'>Order " + esc(o.order_id) + " · " +
+          esc(o.tool.delivery_note || "Delivered by email") + "</p>" +
+          "<div class='panel'><h3>Next step: send your tracking details</h3>" +
+          "<p>Email <a href='mailto:xion.dev7@gmail.com'>xion.dev7@gmail.com</a> " +
+          "(or reply to your payment confirmation) with:</p>" +
+          "<ul><li>the product or brand URL to track,</li>" +
+          "<li>3–5 competitor names,</li>" +
+          "<li>the inbox that should receive the digest.</li></ul>" +
+          "<p class='hint'>First digest within 7 days, then every Monday. " +
+          "Order " + esc(o.order_id) + " is your receipt.</p></div>" +
+          "<p><a class='btn ghost' href='" + esc(abs(o.status_url)) + "'>Check status →</a></p>";
         return;
       }
       root.innerHTML = "<h2 class='mt0'>Download — " + esc(o.tool.name) + "</h2>" +
