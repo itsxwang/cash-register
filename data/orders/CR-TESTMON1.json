@@ -1,0 +1,18 @@
+{
+  "order_id": "CR-TESTMON1",
+  "tool": {
+    "id": "citation-monitor-weekly-digest",
+    "name": "Citation Monitor \u2014 Weekly Digest",
+    "delivery": "email",
+    "billing": "monthly",
+    "delivery_note": "Weekly digest delivered by email every Monday (agent-run); first digest within 7 days of payment."
+  },
+  "chain": "eth",
+  "chain_name": "ETH (Base)",
+  "price_usd": 19,
+  "status": "paid",
+  "watch_note": "test fixture",
+  "status_url": "/status.html?order=CR-TESTMON1",
+  "checkout_url": "/tools/citation-monitor-weekly-digest/checkout.html?order=CR-TESTMON1",
+  "download": null
+}

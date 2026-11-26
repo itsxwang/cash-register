@@ -26,11 +26,11 @@
     }
   },
   "fx": {
-    "usd_btc": 1.640231600702019e-05,
-    "usd_eth": 0.0005884879977872851,
-    "usd_sol": 0.014046916701783959,
+    "usd_btc": 1.6444393284109784e-05,
+    "usd_eth": 0.0005901689653747868,
+    "usd_sol": 0.014074595355383534,
     "source": "live",
-    "updated_at": "2026-11-26T05:40:03Z"
+    "updated_at": "2026-11-26T05:50:04Z"
   },
   "tools": {
     "crypto-invoice-generator": {
@@ -107,6 +107,21 @@
       "delivery": "email",
       "billing": "monthly",
       "delivery_note": "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
+    },
+    "citation-audit-once": {
+      "name": "AI Visibility Audit \u2014 One-Time (36 questions)",
+      "blurb": "A one-time 36-question AI visibility audit across two engines: exact answers, competitor gaps, quoted sources, and three ranked fixes \u2014 emailed as a self-contained HTML report in 3 business days.",
+      "price_usd": 49,
+      "chains": [
+        "eth",
+        "sol",
+        "btc"
+      ],
+      "landing": "/tools/citation-audit-once/",
+      "checkout": "/tools/citation-audit-once/checkout.html",
+      "delivery": "email",
+      "billing": "one-off",
+      "delivery_note": "One-time audit delivered by email within 3 business days of payment. Send your product URL, 3\u20135 competitors, and the receiving inbox after checkout."
     }
   },
   "bundle": {
@@ -116,5 +131,5 @@
     "release_file": "cash-register-bundle-v1.1.1.zip"
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-26T05:40:03Z"
+  "generated_at": "2026-11-26T05:50:04Z"
 }
