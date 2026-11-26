@@ -63,6 +63,10 @@ IMAGES = {
         "title": "Citation Monitor — Agency",
         "subtitle": "3 brands tracked in one weekly AI-visibility report",
     },
+    "citation-audit-once": {
+        "title": "AI Visibility Audit",
+        "subtitle": "36 buyer questions · 2 engines · 3 ranked fixes · $49",
+    },
 }
 
 

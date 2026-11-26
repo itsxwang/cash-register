@@ -47,7 +47,7 @@ def main() -> None:
 
     # 1. config parsing + asset policy ----------------------------------------
     check("config parses", isinstance(cfg.get("addresses"), dict))
-    check("5 products in config (3 tools + digest + agency)", len(cfg["tools"]) == 5)
+    check("6 products in config (3 tools + digest + agency + audit)", len(cfg["tools"]) == 6)
 
     banned = ("usdt", "usdc", "tether")
 
@@ -115,7 +115,7 @@ def main() -> None:
     # 6. catalog sync ------------------------------------------------------------
     cat_path = cr.write_catalog(cfg=cfg, site_dir=TMP / "site")
     catalog = json.loads(cat_path.read_text())
-    check("catalog has 5 products", len(catalog["tools"]) == 5)
+    check("catalog has 6 products", len(catalog["tools"]) == 6)
     check("catalog chains are eth/sol/btc", set(catalog["chains"]) == {"eth", "sol", "btc"})
     check("catalog ETH label", catalog["chains"]["eth"]["label"] == "ETH (Base)")
     check("catalog eth decimals 18", catalog["chains"]["eth"]["decimals"] == 18)
@@ -250,6 +250,16 @@ def main() -> None:
           and (site / "tools/citation-monitor-weekly-digest/checkout.html").is_file())
     check("citation digest release zip built",
           (REPO / "releases/citation-monitor-weekly-digest-v1.0.1.zip").is_file())
+    audit = json.loads(cat_path.read_text())["tools"]["citation-audit-once"]
+    check("one-time audit is $49, email, one-off, no release file",
+          audit["price_usd"] == 49 and audit["delivery"] == "email"
+          and audit["billing"] == "one-off" and "release_file" not in audit
+          and "within 3 business days" in audit.get("delivery_note", ""))
+    audit_dir = site / "tools" / "citation-audit-once"
+    check("audit landing + checkout pages exist",
+          (audit_dir / "index.html").is_file() and (audit_dir / "checkout.html").is_file())
+    check("audit checkout does not show a monthly suffix for email delivery",
+          'tool.billing === "monthly" || tool.delivery === "email"' not in store_js)
     check("bundle upsell on tool checkouts (JS, not on bundle itself)",
           "Get all 3 tools for $39" in store_js
           and 'tool.id !== "bundle"' in store_js)
@@ -266,16 +276,17 @@ def main() -> None:
     check("robots.txt + sitemap.xml at root",
           (site / "robots.txt").is_file() and (site / "sitemap.xml").is_file())
     sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
-    check("sitemap lists the 5 product pages",
+    check("sitemap lists the product pages",
           all(f"tools/{t}/" in sitemap for t in
               ("crypto-invoice-generator", "cron-ping-monitor",
                "telegram-broadcaster", "citation-monitor-weekly-digest",
-               "citation-monitor-agency")))
+               "citation-monitor-agency", "citation-audit-once")))
     no_og = [str(p.relative_to(site)) for p in pages
              if "og:title" not in p.read_text(encoding="utf-8")]
     check("og/twitter meta on all pages", not no_og, str(no_og))
     no_icon = [str(p.relative_to(site)) for p in sorted(site.rglob("*.html"))
-               if not re.search(r'rel=["\']icon["\']', p.read_text(encoding="utf-8"))]
+               if not p.name.startswith("google")
+               and not re.search(r'rel=["\']icon["\']', p.read_text(encoding="utf-8"))]
     check("inline favicon on all pages (no /favicon.ico 404)", not no_icon, str(no_icon))
     og_dir = site / "og"
     og_imgs = sorted(p for p in og_dir.glob("*.png") if not p.name.endswith("-icon.png")) \
@@ -321,7 +332,7 @@ def main() -> None:
           not reveal_checkout, str(reveal_checkout))
     tool_pages = sorted((site / "tools").glob("*/index.html")) + sorted((site / "tools").glob("*/checkout.html"))
     check("tool pages share the root nav: pill toggle knob + navcta + 3-col footer",
-          len(tool_pages) == 10
+          len(tool_pages) == 12
           and all('class="knob"' in p.read_text(encoding="utf-8")
                   and 'class="btn navcta"' in p.read_text(encoding="utf-8")
                   and "foot-cols" in p.read_text(encoding="utf-8")

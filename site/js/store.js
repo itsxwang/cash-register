@@ -96,6 +96,12 @@
       bullets: ["3 brands tracked in parallel",
                 "One Monday report, per-brand sections",
                 "Client-ready tables you can forward"]
+    },
+    "citation-audit-once": {
+      headline: "A client-ready AI visibility audit, one time",
+      bullets: ["36 real buyer questions, 2 engines",
+                "Exact answers + competitor gap table",
+                "3 ranked fixes, delivered in 3 days"]
     }
   };
 
@@ -107,8 +113,7 @@
       grid.innerHTML = Object.keys(cat.tools).map(function (id) {
         var t = cat.tools[id];
         var copy = CARD_COPY[id] || { headline: t.blurb, bullets: [] };
-        var isSub = t.delivery === "email" || t.billing === "monthly" ||
-          /monthly|\/mo|per month|month/i.test(t.delivery_note || "");
+        var isSub = t.billing === "monthly";
         var bullets = copy.bullets.slice(0, 3).map(function (b) {
           return "<li>" + esc(b) + "</li>";
         }).join("");
@@ -236,6 +241,7 @@
         };
       } else {
         tool = (cat.tools || {})[item];
+        if (tool) tool.id = item;
       }
       if (!tool) { root.innerHTML = "<p class='muted'>Unknown item.</p>"; return; }
       $$("[data-tool-name]").forEach(function (el) { el.textContent = tool.name; });
@@ -258,13 +264,18 @@
         "<h3 class='mt0'>Order " + esc(o.order_id) + " " + badge + "</h3>" +
         "<p class='muted'>" + esc(o.tool.name) + " — " + money(o.price_usd) + "</p>" +
         (o.status === "paid" && o.tool.delivery === "email"
-          ? "<div class='panel'><h3>You're in. Your digest starts now.</h3>" +
+          ? "<div class='panel'><h3>You're in. " +
+            (o.tool.billing === "monthly" ? "Your digest starts now." : "Your audit is queued.") + "</h3>" +
             "<p>Email <a href='mailto:" + esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "'>" +
             esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a> (or reply to your payment confirmation) with:</p>" +
             "<ul><li>the product or brand URL to track,</li>" +
             "<li>3–5 competitor names,</li>" +
-            "<li>the inbox that should receive the digest.</li></ul>" +
-            "<p class='hint'>First digest within 7 days, then every Monday. " +
+            "<li>the inbox that should receive the " +
+            (o.tool.billing === "monthly" ? "digest" : "report") + ".</li></ul>" +
+            "<p class='hint'>" +
+            (o.tool.billing === "monthly"
+              ? "First digest within 7 days, then every Monday. "
+              : "Your audit is delivered within 3 business days. ") +
             "Order " + esc(o.order_id) + " is your receipt" +
             (o.tool.delivery_note ? " — " + esc(o.tool.delivery_note).replace(/\.$/, "") : "") + ".</p></div>"
           : o.status === "paid" && o.download
@@ -313,7 +324,7 @@
       }).join("") + "</div>" +
       "<div class='paybox'><div>" +
       "<div class='kv'><span class='label'>Price</span><code id='usd'>" + money(tool.price_usd) +
-        (tool.billing === "monthly" || tool.delivery === "email" ? " / month" : "") + "</code></div>" +
+        (tool.billing === "monthly" ? " / month" : "") + "</code></div>" +
       (tool.delivery_note
         ? "<div class='kv'><span class='label'>Delivery</span>" + esc(tool.delivery_note) + "</div>"
         : "") +
@@ -328,10 +339,16 @@
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
       (tool.delivery === "email"
         ? "<p class='hint'><strong>After payment:</strong> reply to the confirmation email with your product URL and 3–5 competitors. " +
-          "First digest within 7 days, then every Monday.</p>"
+          (tool.billing === "monthly"
+            ? "First digest within 7 days, then every Monday."
+            : "Your one-time audit is delivered within 3 business days.") + "</p>"
         : "") +
       "</div><div class='qrbox'><div class='qr' id='qrhost'></div><p class='hint'>scan with your wallet</p></div></div>" +
-      (tool.id !== "bundle"
+      (tool.id === "citation-audit-once"
+        ? "<div class='upsell'>🔁 <strong>Want this every week?</strong> The weekly Citation Monitor is $19/month — " +
+          "same 36 questions, tracked week over week. " +
+          "<a href='" + abs("/tools/citation-monitor-weekly-digest/") + "'>See the weekly plan →</a></div>"
+        : tool.id !== "bundle"
         ? "<div class='upsell'>💎 <strong>Get all 3 tools for $39</strong> — one payment, lifetime updates. " +
           "<a href='" + abs("/checkout.html?item=bundle") + "'>See the bundle →</a></div>"
         : "") +
@@ -500,7 +517,11 @@
         { key: "created", label: "Order created — payment details issued", done: true },
         { key: "sent", label: "You sent the payment (exact amount + memo)", done: o.status !== "awaiting_payment" },
         { key: "confirmed", label: "Founder confirmed (manual CSV / on-chain watcher)", done: o.status === "paid" || o.status === "delivered" },
-        { key: "download", label: emailDelivery ? "First digest queued (email within 7 days)" : "Download link unlocked",
+        { key: "download", label: emailDelivery
+            ? (o.tool.billing === "monthly"
+                ? "First digest queued (email within 7 days)"
+                : "Audit queued (email within 3 business days)")
+            : "Download link unlocked",
           done: o.status === "paid" || o.status === "delivered" }
       ];
       root.innerHTML =
@@ -555,8 +576,12 @@
           "(or reply to your payment confirmation) with:</p>" +
           "<ul><li>the product or brand URL to track,</li>" +
           "<li>3–5 competitor names,</li>" +
-          "<li>the inbox that should receive the digest.</li></ul>" +
-          "<p class='hint'>First digest within 7 days, then every Monday. " +
+          "<li>the inbox that should receive the " +
+          (o.tool.billing === "monthly" ? "digest" : "report") + ".</li></ul>" +
+          "<p class='hint'>" +
+          (o.tool.billing === "monthly"
+            ? "First digest within 7 days, then every Monday. "
+            : "Your audit is delivered within 3 business days. ") +
           "Order " + esc(o.order_id) + " is your receipt.</p></div>" +
           "<p><a class='btn ghost' href='" + esc(abs(o.status_url)) + "'>Check status →</a></p>";
         return;

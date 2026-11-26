@@ -337,6 +337,7 @@ def public_order(order: dict, cfg: dict | None = None) -> dict:
             "id": order["tool_id"],
             "name": tool.get("name", order["tool_id"]),
             "delivery": tool.get("delivery", "download"),
+            "billing": tool.get("billing", "one-off"),
             "delivery_note": tool.get("delivery_note", ""),
         },
         "chain": order["chain"],

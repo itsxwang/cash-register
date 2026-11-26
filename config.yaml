@@ -120,6 +120,18 @@ tools:
     checkout: "/tools/citation-monitor-agency/checkout.html"
     delivery_note: "3 brand digests delivered by email every Monday (agent-run); per-brand sections; first report within 7 days of payment."
 
+  citation-audit-once:
+    name: "AI Visibility Audit — One-Time (36 questions)"
+    blurb: "A one-time 36-question AI visibility audit across two engines: exact answers, competitor gaps, quoted sources, and three ranked fixes — emailed as a self-contained HTML report in 3 business days."
+    price_usd: 49
+    chains: [eth, sol, btc]
+    default_chain: eth
+    delivery: email
+    billing: one-off
+    landing: "/tools/citation-audit-once/"
+    checkout: "/tools/citation-audit-once/checkout.html"
+    delivery_note: "One-time audit delivered by email within 3 business days of payment. Send your product URL, 3–5 competitors, and the receiving inbox after checkout."
+
 bundle:
   price_usd: 39
   note: "All three tools, lifetime updates, one payment."
