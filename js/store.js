@@ -267,7 +267,7 @@
           ? "<div class='panel'><h3>You're in. " +
             (o.tool.billing === "monthly" ? "Your digest starts now." : "Your audit is queued.") + "</h3>" +
             "<p>Email <a href='mailto:" + esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "'>" +
-            esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a> (or reply to your payment confirmation) with:</p>" +
+            esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a> with your order id and:</p>" +
             "<ul><li>the product or brand URL to track,</li>" +
             "<li>3–5 competitor names,</li>" +
             "<li>the inbox that should receive the " +
@@ -338,7 +338,9 @@
       "<p class='hint'>This store confirms payments manually (founder checks the wallet, assisted by on-chain watchers). " +
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
       (tool.delivery === "email"
-        ? "<p class='hint'><strong>After payment:</strong> reply to the confirmation email with your product URL and 3–5 competitors. " +
+        ? "<p class='hint'><strong>After payment:</strong> use the “I've paid” button below, or email " +
+          "<a href='mailto:" + esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "'>" +
+          esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a>, with your order id, product URL and 3–5 competitors. " +
           (tool.billing === "monthly"
             ? "First digest within 7 days, then every Monday."
             : "Your one-time audit is delivered within 3 business days.") + "</p>"
@@ -573,7 +575,7 @@
           esc(o.tool.delivery_note || "Delivered by email") + "</p>" +
           "<div class='panel'><h3>Next step: send your tracking details</h3>" +
           "<p>Email <a href='mailto:xion.dev7@gmail.com'>xion.dev7@gmail.com</a> " +
-          "(or reply to your payment confirmation) with:</p>" +
+          "with your order id and:</p>" +
           "<ul><li>the product or brand URL to track,</li>" +
           "<li>3–5 competitor names,</li>" +
           "<li>the inbox that should receive the " +
