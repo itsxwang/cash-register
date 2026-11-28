@@ -26,11 +26,11 @@
     }
   },
   "fx": {
-    "usd_btc": 1.681718043152885e-05,
-    "usd_eth": 0.0006060385682944863,
-    "usd_sol": 0.01417032733456143,
+    "usd_btc": 1.6818311777863737e-05,
+    "usd_eth": 0.0006070465968967779,
+    "usd_sol": 0.014182385477237271,
     "source": "live",
-    "updated_at": "2026-11-28T16:10:05Z"
+    "updated_at": "2026-11-28T16:20:08Z"
   },
   "tools": {
     "crypto-invoice-generator": {
@@ -131,5 +131,5 @@
     "release_file": "cash-register-bundle-v1.1.1.zip"
   },
   "manual_confirm_note": "Payments are confirmed by the founder (manual CSV, assisted by on-chain watchers). Allow a few minutes after paying.",
-  "generated_at": "2026-11-28T16:10:05Z"
+  "generated_at": "2026-11-28T16:20:08Z"
 }
