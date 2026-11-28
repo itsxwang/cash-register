@@ -598,3 +598,17 @@ label.field > input, label.field > select, label.field > textarea { margin-top: 
 .mt0 { margin-top: 0; }
 .center { text-align: center; }
 .hidden { display: none !important; }
+
+/* checkout print: keep the payment details + QR, drop the site chrome */
+@media print {
+  body.checkout .nav,
+  body.checkout footer,
+  body.checkout .btn,
+  body.checkout .theme-toggle,
+  body.checkout #ivepaid,
+  body.checkout .upsell { display: none !important; }
+  body.checkout { background: #fff !important; }
+  body.checkout .wrap { max-width: none; padding: 0; }
+  body.checkout .panel { box-shadow: none; border: 1px solid #ddd; }
+  body.checkout .qrbox .qr { border: 1px solid #ddd; }
+}
