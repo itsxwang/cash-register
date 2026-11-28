@@ -338,7 +338,7 @@
       "<p class='hint'>This store confirms payments manually (founder checks the wallet, assisted by on-chain watchers). " +
       "Include the memo / use the exact amount so your payment can be matched.</p>" +
       (tool.delivery === "email"
-        ? "<p class='hint'><strong>After payment:</strong> use the “I've paid” button below, or email " +
+        ? "<p class='hint'><strong>After payment:</strong> use the “Email payment details” button in the “Already paid?” panel below, or email " +
           "<a href='mailto:" + esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "'>" +
           esc((cat.store || {}).contact_email || "xion.dev7@gmail.com") + "</a>, with your order id, product URL and 3–5 competitors. " +
           (tool.billing === "monthly"
@@ -421,7 +421,7 @@
       "<input type='text' id='paidtx' placeholder='0x… / signature…'></label>" +
       "</div>" +
       "<div class='row'>" +
-      "<a class='btn' id='mailto'>Email the report</a>" +
+      "<a class='btn' id='mailto'>Email payment details</a>" +
       "<button class='btn ghost' id='copyreport'>Copy report</button>" +
       "</div>" +
       "<p class='hint'>The button opens your mail app with everything prefilled. After you send it, " +
